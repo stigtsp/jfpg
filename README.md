@@ -1,4 +1,4 @@
-JFPG is a smaller, more modern replacement
+JFPG is a smaller, greatly simplified, and more modern replacement
 for the GPG/PGP encryption utility. It offers
 a more or less similar  syntax for encryption,
 decryption, signing, and verification. It uses
