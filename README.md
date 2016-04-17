@@ -18,7 +18,7 @@ Command syntax
 
 	-new keypairs:         jfpg -n new-key-id
 	-sign:                 jfpg -s -f file -x signing-secret-key
-	-verify sig:   	      jfpg -v -f file -x signing-public-key
+	-verify sig:   	       jfpg -v -f file -x signing-public-key
 	-encrypt/decrypt:      jfpg [-e | -d] -f file -p encryption-pubkey -k encryption-secretkey 
 
 
