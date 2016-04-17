@@ -29,13 +29,13 @@
 int
 main(int argc, char **argv)
 {
-	int8_t ch, flag = 0;
+	int ch, flag = 0;
 	FILE *infile = NULL;
 	FILE *key = NULL;
 	FILE *skey = NULL;
 	FILE *sign_key = NULL;
-	uint8_t filename[FILENAME_SIZE];
-	uint8_t id[128];
+	unsigned char filename[FILENAME_SIZE];
+	unsigned char id[128];
 	
 	memset(id, 0, sizeof(id));
 	
@@ -47,7 +47,7 @@ main(int argc, char **argv)
 		case 'n':
 		    if (argc != 3)
 			usage();
-		    if(strlcpy(id, optarg, sizeof(id)) >= sizeof(id))
+		    if (strlcpy(id, optarg, sizeof(id)) >= sizeof(id))
 			errx(1, "name too long");
 		    flag = 1;
 		    break;

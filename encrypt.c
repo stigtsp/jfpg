@@ -19,23 +19,19 @@
 #include <stdlib.h>
 #include <string.h>
 
-#ifdef __linux__
-#include <stdint.h>
-#endif
-
 #include "jfpg.h"
 #include "crypto/tweetnacl.h"
 #include "crypto/randombytes.h"
 #include "bsdcompat/compat.h"
 
 int
-jf_encrypt(FILE *infile, FILE *key, FILE *skey, uint8_t *filename)
+jf_encrypt(FILE *infile, FILE *key, FILE *skey, unsigned char *filename)
 {
-	uint64_t pad_ptext_len, ptext_size, ctext_size = 0;
-	uint8_t *pad_ptext_buf, *ptext_buf, *ctext_buf = NULL;
-	uint8_t key_buf[PUBKEYBYTES];
-	uint8_t skey_buf[SECKEYBYTES];
-	uint8_t nonce[NONCEBYTES];
+	unsigned long long pad_ptext_len, ptext_size, ctext_size = 0;
+	unsigned char *pad_ptext_buf, *ptext_buf, *ctext_buf = NULL;
+	unsigned char key_buf[PUBKEYBYTES];
+	unsigned char skey_buf[SECKEYBYTES];
+	unsigned char nonce[NONCEBYTES];
 	FILE *outfile = NULL;
 
 	randombytes(nonce, NONCEBYTES);

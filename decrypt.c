@@ -19,21 +19,17 @@
 #include <string.h>
 #include <stdlib.h>
 
-#ifdef __linux__
-#include <stdint.h>
-#endif
-
 #include "jfpg.h"
 #include "crypto/tweetnacl.h"
 #include "bsdcompat/compat.h"
 
 int
-jf_decrypt(FILE *infile, FILE *key, FILE *skey, uint8_t *filename)
+jf_decrypt(FILE *infile, FILE *key, FILE *skey, unsigned char *filename)
 {
-	uint64_t ptext_size, ctext_size = 0;
-	uint8_t *ctext_buf, *ptext_buf = NULL;
-	uint8_t key_buf[PUBKEYBYTES];
-	uint8_t skey_buf[SECKEYBYTES];
+	unsigned long long ptext_size, ctext_size = 0;
+	unsigned char *ctext_buf, *ptext_buf = NULL;
+	unsigned char key_buf[PUBKEYBYTES];
+	unsigned char skey_buf[SECKEYBYTES];
 	FILE *outfile = NULL;
 
 	/* Get input file size */

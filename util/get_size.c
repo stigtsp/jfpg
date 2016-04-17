@@ -16,14 +16,10 @@
 
 #include <stdio.h>
 
-#ifdef __linux__
-#include <stdint.h>
-#endif
-
-uint64_t
+unsigned long long
 get_size(FILE *infile)
 {
-	uint64_t infile_size = 0;
+	unsigned long long infile_size = 0;
 	
 	fseek(infile, 0, SEEK_END);
 	infile_size = ftell(infile);

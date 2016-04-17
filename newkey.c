@@ -18,25 +18,21 @@
 #include <stdio.h>
 #include <string.h>
 
-#ifdef __linux__
-#include <stdint.h>
-#endif
-
 #include "jfpg.h"
 #include "crypto/tweetnacl.h"
 #include "bsdcompat/compat.h"
 
 int
-jf_newkey(uint8_t *id)
+jf_newkey(unsigned char *id)
 {
-	uint8_t pk[PUBKEYBYTES];
-	uint8_t sk[SECKEYBYTES];
-	uint8_t sign_sk[SIGNSKEYBYTES];
-	uint8_t sign_pk[SIGNPKEYBYTES];
-	uint8_t pk_name[192];
-	uint8_t sk_name[192];
-	uint8_t sign_sk_name[192];
-	uint8_t sign_pk_name[192];
+	unsigned char pk[PUBKEYBYTES];
+	unsigned char sk[SECKEYBYTES];
+	unsigned char sign_sk[SIGNSKEYBYTES];
+	unsigned char sign_pk[SIGNPKEYBYTES];
+	unsigned char pk_name[192];
+	unsigned char sk_name[192];
+	unsigned char sign_sk_name[192];
+	unsigned char sign_pk_name[192];
 	FILE *seckey = NULL;
 	FILE *pubkey = NULL;
 	FILE *sign_seckey = NULL;

@@ -18,20 +18,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#ifdef __linux__
-#include <stdint.h>
-#endif
-
 #include "jfpg.h"
 #include "crypto/tweetnacl.h"
 #include "bsdcompat/compat.h"
 
 int
-jf_sign(FILE *infile, FILE *sign_sk, uint8_t *filename)
+jf_sign(FILE *infile, FILE *sign_sk, unsigned char *filename)
 {
-	uint64_t mlen, smlen = 0;
-	uint8_t *m, *sm = NULL;
-	uint8_t sign_sk_buf[SIGNSKEYBYTES];
+	unsigned long long mlen, smlen = 0;
+	unsigned char *m, *sm = NULL;
+	unsigned char sign_sk_buf[SIGNSKEYBYTES];
 	FILE *outfile = NULL;	
 
 	fread(sign_sk_buf, 1, sizeof(sign_sk_buf), sign_sk);

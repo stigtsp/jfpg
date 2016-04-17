@@ -26,11 +26,11 @@
 #include "crypto/tweetnacl.h"
 
 int
-jf_verify(FILE *infile, FILE *sign_pk, uint8_t *filename)
+jf_verify(FILE *infile, FILE *sign_pk, unsigned char *filename)
 {
-	uint64_t mlen, smlen = 0;
-	uint8_t *m, *sm = NULL;
-	uint8_t sign_pk_buf[SIGNPKEYBYTES];
+	unsigned long long mlen, smlen = 0;
+	unsigned char *m, *sm = NULL;
+	unsigned char sign_pk_buf[SIGNPKEYBYTES];
 	FILE *outfile = NULL;	
 
 	fread(sign_pk_buf, 1, sizeof(sign_pk_buf), sign_pk);

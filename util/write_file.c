@@ -17,12 +17,8 @@
 #include <err.h>
 #include <stdio.h>
 
-#ifdef __linux__
-#include <stdint.h>
-#endif
-
 void
-write_file(FILE *fd, void *buf, size_t bufsize, uint8_t *filename)
+write_file(FILE *fd, void *buf, size_t bufsize, unsigned char *filename)
 {
 	if ((fd = fopen(filename, "w")) == NULL)
 		err(1, "error creating file");
