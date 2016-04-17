@@ -30,10 +30,10 @@
 
 void usage(void);
 void safer_free(void *, size_t);
-void write_file(FILE *, void *, size_t, unsigned char *); 
-int jf_encrypt(FILE *, FILE *, FILE *, unsigned char *);
-int jf_decrypt(FILE *, FILE *, FILE *, unsigned char *);
-int jf_newkey(unsigned char *);
-int jf_sign(FILE *, FILE *, unsigned char *);
-int jf_verify(FILE *, FILE *, unsigned char *);
+void write_file(FILE *, void *, size_t, char *); 
+int jf_encrypt(FILE *, FILE *, FILE *, char *);
+int jf_decrypt(FILE *, FILE *, FILE *, char *);
+int jf_newkey(char *);
+int jf_sign(FILE *, FILE *, char *);
+int jf_verify(FILE *, FILE *, char *);
 unsigned long long get_size(FILE *);

@@ -23,7 +23,7 @@
 #include "bsdcompat/compat.h"
 
 int
-jf_sign(FILE *infile, FILE *sign_sk, unsigned char *filename)
+jf_sign(FILE *infile, FILE *sign_sk, char *filename)
 {
 	unsigned long long mlen, smlen = 0;
 	unsigned char *m, *sm = NULL;

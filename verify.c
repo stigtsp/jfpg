@@ -26,7 +26,7 @@
 #include "crypto/tweetnacl.h"
 
 int
-jf_verify(FILE *infile, FILE *sign_pk, unsigned char *filename)
+jf_verify(FILE *infile, FILE *sign_pk, char *filename)
 {
 	unsigned long long mlen, smlen = 0;
 	unsigned char *m, *sm = NULL;

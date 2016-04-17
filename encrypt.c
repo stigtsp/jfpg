@@ -25,7 +25,7 @@
 #include "bsdcompat/compat.h"
 
 int
-jf_encrypt(FILE *infile, FILE *key, FILE *skey, unsigned char *filename)
+jf_encrypt(FILE *infile, FILE *key, FILE *skey, char *filename)
 {
 	unsigned long long pad_ptext_len, ptext_size, ctext_size = 0;
 	unsigned char *pad_ptext_buf, *ptext_buf, *ctext_buf = NULL;

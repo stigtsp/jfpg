@@ -30,8 +30,8 @@ main(int argc, char **argv)
 	FILE *key = NULL;
 	FILE *skey = NULL;
 	FILE *sign_key = NULL;
-	unsigned char filename[FILENAME_SIZE];
-	unsigned char id[128];
+	char filename[FILENAME_SIZE];
+	char id[128];
 	
 	memset(id, 0, sizeof(id));
 	

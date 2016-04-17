@@ -23,16 +23,16 @@
 #include "bsdcompat/compat.h"
 
 int
-jf_newkey(unsigned char *id)
+jf_newkey(char *id)
 {
 	unsigned char pk[PUBKEYBYTES];
 	unsigned char sk[SECKEYBYTES];
 	unsigned char sign_sk[SIGNSKEYBYTES];
 	unsigned char sign_pk[SIGNPKEYBYTES];
-	unsigned char pk_name[192];
-	unsigned char sk_name[192];
-	unsigned char sign_sk_name[192];
-	unsigned char sign_pk_name[192];
+	char pk_name[192];
+	char sk_name[192];
+	char sign_sk_name[192];
+	char sign_pk_name[192];
 	FILE *seckey = NULL;
 	FILE *pubkey = NULL;
 	FILE *sign_seckey = NULL;

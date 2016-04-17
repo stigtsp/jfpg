@@ -24,7 +24,7 @@
 #include "bsdcompat/compat.h"
 
 int
-jf_decrypt(FILE *infile, FILE *key, FILE *skey, unsigned char *filename)
+jf_decrypt(FILE *infile, FILE *key, FILE *skey, char *filename)
 {
 	unsigned long long ptext_size, ctext_size = 0;
 	unsigned char *ctext_buf, *ptext_buf = NULL;
