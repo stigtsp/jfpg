@@ -25,7 +25,7 @@ Command syntax
 You will need to create a new set of keys when you first use JFPG. 
 This creates 2 keypairs, a pair of Curve25519 keys for encryption/decryption
 and a pair of Ed25519 keys for signing. It takes your desired key ID
-as its only option.
+ (probably your name) as its only option.
 
 Primitives used
 
