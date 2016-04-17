@@ -18,6 +18,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#ifdef __linux__
+#include <stdint.h>
+#endif
+
 #include "jfpg.h"
 #include "crypto/tweetnacl.h"
 

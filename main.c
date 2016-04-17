@@ -19,6 +19,10 @@
 #include <unistd.h>
 #include <string.h>
 
+#ifdef __linux__
+#include <stdint.h>
+#endif
+
 #include "jfpg.h"
 #include "bsdcompat/compat.h"
 

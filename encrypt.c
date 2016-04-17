@@ -19,6 +19,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifdef __linux__
+#include <stdint.h>
+#endif
+
 #include "jfpg.h"
 #include "crypto/tweetnacl.h"
 #include "crypto/randombytes.h"
