@@ -73,13 +73,13 @@ download() {
 	
 	for i in $idlist; do	
 	    gdrive download -f $i
-	done
+	done | zenity --progress --pulsate --auto-close
 	for i in $namelist; do
 	    if [[ $i == *.xsalsa20 ]]; then   
 		jfpg -d -f $i -p $pubkey -k $seckey
 	    	rm $i
 	    fi	
-	done | zenity --progress --pulsate --auto-close
+	done
 	zenity --info --text="Download complete"
 	menu
 }
