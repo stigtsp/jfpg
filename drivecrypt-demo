@@ -1,0 +1,125 @@
+#!/bin/sh
+
+pubkey="/home/joe/.keys/joe-fierro-pubkey.curve25519"
+seckey="/home/joe/.keys/joe-fierro-secretkey.curve25519"
+
+new_keypair() {
+	if jfpg -n; then
+		zenity --info --text="Created pubkey.curve25519 \
+		    and secretkey.curve25519"
+		exit
+	else
+		zenity --info --text="Key generation failed"
+		exit
+	fi 
+}
+
+view_drive() {
+	drive_contents=`gdrive list | awk '{ print $1, $2 }'`
+	zenity --list --width=800 --height=600 --title="Remote" \
+	    --column="ID" --column="Name" $drive_contents
+	menu
+}
+
+upload() {
+	filelist=`zenity --file-selection --multiple --separator=' ' \
+	     --filename=~/`
+	
+	if [[ -z $filelist ]]; then
+		zenity --info --text="No files selected"
+		exit	
+	fi
+
+	for i in $filelist; do
+	    jfpg -e -f $i -p $pubkey -k $seckey
+	    gdrive upload "$i.xsalsa20"
+	    rm "$i.xsalsa20"
+	done | zenity --progress --pulsate --auto-close 
+	zenity --info --text="Upload complete"
+	menu
+}
+
+insecure_upload() {
+	filelist=`zenity --file-selection --multiple --separator=' ' \
+	    --filename=~/`
+	
+	if [[ -z $filelist ]]; then
+		zenity --info --text="No files selected"
+		return	
+	fi
+
+	for i in $filelist; do
+	    gdrive upload $i
+	done | zenity --progress --pulsate --auto-close 
+	zenity --info --text="Upload complete"
+	menu
+}
+
+
+download() {
+	drive_contents=`gdrive list | awk '{ print "Download", $1, $2 }'`
+	filelist=`zenity --list --width=800 --height=600 --checklist \
+		--print-column=2,3 --separator=' ' \
+		--title="Viewing Remote" --column="Select" --column="ID" \
+		 --column="Name" $drive_contents`
+	
+	if [[ -z $filelist ]]; then
+		zenity --info --text="No files selected"
+		return	
+	fi
+
+	idlist=`echo $filelist | awk '{for(n=1; n<=NF; n=n+2){printf "%s ", $n}}'`
+	namelist=`echo $filelist | awk '{for(n=2; n<=NF; n=n+2){printf "%s ", $n}}'`
+	
+	for i in $idlist; do	
+	    gdrive download -f $i
+	done
+	for i in $namelist; do
+	    if [[ $i == *.xsalsa20 ]]; then   
+		jfpg -d -f $i -p $pubkey -k $seckey
+	    	rm $i
+	    fi	
+	done | zenity --progress --pulsate --auto-close
+	zenity --info --text="Download complete"
+	menu
+}
+
+delete_files() {
+	drive_contents=`gdrive list | awk '{ print "Download", $1, $2 }'`
+        filelist=`zenity --list --width=800 --height=600 --checklist \
+                --print-column=2,3 --separator=' ' \
+                --title="Viewing Remote" --column="Select" --column="ID" \
+                 --column="Name" $drive_contents`
+		
+	if [[ -z $filelist ]]; then
+		zenity --info --text="No files deleted"
+		return
+	fi
+
+	for i in $filelist; do
+	    gdrive delete $i
+	done | zenity --progress --pulsate --auto-close
+	zenity --info --text="Deletion complete"
+	menu	
+}
+
+menu() {
+	choice=`zenity --list --width=800 --height=600 --title="DriveCrypt" \
+	     --column="Select action" "View drive" \
+	    "Upload" "Insecure upload" "Download" "Delete" "New key pair"`
+
+	if [[ -z $choice ]]; then
+	    exit
+	fi
+
+	case $choice in
+	    "View drive") view_drive;;
+	    "Upload") upload;;
+	    "Insecure upload") insecure_upload;;
+	    "Download") download;;
+	    "Delete") delete_files;;
+	    "New key pair") new_keypair;;
+	esac
+}
+
+menu
