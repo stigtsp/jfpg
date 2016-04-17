@@ -47,3 +47,6 @@ Limitations
 
 	-There is no forward secrecy (yet). A given sender/receiver pair will
 	 calculate the same shared symmeric key for all their messages. 
+
+A demo script showing automatic encryption/decryption of files sent to Google drive is provided.
+It requires the gdrive command line tool if you want to try it. 
