@@ -28,8 +28,8 @@ jf_decrypt(FILE *infile, FILE *key, FILE *skey, char *filename)
 {
 	unsigned long long ptext_size, ctext_size = 0;
 	unsigned char *ctext_buf, *ptext_buf = NULL;
-	unsigned char key_buf[PUBKEYBYTES];
-	unsigned char skey_buf[SECKEYBYTES];
+	unsigned char pk[PUBKEYBYTES];
+	unsigned char sk[SECKEYBYTES];
 	FILE *outfile = NULL;
 
 	/* Get input file size */
@@ -48,21 +48,21 @@ jf_decrypt(FILE *infile, FILE *key, FILE *skey, char *filename)
 		err(1, "Error creating ptext_buf");
 
 	/* Read public key into buffer */
-	if (fread(key_buf, 1, sizeof(key_buf), key) != sizeof(key_buf))
+	if (fread(pk, 1, sizeof(pk), key) != sizeof(pk))
 		errx(1, "error reading in public key");
 	fclose(key);
 
 	/* Read secret key */
-	if (fread(skey_buf, 1, sizeof(skey_buf), skey) != sizeof(skey_buf))
+	if (fread(sk, 1, sizeof(sk), skey) != sizeof(sk))
 		errx(1, "error reading in secret key");
 	fclose(skey);
 
 	/* Decrypt data with secret key */
 	if (crypto_box_open(ptext_buf, ctext_buf + NONCEBYTES,
-	    ctext_size - NONCEBYTES, ctext_buf, key_buf, skey_buf)
+	    ctext_size - NONCEBYTES, ctext_buf, pk, sk)
 	         != 0)
 		errx(1, "Error decrypting data");
-	explicit_bzero(skey_buf, sizeof(skey_buf));
+	explicit_bzero(sk, sizeof(sk));
 
 	/* Free ctext buffer */
 	free(ctext_buf);

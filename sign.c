@@ -23,17 +23,17 @@
 #include "bsdcompat/compat.h"
 
 int
-jf_sign(FILE *infile, FILE *sign_sk, char *filename)
+jf_sign(FILE *infile, FILE *fd_sign_sk, char *filename)
 {
 	unsigned long long mlen, smlen = 0;
 	unsigned char *m, *sm = NULL;
-	unsigned char sign_sk_buf[SIGNSKEYBYTES];
+	unsigned char sign_sk[SIGNSKEYBYTES];
 	FILE *outfile = NULL;	
 
-	if (fread(sign_sk_buf, 1, sizeof(sign_sk_buf), sign_sk) 
-	    != sizeof(sign_sk_buf))
+	if (fread(sign_sk, 1, sizeof(sign_sk), fd_sign_sk) 
+	    != sizeof(sign_sk))
 		errx(1, "error reading in secret signing key");
-	fclose(sign_sk);
+	fclose(fd_sign_sk);
 
 	mlen = get_size(infile);
 	smlen = mlen + crypto_sign_BYTES;
@@ -47,9 +47,9 @@ jf_sign(FILE *infile, FILE *sign_sk, char *filename)
 		errx(1, "error reading in infile");
 	fclose(infile);
  
-	if ((crypto_sign(sm, &smlen, m, mlen, sign_sk_buf)) != 0)
+	if ((crypto_sign(sm, &smlen, m, mlen, sign_sk)) != 0)
 		errx(1, "error signing");
-	explicit_bzero(sign_sk_buf, sizeof(sign_sk_buf));
+	explicit_bzero(sign_sk, sizeof(sign_sk));
 	free(m);
 
 	write_file(outfile, sm, smlen, filename); 

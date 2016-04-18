@@ -26,17 +26,17 @@
 #include "crypto/tweetnacl.h"
 
 int
-jf_verify(FILE *infile, FILE *sign_pk, char *filename)
+jf_verify(FILE *infile, FILE *fd_sign_pk, char *filename)
 {
 	unsigned long long mlen, smlen = 0;
 	unsigned char *m, *sm = NULL;
-	unsigned char sign_pk_buf[SIGNPKEYBYTES];
+	unsigned char sign_pk[SIGNPKEYBYTES];
 	FILE *outfile = NULL;	
 
-	if (fread(sign_pk_buf, 1, sizeof(sign_pk_buf), sign_pk)
-	    != sizeof(sign_pk_buf))
+	if (fread(sign_pk, 1, sizeof(sign_pk), fd_sign_pk)
+	    != sizeof(sign_pk))
 		errx(1, "error reading in public key");
-	fclose(sign_pk);
+	fclose(fd_sign_pk);
 
 	smlen = get_size(infile);
 	mlen = smlen - crypto_sign_BYTES;
@@ -50,7 +50,7 @@ jf_verify(FILE *infile, FILE *sign_pk, char *filename)
 		errx(1, "error reading in infile");
 	fclose(infile);
 	
-	if ((crypto_sign_open(m, &mlen, sm, smlen, sign_pk_buf)) != 0)
+	if ((crypto_sign_open(m, &mlen, sm, smlen, sign_pk)) != 0)
 		errx(1, "error verifying signature");
 	free(sm);
 

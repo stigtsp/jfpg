@@ -29,8 +29,8 @@ jf_encrypt(FILE *infile, FILE *key, FILE *skey, char *filename)
 {
 	unsigned long long pad_ptext_len, ptext_size, ctext_size = 0;
 	unsigned char *pad_ptext_buf, *ptext_buf, *ctext_buf = NULL;
-	unsigned char key_buf[PUBKEYBYTES];
-	unsigned char skey_buf[SECKEYBYTES];
+	unsigned char pk[PUBKEYBYTES];
+	unsigned char sk[SECKEYBYTES];
 	unsigned char nonce[NONCEBYTES];
 	FILE *outfile = NULL;
 
@@ -61,17 +61,17 @@ jf_encrypt(FILE *infile, FILE *key, FILE *skey, char *filename)
 	memcpy(ctext_buf, nonce, NONCEBYTES); 
 
 	/* Read in public key */
-	if (fread(key_buf, 1, sizeof(key_buf), key) != sizeof(key_buf))
+	if (fread(pk, 1, sizeof(pk), key) != sizeof(pk))
 		errx(1, "error reading in public key");
 	fclose(key);
 
-	if (fread(skey_buf, 1, sizeof(skey_buf), skey) != sizeof(skey_buf))
+	if (fread(sk, 1, sizeof(sk), skey) != sizeof(sk))
 		errx(1, "error reading in secret key");
 	fclose(skey);
 
 	/* Encrypt */
 	if (crypto_box(ctext_buf + NONCEBYTES, pad_ptext_buf, pad_ptext_len,
-	    nonce, key_buf, skey_buf) != 0)
+	    nonce, pk, sk) != 0)
 		err(1, "Error encrypting data");
 
 	/* Zero and free ptext buffer */
