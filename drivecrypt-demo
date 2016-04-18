@@ -1,7 +1,7 @@
 #!/bin/sh
 
-pubkey="/home/joe/.keys/joe-fierro-pubkey.curve25519"
-seckey="/home/joe/.keys/joe-fierro-secretkey.curve25519"
+pubkey="your public key location here"
+seckey="your secret key location here"
 
 new_keypair() {
 	if jfpg -n; then
