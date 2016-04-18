@@ -40,11 +40,6 @@ Limitations
 	 your computer for you. Even encrypted secret keys are not safe if you
 	 are running JFPG on a compromised machine.
 
-	-Signing is not automatic when encrypting messages. It can be slow and
-	 there are cases where it is not much of an advantage. However, it is encouraged
-	 for any communication with another user. Currently this must be done manually 
-	 with the sign/verify options.
-
 	-There is no forward secrecy (yet). A given sender/receiver pair will
 	 calculate the same shared symmeric key for all their messages. 
 
