@@ -42,7 +42,8 @@ jf_encrypt(FILE *infile, FILE *key, FILE *skey, char *filename)
 	/* Create buffer for input file and close infile */
 	if ((ptext_buf = malloc(ptext_size)) == NULL)
 		err(1, "Error creating ptext buffer");
-	fread(ptext_buf, 1, ptext_size, infile);
+	if (fread(ptext_buf, 1, ptext_size, infile) != ptext_size)
+		errx(1, "error reading into plaintext buf");
 	fclose(infile);
 
 	pad_ptext_len = (ptext_size + ZEROBYTES);
@@ -60,10 +61,12 @@ jf_encrypt(FILE *infile, FILE *key, FILE *skey, char *filename)
 	memcpy(ctext_buf, nonce, NONCEBYTES); 
 
 	/* Read in public key */
-	fread(key_buf, 1, sizeof(key_buf), key);
+	if (fread(key_buf, 1, sizeof(key_buf), key) != sizeof(key_buf))
+		errx(1, "error reading in public key");
 	fclose(key);
 
-	fread(skey_buf, 1, sizeof(skey_buf), skey);
+	if (fread(skey_buf, 1, sizeof(skey_buf), skey) != sizeof(skey_buf))
+		errx(1, "error reading in secret key");
 	fclose(skey);
 
 	/* Encrypt */

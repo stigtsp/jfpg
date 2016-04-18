@@ -37,8 +37,9 @@ jf_decrypt(FILE *infile, FILE *key, FILE *skey, char *filename)
 
 	/* Create buffer for ctext */
 	if ((ctext_buf = malloc(ctext_size)) == NULL)
-		err(1, "Error creating ctext buffer");
-	fread(ctext_buf, 1, ctext_size, infile);
+		err(1, "error creating ctext buffer");
+	if (fread(ctext_buf, 1, ctext_size, infile) != ctext_size)
+		errx(1, "error reading in ciphertext");
 	fclose(infile);
 
 	/* Get ptext size and create ptext buffer */
@@ -47,11 +48,13 @@ jf_decrypt(FILE *infile, FILE *key, FILE *skey, char *filename)
 		err(1, "Error creating ptext_buf");
 
 	/* Read public key into buffer */
-	fread(key_buf, 1, PUBKEYBYTES, key);
+	if (fread(key_buf, 1, sizeof(key_buf), key) != sizeof(key_buf))
+		errx(1, "error reading in public key");
 	fclose(key);
 
 	/* Read secret key */
-	fread(skey_buf, 1, SECKEYBYTES, skey);
+	if (fread(skey_buf, 1, sizeof(skey_buf), skey) != sizeof(skey_buf))
+		errx(1, "error reading in secret key");
 	fclose(skey);
 
 	/* Decrypt data with secret key */

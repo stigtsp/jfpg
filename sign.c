@@ -30,7 +30,9 @@ jf_sign(FILE *infile, FILE *sign_sk, char *filename)
 	unsigned char sign_sk_buf[SIGNSKEYBYTES];
 	FILE *outfile = NULL;	
 
-	fread(sign_sk_buf, 1, sizeof(sign_sk_buf), sign_sk);
+	if (fread(sign_sk_buf, 1, sizeof(sign_sk_buf), sign_sk) 
+	    != sizeof(sign_sk_buf))
+		errx(1, "error reading in secret signing key");
 	fclose(sign_sk);
 
 	mlen = get_size(infile);
@@ -41,7 +43,8 @@ jf_sign(FILE *infile, FILE *sign_sk, char *filename)
 	if ((sm = malloc(smlen)) == NULL)
 		err(1, "error creating signed message buffer");
 
-	fread(m, 1, mlen, infile);
+	if (fread(m, 1, mlen, infile) != mlen)
+		errx(1, "error reading in infile");
 	fclose(infile);
  
 	if ((crypto_sign(sm, &smlen, m, mlen, sign_sk_buf)) != 0)

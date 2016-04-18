@@ -33,7 +33,9 @@ jf_verify(FILE *infile, FILE *sign_pk, char *filename)
 	unsigned char sign_pk_buf[SIGNPKEYBYTES];
 	FILE *outfile = NULL;	
 
-	fread(sign_pk_buf, 1, sizeof(sign_pk_buf), sign_pk);
+	if (fread(sign_pk_buf, 1, sizeof(sign_pk_buf), sign_pk)
+	    != sizeof(sign_pk_buf))
+		errx(1, "error reading in public key");
 	fclose(sign_pk);
 
 	smlen = get_size(infile);
@@ -44,7 +46,8 @@ jf_verify(FILE *infile, FILE *sign_pk, char *filename)
 	if ((sm = malloc(smlen)) == NULL)
 		err(1, "error creating signed message buffer");
 
-	fread(sm, 1, smlen, infile);
+	if (fread(sm, 1, smlen, infile) != smlen)
+		errx(1, "error reading in infile");
 	fclose(infile);
 	
 	if ((crypto_sign_open(m, &mlen, sm, smlen, sign_pk_buf)) != 0)
