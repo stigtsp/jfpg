@@ -1,6 +1,6 @@
 CC = cc 
 
-WARNFLAGS = -Wall -Wformat-security
+WARNFLAGS = -Wall -Werror -Wformat-security
 
 SECFLAGS = -fstack-protector-all -fPIC -fPIE -D_FORTIFY_SOURCE=2 
 
