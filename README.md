@@ -51,4 +51,4 @@ TODO
 	Allow encrypted secret keys
 
 An experimental demo script showing automatic encryption/decryption of files sent to Google drive is provided.
-It requires the gdrive command line tool if you want to try it. 
+It requires the gdrive command line tool and zenity if you want to try it. 
