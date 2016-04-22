@@ -41,7 +41,7 @@ jf_encrypt(FILE *infile, FILE *key, FILE *skey, char *filename)
 
 	/* Create buffer for input file and close infile */
 	if ((ptext_buf = malloc(ptext_size)) == NULL)
-		err(1, "Error creating ptext buffer");
+		err(1, "error creating ptext buffer");
 	if (fread(ptext_buf, 1, ptext_size, infile) != ptext_size)
 		errx(1, "error reading into plaintext buf");
 	fclose(infile);
@@ -57,7 +57,7 @@ jf_encrypt(FILE *infile, FILE *key, FILE *skey, char *filename)
 	/* Get ctext size and create buffer. */
 	ctext_size = (pad_ptext_len + NONCEBYTES);
 	if ((ctext_buf = malloc(ctext_size)) == NULL)
-		err(1, "Error creating ctext buffer");
+		err(1, "error creating ctext buffer");
 	memcpy(ctext_buf, nonce, NONCEBYTES); 
 
 	/* Read in public key */
@@ -72,14 +72,14 @@ jf_encrypt(FILE *infile, FILE *key, FILE *skey, char *filename)
 	/* Encrypt */
 	if (crypto_box(ctext_buf + NONCEBYTES, pad_ptext_buf, pad_ptext_len,
 	    nonce, pk, sk) != 0)
-		err(1, "Error encrypting data");
+		err(1, "error encrypting data");
 
 	/* Zero and free ptext buffer */
 	safer_free(pad_ptext_buf, pad_ptext_len);
 
 	/* Append extension to filename */
 	if (strlcat(filename, EXT, FILENAME_SIZE) >= FILENAME_SIZE)
-		errx(1, "Filename too long");
+		errx(1, "filename too long");
 
 	/* Write ctext to disk and free ctext buffer */
 	write_file(outfile, ctext_buf, ctext_size, filename);

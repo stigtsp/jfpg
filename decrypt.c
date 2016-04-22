@@ -45,7 +45,7 @@ jf_decrypt(FILE *infile, FILE *key, FILE *skey, char *filename)
 	/* Get ptext size and create ptext buffer */
 	ptext_size = (ctext_size - crypto_box_NONCEBYTES);
 	if ((ptext_buf = malloc(ptext_size)) == NULL)
-		err(1, "Error creating ptext_buf");
+		err(1, "error creating ptext_buf");
 
 	/* Read public key into buffer */
 	if (fread(pk, 1, sizeof(pk), key) != sizeof(pk))
@@ -61,7 +61,7 @@ jf_decrypt(FILE *infile, FILE *key, FILE *skey, char *filename)
 	if (crypto_box_open(ptext_buf, ctext_buf + NONCEBYTES,
 	    ctext_size - NONCEBYTES, ctext_buf, pk, sk)
 	         != 0)
-		errx(1, "Error decrypting data");
+		errx(1, "error decrypting data");
 	explicit_bzero(sk, sizeof(sk));
 
 	/* Free ctext buffer */

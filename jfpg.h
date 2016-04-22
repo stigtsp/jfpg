@@ -16,6 +16,7 @@
 
 #define	FILENAME_SIZE	255
 #define	EXT	".xsalsa20"
+#define	SIGNEXT	".signed"
 #define	PUB	"-pubkey.curve25519"
 #define	SEC	"-secretkey.curve25519"
 #define	PUBSIGN	"-signing-pubkey.ed25519"

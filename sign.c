@@ -52,6 +52,9 @@ jf_sign(FILE *infile, FILE *fd_sign_sk, char *filename)
 	explicit_bzero(sign_sk, sizeof(sign_sk));
 	free(m);
 
+	if (strlcat(filename, SIGNEXT, FILENAME_SIZE) >= FILENAME_SIZE)
+		errx(1, "filename too long");
+
 	write_file(outfile, sm, smlen, filename); 
 	return (0);
 } 

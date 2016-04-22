@@ -68,7 +68,7 @@ main(int argc, char **argv)
 		    flag = 5;
 		    break;
 		case 'k':
-		    if ((skey = fopen(optarg, "rb")) == NULL)
+		    if ((skey = fopen(optarg, "r")) == NULL)
 			err(1, "Couldn't find secret key");
 		    break;
 		case 'p':

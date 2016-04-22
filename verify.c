@@ -17,10 +17,7 @@
 #include <err.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-#ifdef __linux__
-#include <stdint.h>
-#endif
+#include <string.h>
 
 #include "jfpg.h"
 #include "crypto/tweetnacl.h"
@@ -53,6 +50,8 @@ jf_verify(FILE *infile, FILE *fd_sign_pk, char *filename)
 	if ((crypto_sign_open(m, &mlen, sm, smlen, sign_pk)) != 0)
 		errx(1, "error verifying signature");
 	free(sm);
+
+	filename[strlen(filename) - strlen(SIGNEXT)] = 0;
 
 	write_file(outfile, m, mlen, filename); 
 	return (0);
