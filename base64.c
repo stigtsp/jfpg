@@ -1,7 +1,7 @@
 /* Modified by Joe Fierro < jsf122 at scarletmail dot rutgers dot edu >
  * Removed code to add null terminator.
-/*
- * Copyright (c) 2003 Apple Computer, Inc. All rights reserved.
+ */
+/* Copyright (c) 2003 Apple Computer, Inc. All rights reserved.
  *
  * @APPLE_LICENSE_HEADER_START@
  * 
