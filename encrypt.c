@@ -20,6 +20,7 @@
 #include <string.h>
 
 #include "jfpg.h"
+#include "base64.h"
 #include "crypto/tweetnacl.h"
 #include "crypto/randombytes.h"
 #include "bsdcompat/compat.h"
@@ -29,12 +30,40 @@ jf_encrypt(FILE *infile, FILE *key, FILE *skey, char *filename)
 {
 	unsigned long long pad_ptext_len, ptext_size, ctext_size = 0;
 	unsigned char *pad_ptext_buf, *ptext_buf, *ctext_buf = NULL;
-	unsigned char pk[PUBKEYBYTES];
-	unsigned char sk[SECKEYBYTES];
+	int b64len = 0;
+
+	b64len = Base64encode_len(PUBKEYBYTES);
+
+	char b64_pk[b64len];
+	char b64_sk[b64len];
+
+	unsigned char pk[PUBKEYBYTES + 1];
+	unsigned char sk[SECKEYBYTES + 1];
+	
 	unsigned char nonce[NONCEBYTES];
 	FILE *outfile = NULL;
 
+	/* Create random nonce */
 	randombytes(nonce, NONCEBYTES);
+
+	/* Read in public key */
+	if (fread(b64_pk, 1, sizeof(b64_pk), key) != sizeof(b64_pk))
+		errx(1, "error reading in public key");
+	fclose(key);
+
+	/* Read in secret key */
+	if (fread(b64_sk, 1, sizeof(b64_sk), skey) != sizeof(b64_sk))
+		errx(1, "error reading in secret key");
+	fclose(skey);
+
+	/* Base64 decode both keys */
+	if (Base64decode((char *)pk, b64_pk) != sizeof(pk))
+		errx(1, "error decoding pub key"); 
+	if (Base64decode((char *)sk, b64_sk) != sizeof(sk))
+		errx(1, "error decoding secret key");
+
+	/* Zero base64 secret key */
+	explicit_bzero(b64_sk, sizeof(b64_sk));
 
 	/* Get input file size */
 	ptext_size = get_size(infile);
@@ -46,12 +75,16 @@ jf_encrypt(FILE *infile, FILE *key, FILE *skey, char *filename)
 		errx(1, "error reading into plaintext buf");
 	fclose(infile);
 
+	/* Create buffer for 0-padded plaintext */
 	pad_ptext_len = (ptext_size + ZEROBYTES);
 	if ((pad_ptext_buf = malloc(pad_ptext_len)) == NULL)
 		err(1, "couldn't allocate pad ptext buf");
+
+	/* 0-pad plaintext buffer, then copy in message */
 	memset(pad_ptext_buf, 0, ZEROBYTES);
 	memcpy(pad_ptext_buf + ZEROBYTES, ptext_buf, ptext_size);
 
+	/* Zero and free original plaintext buf */
 	safer_free(ptext_buf, ptext_size);
 
 	/* Get ctext size and create buffer. */
@@ -59,15 +92,6 @@ jf_encrypt(FILE *infile, FILE *key, FILE *skey, char *filename)
 	if ((ctext_buf = malloc(ctext_size)) == NULL)
 		err(1, "error creating ctext buffer");
 	memcpy(ctext_buf, nonce, NONCEBYTES); 
-
-	/* Read in public key */
-	if (fread(pk, 1, sizeof(pk), key) != sizeof(pk))
-		errx(1, "error reading in public key");
-	fclose(key);
-
-	if (fread(sk, 1, sizeof(sk), skey) != sizeof(sk))
-		errx(1, "error reading in secret key");
-	fclose(skey);
 
 	/* Encrypt */
 	if (crypto_box(ctext_buf + NONCEBYTES, pad_ptext_buf, pad_ptext_len,

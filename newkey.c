@@ -19,20 +19,37 @@
 #include <string.h>
 
 #include "jfpg.h"
+#include "base64.h"
 #include "crypto/tweetnacl.h"
 #include "bsdcompat/compat.h"
 
 int
 jf_newkey(char *id)
 {
+	
+	int b64len, b64signseclen = 0;
 	unsigned char pk[PUBKEYBYTES];
 	unsigned char sk[SECKEYBYTES];
 	unsigned char sign_sk[SIGNSKEYBYTES];
 	unsigned char sign_pk[SIGNPKEYBYTES];
+	
+	/* Get sizes of base64-encoded keys. PUBKEYBYTES
+	 * and SECKEYBYTES are the same, so it's ok to use b64len
+	 * for both.
+	*/
+	b64len = Base64encode_len(PUBKEYBYTES);
+	b64signseclen = Base64encode_len(SIGNSKEYBYTES);
+
+	char b64_pk[b64len];
+	char b64_sk[b64len];
+	char b64_sign_sk[b64signseclen];
+	char b64_sign_pk[b64len];
+	
 	char pk_name[192];
 	char sk_name[192];
 	char sign_sk_name[192];
 	char sign_pk_name[192];
+	
 	FILE *seckey = NULL;
 	FILE *pubkey = NULL;
 	FILE *sign_seckey = NULL;
@@ -44,16 +61,19 @@ jf_newkey(char *id)
 	if (crypto_sign_keypair(sign_pk, sign_sk) != 0)
 		err(1, "error generating signing keys");
 
+	/* Zero the buffers for file names */
 	memset(pk_name, 0, sizeof(pk_name));
 	memset(sk_name, 0, sizeof(sk_name));
 	memset(sign_pk_name, 0, sizeof(sign_pk_name));
 	memset(sign_sk_name, 0, sizeof(sign_sk_name));
 
+	/* Copy key ID into name buffers */
 	memcpy(pk_name, id, strlen(id));
 	memcpy(sk_name, id, strlen(id));
 	memcpy(sign_sk_name, id, strlen(id));
 	memcpy(sign_pk_name, id, strlen(id));
 
+	/* Append rest of key name to the ID */
 	if (strlcat(pk_name, PUB, sizeof(pk_name)) >= sizeof(pk_name))
 		errx(1, "name too long");
 	if (strlcat(sk_name, SEC, sizeof(sk_name)) >= sizeof(sk_name))
@@ -64,16 +84,28 @@ jf_newkey(char *id)
 		errx(1, "id too long");
 
 	/* Write secret key to disk, then zero it */	
-	write_file(seckey, sk, sizeof(sk), sk_name);
+	if (Base64encode(b64_sk, (char *)sk, sizeof(sk)) != sizeof(b64_sk))
+		errx(1, "error encoding secret key");
 	explicit_bzero(sk, sizeof(sk));
+	write_file(seckey, b64_sk, sizeof(b64_sk), sk_name);
+	explicit_bzero(b64_sk, sizeof(b64_sk));
 
 	/* Write signing secret key to disk, then zero it */
-	write_file(sign_seckey, sign_sk, sizeof(sign_sk), sign_sk_name);
+	if (Base64encode(b64_sign_sk, (char *)sign_sk, sizeof(sign_sk)) != sizeof(b64_sign_sk))
+		errx(1, "error encoding signing secret key");
 	explicit_bzero(sign_sk, sizeof(sign_sk));
+	write_file(sign_seckey, b64_sign_sk, sizeof(b64_sign_sk), sign_sk_name);
+	explicit_bzero(b64_sign_sk, sizeof(b64_sign_sk));
 
 	/* Write public key to disk */
-	write_file(pubkey, pk, sizeof(pk), pk_name);
-	write_file(sign_pubkey, sign_pk, sizeof(sign_pk), sign_pk_name);
+	if (Base64encode(b64_pk, (char *)pk, sizeof(pk)) != sizeof(b64_pk))
+		errx(1, "error encoding pub key");
+	write_file(pubkey, b64_pk, sizeof(b64_pk), pk_name);
+
+	/* Write publick signing key to disk */
+	if (Base64encode(b64_sign_pk, (char *)sign_pk, sizeof(sign_pk)) != sizeof(b64_sign_pk))	
+		errx(1, "error encoding signing pub key");
+	write_file(sign_pubkey, b64_sign_pk, sizeof(b64_sign_pk), sign_pk_name);
 
 	return (0);
 }

@@ -20,6 +20,7 @@
 #include <string.h>
 
 #include "jfpg.h"
+#include "base64.h"
 #include "crypto/tweetnacl.h"
 
 int
@@ -27,32 +28,49 @@ jf_verify(FILE *infile, FILE *fd_sign_pk, char *filename)
 {
 	unsigned long long mlen, smlen = 0;
 	unsigned char *m, *sm = NULL;
-	unsigned char sign_pk[SIGNPKEYBYTES];
+	int b64len = 0;
+
+	/* Get size for base64-encoded pub key */
+	b64len = Base64encode_len(SIGNPKEYBYTES);
+
+	char b64_sign_pk[b64len];
+	unsigned char sign_pk[SIGNPKEYBYTES + 1];
 	FILE *outfile = NULL;	
 
-	if (fread(sign_pk, 1, sizeof(sign_pk), fd_sign_pk)
-	    != sizeof(sign_pk))
+	/* Read in pub key */
+	if (fread(b64_sign_pk, 1, sizeof(b64_sign_pk), fd_sign_pk)
+	    != sizeof(b64_sign_pk))
 		errx(1, "error reading in public key");
 	fclose(fd_sign_pk);
 
+	/* Base64 decode pub key */
+	if (Base64decode((char *)sign_pk, b64_sign_pk) != sizeof(sign_pk))
+		errx(1, "error decoding signing pub key");
+
+	/* Get sizes for signed message and message */
 	smlen = get_size(infile);
 	mlen = smlen - crypto_sign_BYTES;
 
+	/* Create message and signed message buffers */
 	if ((m = malloc(smlen)) == NULL)
 		err(1, "error creating message buffer");
 	if ((sm = malloc(smlen)) == NULL)
 		err(1, "error creating signed message buffer");
 
+	/* Read in file to sm */
 	if (fread(sm, 1, smlen, infile) != smlen)
 		errx(1, "error reading in infile");
 	fclose(infile);
 	
+	/* Verify sig on sm and place results into m */
 	if ((crypto_sign_open(m, &mlen, sm, smlen, sign_pk)) != 0)
 		errx(1, "error verifying signature");
 	free(sm);
 
+	/* Strip extension */
 	filename[strlen(filename) - strlen(SIGNEXT)] = 0;
 
+	/* Write m to file */
 	write_file(outfile, m, mlen, filename); 
 	return (0);
 } 
