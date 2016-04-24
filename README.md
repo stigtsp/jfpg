@@ -1,6 +1,6 @@
-JFPG is a smaller, greatly simplified, and more modern replacement
-for the GPG/PGP encryption utility. It offers
-a more or less similar  syntax for encryption,
+JFPG is a file encryption and signing utility 
+roughly inspired by the GPG/PGP encryption utility. It
+offers a more or less similar  syntax for encryption,
 decryption, signing, and verification. It uses
 Dan Bernstein's Tweetnacl crypto library. JFPG
 only uses  modern, high speed crypto primitives 
@@ -50,6 +50,5 @@ TODO
 
 	Add forward secrecy
 	Add symmetric encryption option
-	Allow base64 encoding of keys/messages
 	Allow encrypted secret keys
 
