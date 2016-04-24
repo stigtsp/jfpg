@@ -1,5 +1,5 @@
 /* Modified by Joe Fierro < jsf122 at scarletmail dot rutgers dot edu >
- * Removed code to add null terminator.
+ * Removed code that adds null terminator.
  */
 /* Copyright (c) 2003 Apple Computer, Inc. All rights reserved.
  *
