@@ -45,10 +45,10 @@ jf_newkey(char *id)
 	char b64_sign_sk[b64signseclen];
 	char b64_sign_pk[b64len];
 	
-	char pk_name[192];
-	char sk_name[192];
-	char sign_sk_name[192];
-	char sign_pk_name[192];
+	char pk_name[B64NAMESIZE];
+	char sk_name[B64NAMESIZE];
+	char sign_sk_name[B64NAMESIZE];
+	char sign_pk_name[B64NAMESIZE];
 	
 	FILE *seckey = NULL;
 	FILE *pubkey = NULL;

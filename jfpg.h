@@ -22,6 +22,7 @@
 #define	PUBSIGN	"-signing-pubkey.ed25519"
 #define	SECSIGN	"-signing-secretkey.ed25519"
 
+#define	B64NAMESIZE	192
 #define	PUBKEYBYTES	crypto_box_PUBLICKEYBYTES
 #define	SECKEYBYTES	crypto_box_SECRETKEYBYTES
 #define	NONCEBYTES	crypto_box_NONCEBYTES
