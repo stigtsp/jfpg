@@ -9,129 +9,164 @@ encrypt() {
 	FILE=`zenity --file-selection --width=800 --height=600 --filename=~/`
 	if [ -z $FILE ]; then
 		zenity --error --text="No file specified"
-		exit
+		return 1	
 	fi
 
 	RECIP=`zenity --entry --text="Enter recipient ID"`
 	if [ -z $RECIP ]; then
 		zenity --error --text="No recipient specified"
-		exit
+		return 1	
+	fi
+
+	PUBKEY=~/.keys/$RECIP-pubkey.curve25519
+	if [ ! -e $PUBKEY ]; then
+		zenity --error --text="Could not find recipient's public key"
+		return 1
 	fi
 
 	SENDER=`zenity --entry --text="Enter sender ID"`
 	if [ -z $SENDER ]; then
 		zenity --error --text="No sender specified"
-		exit
+		return 1	
 	fi
 
-	PUBKEY=~/.keys/$RECIP-pubkey.curve25519
 	SECKEY=~/.keys/$SENDER-secretkey.curve25519
+	if [ ! -e $SECKEY ]; then
+		zenity --error --text="Could not find sender secret key"
+		return 1	
+	fi
+
 	if jfpg -e -f "$FILE" -p $PUBKEY -k $SECKEY; then
 		zenity --info --text="$FILE encrypted"
-		menu
+		return 1 
 	else
-		zenity --info --text="Encryption of $FILE failed"
-		menu
+		zenity --error --text="Encryption of $FILE failed"
+		return 1
 	fi
+	return 1
 }
 
 decrypt() {
 	FILE=`zenity --file-selection --width=800 --height=600 --filename=~/`
         if [ -z $FILE ]; then
                 zenity --error --text="No file specified"
-                exit
+                return 1
         fi
 
         RECIP=`zenity --entry --text="Enter recipient ID"`
         if [ -z $RECIP ]; then
                 zenity --error --text="No recipient specified"
-                exit
+                return 1
         fi
+
+	SECKEY=~/.keys/$RECIP-secretkey.curve25519
+	if [ ! -e $SECKEY ]; then
+		zenity --error --text="Could not find recipient's secret key"
+		return 1
+	fi
 
         SENDER=`zenity --entry --text="Enter sender ID"`
         if [ -z $SENDER ]; then
                 zenity --error --text="No sender specified"
-                exit
+                return 1
         fi
 
-	PUBKEY=~/.keys/$SENDER-pubkey.curve25519
-	SECKEY=~/.keys/$RECIP-secretkey.curve25519	
+	PUBKEY=~/.keys/$SENDER-pubkey.curve25519	
+	if [ ! -e $PUBKEY ]; then
+		zenity --error --text="Could not find sender's public key"
+		return 1
+	fi
+
 	if jfpg -d -f "$FILE" -p $PUBKEY -k $SECKEY; then
 		zenity --info --text="$FILE decrypted"
-		menu
+		return 1
 	else
 		zenity --error --text="Decryption of $FILE failed"
-		menu
+		return 1
 	fi
+	return 1
 }
 
 sign() {
 	FILE=`zenity --file-selection --width=800 --height=600 --filename=~/`
 	if [ -z $FILE ]; then
 		zenity --error --text="No file specified"
-		exit
+		return 1
 	fi
 
 	SIGN_ID=`zenity --entry --text="Enter signer's ID"`
 	if [ -z $SIGN_ID ]; then
 		zenity --error --text="No signer ID specified"
-		exit
+		return 1
 	fi
 
 	SECKEY=~/.keys/$SIGN_ID-signing-secretkey.ed25519
+	if [ ! -e $SECKEY ]; then
+		zenity --error --text="Could not find signerr's secret key"
+		return 1
+	fi
+
 	if jfpg -s -f "$FILE" -x $SECKEY; then
 		zenity --info --text="$FILE signed"
-		menu
+		return 1
 	else
 		zenity --error --text="Signing of $FILE failed"
-		menu
+		return 1
 	fi
+	return 1
 }
 
 verify() {
 	FILE=`zenity --file-selection --width=800 --height=600 --filename=~/`
 	if [ -z $FILE ]; then
 		zenity --error --text="No file specified"
-		exit
+		return 1
 	fi
 
 	SIGN_ID=`zenity --entry --text="Enter signer's ID"`
 	if [ -z $SIGN_ID ]; then
 		zenity --error --text="No signer ID specified"
-		exit
+		return 1
 	fi
 
 	PUBKEY=~/.keys/$SIGN_ID-signing-pubkey.ed25519
+	if [ ! -e $PUBKEY ]; then
+		zenity --error --text="Could not find signer's public key"
+		return 1
+	fi
+
 	if jfpg -v -f "$FILE" -x $PUBKEY; then
 		zenity --info --text="Good signature from $SIGN_ID"
-		menu
+		return 1
 	else
 		zenity --error --text="Verification of $FILE failed"
-		menu
+		return 1
 	fi
+	return 1
 }
 
 new_keypair() {
 	ID=`zenity --entry --text="Enter new key ID without spaces"`
 	if [ -z $ID ]; then
 		zenity --error --text="No ID specified"
-		exit
+		return 1
 	fi
 	
 	cd ~/.keys
 	if jfpg -n $ID; then
 		zenity --info --text="Created keys for $ID in ~/.keys"
-		menu
+		return 1
 	else
 		zenity --info --text="Key generation failed"
-		menu	
+		return 1
 	fi 
+	return 1
 }
 
 list_keys() {
 	ls -1 ~/.keys | zenity --list --width=800 --height=600 \
 			--title="~/.keys" --column="Keys"
-	menu
+	return 1
 }	
 
 delete_keys() {
@@ -139,31 +174,36 @@ delete_keys() {
 		 --column="Keys" --separator=' ' --multiple`
 	if [ -z $KEYLIST ]; then
 		zenity --info --text="No keys specified for deletion"
-		exit
+		return 1
 	fi
 
 	for i in $KEYLIST; do
 		rm ~/.keys/$i
 	done | zenity --progress --pulsate --auto-close
 	zenity --info --text="Done deleting keys"
-	menu
+	return 1
 }
 
 menu() {
 	CHOICE=`zenity --list --width=800 --height=600 \
-		--title="JFPG" --column="What to do?" \
-		"Encrypt" "Decrypt" "Sign" "Verify" "New Keypair" \
-		"List Keys" "Delete Keys"`
+        	--title="JFPG" --column="What to do?" \
+        	"Encrypt" "Decrypt" "Sign" "Verify" "New Keypair" \
+        	"List Keys" "Delete Keys"`
+
+	if [ -z $CHOICE ]; then
+		exit 0
+	fi
 
 	case $CHOICE in
-		"Encrypt") encrypt;;
+        	"Encrypt") encrypt;;
 		"Decrypt") decrypt;;
-		"Sign") sign;;
-		"Verify") verify;;
-		"New Keypair") new_keypair;;
-		"List Keys") list_keys;;
-		"Delete Keys") delete_keys;;
+        	"Sign") sign;;
+        	"Verify") verify;;
+        	"New Keypair") new_keypair;;
+        	"List Keys") list_keys;;
+        	"Delete Keys") delete_keys;;
 	esac
 }
-
-menu
+while [ "$?" ]; do
+	menu
+done
