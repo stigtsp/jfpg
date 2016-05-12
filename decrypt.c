@@ -33,10 +33,10 @@ struct hdr {
 	int alg;
 };
 
-void asymdecrypt(unsigned char *, unsigned char *, unsigned long long,
+static void asymdecrypt(unsigned char *, unsigned char *, unsigned long long,
     unsigned char *, FILE *, FILE *);
 
-void symdecrypt(unsigned char *, unsigned char *, struct hdr *);
+static void symdecrypt(unsigned char *, unsigned char *, struct hdr *);
 
 int
 jf_decrypt(FILE *infile, FILE *key, FILE *skey, char *filename)

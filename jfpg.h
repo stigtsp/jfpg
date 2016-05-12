@@ -24,6 +24,7 @@
 
 #define	R	8
 #define	P	1
+#define	DEFAULT_ROUNDS	18
 #define	IDSIZE	128
 #define	B64NAMESIZE	192
 #define	PUBKEYBYTES	crypto_box_PUBLICKEYBYTES

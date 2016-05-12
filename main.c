@@ -82,7 +82,7 @@ main(int argc, char **argv)
 			errx(1, "Filename too long");
 		    break;
 		case 'r':
-		    rounds = strtonum(optarg, 16, 32, &errstr);
+		    rounds = strtonum(optarg, 16, 25, &errstr);
 		    if (errstr != NULL)
 			errx(1, "error getting rounds: %s", errstr);
 		    rounds = exp2(rounds);
@@ -108,7 +108,7 @@ main(int argc, char **argv)
 		printf("encryption successful\n");
 	} else if (flag == 3) {
 		if (rounds == 0)
-		    errx(1, "please input rounds with -r flag");
+		    rounds = exp2(DEFAULT_ROUNDS);
 		if (jf_encrypt(infile, NULL, NULL, filename, 2, rounds) != 0)
 		    errx(1, "error encrypting");
 		printf("encryption successful\n");

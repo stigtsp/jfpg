@@ -34,12 +34,12 @@ struct hdr {
 	int alg;
 };
 
-void asymcrypt(unsigned char *, unsigned char *,
+static void asymcrypt(unsigned char *, unsigned char *,
     unsigned long long, unsigned char *, FILE *, FILE *);
 
-void symcrypt(unsigned char *, unsigned char *, struct hdr *);
+static void symcrypt(unsigned char *, unsigned char *, struct hdr *);
 
-void write_enc(FILE *, struct hdr *, unsigned char *, char *);
+static void write_enc(FILE *, struct hdr *, unsigned char *, char *);
 
 int
 jf_encrypt(FILE *infile, FILE *key, FILE *skey, char *filename, int alg, long long rounds)
