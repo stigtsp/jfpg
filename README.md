@@ -10,7 +10,7 @@ with GPG/PGP (probably a feature, not a bug).
 There are no interactive commands, which makes
 JFPG easy to include in shell scripts. 2 demo
 scripts are included in the scripts directory. They
-require zenity and, in the case of the drivecrypt script,
+require zenity, and, in the case of the drivecrypt script,
 the gdrive command line tool. 
 
 JFPG should compile on any Unix-like system without any
@@ -23,12 +23,13 @@ Command syntax
 	sign:                 jfpg -s -f file -x signing-secret-key
 	verify sig:   	       jfpg -v -f file -x signing-public-key
 	encrypt/decrypt:      jfpg [-e | -d] -f file -p encryption-pubkey -k encryption-secretkey 
+	symmetrically encrypt:	jfpg -c -f file -r rounds
 
-
-You will need to create a new set of keys when you first use JFPG. 
-This creates 2 keypairs, a pair of Curve25519 keys for encryption/decryption
+You will need to create a new set of keys when you first use JFPG 
+for signing/verifying or asymmetric encryption/decryption. 
+This will 2 keypairs, a pair of Curve25519 keys for encryption/decryption
 and a pair of Ed25519 keys for signing. It takes your desired key ID
-(probably your name) as its only option.
+(name, email, etc) as its only option.
 
 Primitives used
 
@@ -49,6 +50,5 @@ Limitations
 TODO
 
 	Add forward secrecy
-	Add symmetric encryption option
 	Allow encrypted secret keys
 
