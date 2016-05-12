@@ -125,7 +125,7 @@ symcrypt(unsigned char *ctext_buf, unsigned char *pad_ptext_buf, struct hdr *hdr
 		err(1, "error getting passphrase");
 
 	if (crypto_scrypt((unsigned char *)pass, strlen(pass), hdr->nonce, sizeof(hdr->nonce),
-	    hdr->rounds, hdr->r, hdr->p, symkey, sizeof(symkey)) == -1)
+	    hdr->rounds, hdr->r, hdr->p, symkey, sizeof(symkey)) != 0)
 		err(1, "error hashing key");
 	explicit_bzero(pass, sizeof(pass));
 
