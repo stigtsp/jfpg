@@ -29,15 +29,17 @@ struct hdr {
 	unsigned char nonce[NONCEBYTES];
 	unsigned long long padded_len;
 	long long rounds;
+	unsigned int r;
+	unsigned int p;
 	int alg;
 };
 
-void asymcrypt(unsigned char *ctext_buf, unsigned char *pad_ptext_buf,
-    unsigned long long ptext_size, unsigned char *nonce, FILE *key, FILE *skey);
+void asymcrypt(unsigned char *, unsigned char *,
+    unsigned long long, unsigned char *, FILE *, FILE *);
 
-void symcrypt(unsigned char *ctext_buf, unsigned char *pad_ptext_buf, struct hdr *hdr);
+void symcrypt(unsigned char *, unsigned char *, struct hdr *);
 
-void write_enc(FILE *outfile, struct hdr *hdr, unsigned char *ctext_buf, char *filename);
+void write_enc(FILE *, struct hdr *, unsigned char *, char *);
 
 int
 jf_encrypt(FILE *infile, FILE *key, FILE *skey, char *filename, int alg, long long rounds)
@@ -71,11 +73,16 @@ jf_encrypt(FILE *infile, FILE *key, FILE *skey, char *filename, int alg, long lo
 		err(1, "error creating ctext buffer");
 
 	if (alg == 1) {
+		hdr->rounds = 0;
+		hdr->r = 0;
+		hdr->p = 0;
 		hdr->alg = 1;
 		asymcrypt(ctext_buf, pad_ptext_buf, hdr->padded_len,
 	    	    hdr->nonce, key, skey);
 	} else if (alg == 2) {
 		hdr->rounds = rounds;
+		hdr->r = R;
+		hdr->p = P;
 		hdr->alg = 2;
 		symcrypt(ctext_buf, pad_ptext_buf, hdr);
 	} else { 
@@ -118,7 +125,7 @@ symcrypt(unsigned char *ctext_buf, unsigned char *pad_ptext_buf, struct hdr *hdr
 		err(1, "error getting passphrase");
 
 	if (crypto_scrypt((unsigned char *)pass, strlen(pass), hdr->nonce, sizeof(hdr->nonce),
-	    hdr->rounds, R, P, symkey, sizeof(symkey)) == -1)
+	    hdr->rounds, hdr->r, hdr->p, symkey, sizeof(symkey)) == -1)
 		err(1, "error hashing key");
 	explicit_bzero(pass, sizeof(pass));
 

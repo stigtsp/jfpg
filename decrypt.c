@@ -28,6 +28,8 @@ struct hdr {
         unsigned char nonce[NONCEBYTES];
         unsigned long long padded_len;
 	long long rounds;
+	unsigned int r;
+	unsigned int p;
 	int alg;
 };
 
@@ -55,6 +57,10 @@ jf_decrypt(FILE *infile, FILE *key, FILE *skey, char *filename)
 		err(1, "error creating ptext_buf");
 
 	if (hdr->alg == 1) {
+		if (key == NULL)
+		    errx(1, "must provide a public key");
+		if (skey == NULL) 
+		    errx(1, "must provide a secret key");
 		asymdecrypt(ptext_buf, ctext_buf, hdr->padded_len, hdr->nonce,
 	    	key, skey);
 	} else if (hdr->alg == 2) {
@@ -99,7 +105,7 @@ symdecrypt(unsigned char *ptext_buf, unsigned char *ctext_buf, struct hdr *hdr)
                 err(1, "error getting passphrase");
 
         if (crypto_scrypt((unsigned char *)pass, strlen(pass), hdr->nonce, sizeof(hdr->nonce),
-            hdr->rounds, R, P, symkey, sizeof(symkey)) == -1)
+            hdr->rounds, hdr->r, hdr->p, symkey, sizeof(symkey)) == -1)
                 err(1, "error hashing key");
         explicit_bzero(pass, sizeof(pass));
 
