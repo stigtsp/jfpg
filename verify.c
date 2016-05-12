@@ -20,7 +20,7 @@
 #include <string.h>
 
 #include "jfpg.h"
-#include "base64.h"
+#include "util/base64.h"
 #include "crypto/tweetnacl.h"
 
 int

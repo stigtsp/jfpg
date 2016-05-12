@@ -22,6 +22,9 @@
 #define	PUBSIGN	"-signing-pubkey.ed25519"
 #define	SECSIGN	"-signing-secretkey.ed25519"
 
+#define	R	8
+#define	P	1
+#define	IDSIZE	128
 #define	B64NAMESIZE	192
 #define	PUBKEYBYTES	crypto_box_PUBLICKEYBYTES
 #define	SECKEYBYTES	crypto_box_SECRETKEYBYTES
@@ -33,9 +36,11 @@
 void usage(void);
 void safer_free(void *, size_t);
 void write_file(FILE *, void *, size_t, char *); 
-int jf_encrypt(FILE *, FILE *, FILE *, char *);
+void get_keys(unsigned char *, unsigned char *, FILE *, FILE *);
+int jf_encrypt(FILE *, FILE *, FILE *, char *, int, long long);
 int jf_decrypt(FILE *, FILE *, FILE *, char *);
 int jf_newkey(char *);
 int jf_sign(FILE *, FILE *, char *);
 int jf_verify(FILE *, FILE *, char *);
+void read_infile(FILE *, unsigned char *, unsigned long long);
 unsigned long long get_size(FILE *);

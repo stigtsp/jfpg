@@ -20,85 +20,91 @@
 #include <stdlib.h>
 
 #include "jfpg.h"
-#include "base64.h"
 #include "crypto/tweetnacl.h"
+#include "crypto/scrypt/crypto_scrypt.h"
 #include "bsdcompat/compat.h"
+
+struct hdr {
+        unsigned char nonce[NONCEBYTES];
+        unsigned long long padded_len;
+	long long rounds;
+	int alg;
+};
+
+void asymdecrypt(unsigned char *, unsigned char *, unsigned long long,
+    unsigned char *, FILE *, FILE *);
+
+void symdecrypt(unsigned char *, unsigned char *, struct hdr *);
 
 int
 jf_decrypt(FILE *infile, FILE *key, FILE *skey, char *filename)
 {
-	unsigned long long ptext_size, ctext_size = 0;
-	int b64len = 0;
 	unsigned char *ctext_buf, *ptext_buf = NULL;
-
-	/* Get base64-encoded size for keys. PUBKEYBYTES
-	 * and SECKEYBYTES are the same, so it's ok to use
-	 * b64len for both
-	*/	
-	b64len = Base64encode_len(PUBKEYBYTES);
-
-	char b64_pk[b64len];
-	char b64_sk[b64len];
-
-	unsigned char pk[PUBKEYBYTES + 1];
-	unsigned char sk[SECKEYBYTES + 1];
 	FILE *outfile = NULL;
+	struct hdr *hdr;
+	
+	hdr = malloc(sizeof(struct hdr));
+	if (fread(hdr, 1, sizeof(struct hdr), infile) != sizeof(struct hdr))
+		err(1, "error reading in header");;
+	
+	if ((ctext_buf = malloc(hdr->padded_len)) == NULL)
+		err(1, "error allocating ctext_buf");
+	read_infile(infile, ctext_buf, hdr->padded_len);
 
-	/* Read public key into buffer */
-	if (fread(b64_pk, 1, sizeof(b64_pk), key) != sizeof(b64_pk))
-		errx(1, "error reading in public key");
-	fclose(key);
-
-	/* Read secret key */
-	if (fread(b64_sk, 1, sizeof(b64_sk), skey) != sizeof(b64_sk))
-		errx(1, "error reading in secret key");
-	fclose(skey);
-
-	/* Base64 decode both keys */
-	if (Base64decode((char *)pk, b64_pk) != sizeof(pk))
-		errx(1, "error decoding pubkey"); 
-	if (Base64decode((char *)sk, b64_sk) != sizeof(sk))
-		errx(1, "error decoding secret key"); 
-
-	/* Zero base64 secret key */
-	explicit_bzero(b64_sk, sizeof(b64_sk));
-
-	/* Get input file size */
-	ctext_size = get_size(infile);
-
-	/* Create buffer for ctext */
-	if ((ctext_buf = malloc(ctext_size)) == NULL)
-		err(1, "error creating ctext buffer");
-	if (fread(ctext_buf, 1, ctext_size, infile) != ctext_size)
-		errx(1, "error reading in ciphertext");
-	fclose(infile);
-
-	/* Get ptext size and create ptext buffer */
-	ptext_size = (ctext_size - crypto_box_NONCEBYTES);
-	if ((ptext_buf = malloc(ptext_size)) == NULL)
+	if ((ptext_buf = malloc(hdr->padded_len)) == NULL)
 		err(1, "error creating ptext_buf");
 
-	/* Decrypt data with secret key */
-	if (crypto_box_open(ptext_buf, ctext_buf + NONCEBYTES,
-	    ctext_size - NONCEBYTES, ctext_buf, pk, sk)
-	         != 0)
-		errx(1, "error decrypting data");
-
-	/* Zero secret key */
-	explicit_bzero(sk, sizeof(sk));
-
-	/* Free ciphertext buffer */
+	if (hdr->alg == 1) {
+		asymdecrypt(ptext_buf, ctext_buf, hdr->padded_len, hdr->nonce,
+	    	key, skey);
+	} else if (hdr->alg == 2) {
+		symdecrypt(ptext_buf, ctext_buf, hdr);
+	} else {
+		errx(1, "don't know what to do");
+	}
 	free(ctext_buf);
 
-	/* Strip off file extension */
 	filename[strlen(filename) - strlen(EXT)] = 0;
 
-	/* Write ptext to file */
-	write_file(outfile, ptext_buf + ZEROBYTES, 
-	    ptext_size - ZEROBYTES, filename);
+	outfile = fopen(filename, "wb");
+	fwrite(ptext_buf + ZEROBYTES, hdr->padded_len - ZEROBYTES, 1, outfile); 
 
-	/* Zero and free ptext */	
-	safer_free(ptext_buf, ptext_size);
-
+	safer_free(ptext_buf, hdr->padded_len);
+	fclose(outfile);
 	return (0);
+}
+
+void
+asymdecrypt(unsigned char *ptext_buf, unsigned char *ctext_buf,
+    unsigned long long ctext_size, unsigned char *nonce, FILE *key, FILE *skey)
+{
+	unsigned char pk[PUBKEYBYTES + 1];
+	unsigned char sk[SECKEYBYTES + 1];
+
+	get_keys(pk, sk, key, skey); 
+ 
+	if (crypto_box_open(ptext_buf, ctext_buf,
+            ctext_size, nonce, pk, sk) != 0)
+                errx(1, "error decrypting data");
+	explicit_bzero(sk, sizeof(sk));
+}
+
+void
+symdecrypt(unsigned char *ptext_buf, unsigned char *ctext_buf, struct hdr *hdr)
+{
+	char *pass = NULL;
+	unsigned char symkey[crypto_secretbox_KEYBYTES];
+
+	if ((pass = (getpass("enter passphrase: ")))  == NULL)
+                err(1, "error getting passphrase");
+
+        if (crypto_scrypt((unsigned char *)pass, strlen(pass), hdr->nonce, sizeof(hdr->nonce),
+            hdr->rounds, R, P, symkey, sizeof(symkey)) == -1)
+                err(1, "error hashing key");
+        explicit_bzero(pass, sizeof(pass));
+
+        if (crypto_secretbox_open(ptext_buf, ctext_buf, hdr->padded_len,
+            hdr->nonce, symkey) != 0)
+                errx(1, "error decrypting data");
+        explicit_bzero(symkey, sizeof(symkey));
 }

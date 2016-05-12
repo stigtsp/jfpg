@@ -19,9 +19,12 @@
 #include <string.h>
 
 #include "jfpg.h"
-#include "base64.h"
+#include "util/base64.h"
 #include "crypto/tweetnacl.h"
 #include "bsdcompat/compat.h"
+
+static int name_keys(char *, char *, char *,
+    char *, char *);
 
 int
 jf_newkey(char *id)
@@ -61,27 +64,8 @@ jf_newkey(char *id)
 	if (crypto_sign_keypair(sign_pk, sign_sk) != 0)
 		err(1, "error generating signing keys");
 
-	/* Zero the buffers for file names */
-	memset(pk_name, 0, sizeof(pk_name));
-	memset(sk_name, 0, sizeof(sk_name));
-	memset(sign_pk_name, 0, sizeof(sign_pk_name));
-	memset(sign_sk_name, 0, sizeof(sign_sk_name));
-
-	/* Copy key ID into name buffers */
-	memcpy(pk_name, id, strlen(id));
-	memcpy(sk_name, id, strlen(id));
-	memcpy(sign_sk_name, id, strlen(id));
-	memcpy(sign_pk_name, id, strlen(id));
-
-	/* Append rest of key name to the ID */
-	if (strlcat(pk_name, PUB, sizeof(pk_name)) >= sizeof(pk_name))
-		errx(1, "name too long");
-	if (strlcat(sk_name, SEC, sizeof(sk_name)) >= sizeof(sk_name))
-		errx(1, "name too long");
-	if (strlcat(sign_pk_name, PUBSIGN, sizeof(sign_pk_name)) >= sizeof(sign_pk_name))	
-		errx(1, "id too long");
-	if (strlcat(sign_sk_name, SECSIGN, sizeof(sign_sk_name)) >= sizeof(sign_sk_name))
-		errx(1, "id too long");
+	if (name_keys(id, pk_name, sk_name, sign_pk_name, sign_sk_name) !=0 )
+		errx(1, "error naming keys");
 
 	/* Write secret key to disk, then zero it */	
 	if (Base64encode(b64_sk, (char *)sk, sizeof(sk)) != sizeof(b64_sk))
@@ -107,5 +91,33 @@ jf_newkey(char *id)
 		errx(1, "error encoding signing pub key");
 	write_file(sign_pubkey, b64_sign_pk, sizeof(b64_sign_pk), sign_pk_name);
 
+	return (0);
+}
+
+int
+name_keys(char *id, char *pk_name, char *sk_name, char *sign_pk_name, 
+    char *sign_sk_name)
+{
+	        /* Zero the buffers for file names */
+        memset(pk_name, 0, B64NAMESIZE);
+        memset(sk_name, 0, B64NAMESIZE);
+        memset(sign_pk_name, 0, B64NAMESIZE);
+        memset(sign_sk_name, 0, B64NAMESIZE);
+
+        /* Copy key ID into name buffers */
+        memcpy(pk_name, id, strlen(id));
+        memcpy(sk_name, id, strlen(id));
+        memcpy(sign_sk_name, id, strlen(id));
+        memcpy(sign_pk_name, id, strlen(id));
+
+        /* Append rest of key name to the ID */
+        if (strlcat(pk_name, PUB, B64NAMESIZE) >= B64NAMESIZE)
+                errx(1, "name too long");
+        if (strlcat(sk_name, SEC, B64NAMESIZE) >= B64NAMESIZE)
+                errx(1, "name too long");
+        if (strlcat(sign_pk_name, PUBSIGN, B64NAMESIZE) >=  B64NAMESIZE)
+                errx(1, "id too long");
+        if (strlcat(sign_sk_name, SECSIGN, B64NAMESIZE) >=  B64NAMESIZE)
+                errx(1, "id too long");
 	return (0);
 }

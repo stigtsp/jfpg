@@ -15,6 +15,7 @@
  */
 
 #include <err.h>
+#include <math.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
@@ -26,46 +27,41 @@ int
 main(int argc, char **argv)
 {
 	int ch, flag = 0;
+	long long rounds = 0;
 	FILE *infile = NULL;
 	FILE *key = NULL;
 	FILE *skey = NULL;
 	FILE *sign_key = NULL;
 	char filename[FILENAME_SIZE];
-	char id[128];
-	
+	char id[IDSIZE];
+	const char *errstr;
+
 	memset(id, 0, sizeof(id));
 	
 	if (argc < 2)
 		usage();
 
-	while ((ch = getopt(argc, argv, "vsedn:k:x:s:p:f:")) != -1) {
+	while ((ch = getopt(argc, argv, "vscedn:k:x:s:p:f:r:")) != -1) {
 		switch (ch) {
 		case 'n':
-		    if (argc != 3)
-			usage();
 		    if (strlcpy(id, optarg, sizeof(id)) >= sizeof(id))
 			errx(1, "name too long");
 		    flag = 1;
 		    break;
 		case 'e':
-		    if (argc != 8)
-			usage();
 		    flag = 2;
 		    break;
-		case 'd':
-		    if (argc != 8)
-			usage();
+		case 'c':
 		    flag = 3;
 		    break;
-	 	case 's':
-		    if (argc != 6)
-			usage();
+		case 'd':
 		    flag = 4;
 		    break;
-		case 'v':
-		    if (argc != 6)
-			usage();
+	 	case 's':
 		    flag = 5;
+		    break;
+		case 'v':
+		    flag = 6;
 		    break;
 		case 'k':
 		    if ((skey = fopen(optarg, "r")) == NULL)
@@ -85,33 +81,46 @@ main(int argc, char **argv)
 		    if (strlcpy(filename, optarg, FILENAME_SIZE) >= FILENAME_SIZE)
 			errx(1, "Filename too long");
 		    break;
+		case 'r':
+		    rounds = strtonum(optarg, 16, 32, &errstr);
+		    if (errstr != NULL)
+			errx(1, "error getting rounds: %s", errstr);
+		    rounds = exp2(rounds);
+		    break;
 		default:
 		    usage();
+		    break;
 		}
 	}
 
 	argc -= optind;
 	argv += optind;
 
-	if (argc > 1)
+	if (argc != 0)
 		usage();
 
 	if (flag == 1) {
 		if (jf_newkey(id) != 0)
 		    errx(1, "error creating keypair");
 	} else if (flag == 2) {
-		if (jf_encrypt(infile, key, skey, filename) != 0)
+		if (jf_encrypt(infile, key, skey, filename, 1, 1) != 0)
 		    errx(1, "error encrypting");
 		printf("encryption successful\n");
 	} else if (flag == 3) {
+		if (rounds == 0)
+		    errx(1, "please input rounds with -r flag");
+		if (jf_encrypt(infile, NULL, NULL, filename, 2, rounds) != 0)
+		    errx(1, "error encrypting");
+		printf("encryption successful\n");
+	} else if (flag == 4) {
 		if (jf_decrypt(infile, key, skey, filename) != 0)
 	  	    errx(1, "error decrypting");
 		printf("decryption successful\n");
-	} else if (flag == 4) {
+	} else if (flag == 5) {
 		if (jf_sign(infile, sign_key, filename) != 0)
 		    errx(1, "error signing");
 		printf("signed %s\n", filename);
-	} else if (flag == 5) {
+	} else if (flag == 6) {
 		if (jf_verify(infile, sign_key, filename) != 0)
 		    errx(1, "error verifying signature");
 		printf("good signature\n");
