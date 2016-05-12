@@ -36,7 +36,7 @@ Primitives used
 	Signing: Ed25519
 	Asymmetric encryption/decryption: Curve25519
 	Symmetric cipher: Xsalsa20-Poly1305
-
+	Password based key derivation: Scrypt
 Limitations
 
 	Secret keys are not encrypted. This allows them to be used without
