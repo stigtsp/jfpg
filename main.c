@@ -29,9 +29,8 @@ main(int argc, char **argv)
 	int ch, flag = 0;
 	long long rounds = 0;
 	FILE *infile = NULL;
-	FILE *key = NULL;
+	FILE *pkey = NULL;
 	FILE *skey = NULL;
-	FILE *sign_key = NULL;
 	char filename[FILENAME_SIZE];
 	char id[IDSIZE];
 	const char *errstr;
@@ -41,7 +40,7 @@ main(int argc, char **argv)
 	if (argc < 2)
 		usage();
 
-	while ((ch = getopt(argc, argv, "vscedn:k:x:s:p:f:r:")) != -1) {
+	while ((ch = getopt(argc, argv, "vscedn:k:s:p:f:r:")) != -1) {
 		switch (ch) {
 		case 'n':
 		    if (strlcpy(id, optarg, sizeof(id)) >= sizeof(id))
@@ -68,12 +67,8 @@ main(int argc, char **argv)
 			err(1, "Couldn't find secret key");
 		    break;
 		case 'p':
-		    if ((key = fopen(optarg, "r")) == NULL)
+		    if ((pkey = fopen(optarg, "r")) == NULL)
 			err(1, "Couldn't find public key");
-		    break;
-		case 'x':
-		    if ((sign_key = fopen(optarg, "r")) == NULL)
-			err(1, "error opening signing/verifying key");
 		    break;
 		case 'f':
 		    if ((infile = fopen(optarg, "r")) == NULL)
@@ -103,7 +98,7 @@ main(int argc, char **argv)
 		if (jf_newkey(id) != 0)
 		    errx(1, "error creating keypair");
 	} else if (flag == 2) {
-		if (jf_encrypt(infile, key, skey, filename, 1, 1) != 0)
+		if (jf_encrypt(infile, pkey, skey, filename, 1, 1) != 0)
 		    errx(1, "error encrypting");
 		printf("encryption successful\n");
 	} else if (flag == 3) {
@@ -113,15 +108,15 @@ main(int argc, char **argv)
 		    errx(1, "error encrypting");
 		printf("encryption successful\n");
 	} else if (flag == 4) {
-		if (jf_decrypt(infile, key, skey, filename) != 0)
+		if (jf_decrypt(infile, pkey, skey, filename) != 0)
 	  	    errx(1, "error decrypting");
 		printf("decryption successful\n");
 	} else if (flag == 5) {
-		if (jf_sign(infile, sign_key, filename) != 0)
+		if (jf_sign(infile, skey, filename) != 0)
 		    errx(1, "error signing");
 		printf("signed %s\n", filename);
 	} else if (flag == 6) {
-		if (jf_verify(infile, sign_key, filename) != 0)
+		if (jf_verify(infile, pkey, filename) != 0)
 		    errx(1, "error verifying signature");
 		printf("good signature\n");
 	}

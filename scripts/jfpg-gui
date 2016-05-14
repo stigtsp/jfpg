@@ -1,7 +1,9 @@
 #!/bin/sh
 
-if [ ! -d ~/.keys ]; then
-	mkdir ~/.keys
+KEYDIR=~/.keys
+
+if [ ! -d $KEYDIR ]; then
+	mkdir $KEYDIR
 fi
 
 encrypt() {
@@ -18,7 +20,7 @@ encrypt() {
 		return 1	
 	fi
 
-	PUBKEY=~/.keys/$RECIP-pubkey.curve25519
+	PUBKEY=$KEYDIR/$RECIP-pubkey.curve25519
 	if [ ! -e $PUBKEY ]; then
 		zenity --error --text="Could not find recipient's public key"
 		return 1
@@ -30,7 +32,7 @@ encrypt() {
 		return 1	
 	fi
 
-	SECKEY=~/.keys/$SENDER-secretkey.curve25519
+	SECKEY=$KEYDIR/$SENDER-secretkey.curve25519
 	if [ ! -e $SECKEY ]; then
 		zenity --error --text="Could not find sender secret key"
 		return 1	
@@ -59,7 +61,7 @@ decrypt() {
                 return 1
         fi
 
-	SECKEY=~/.keys/$RECIP-secretkey.curve25519
+	SECKEY=$KEYDIR/$RECIP-secretkey.curve25519
 	if [ ! -e $SECKEY ]; then
 		zenity --error --text="Could not find recipient's secret key"
 		return 1
@@ -71,7 +73,7 @@ decrypt() {
                 return 1
         fi
 
-	PUBKEY=~/.keys/$SENDER-pubkey.curve25519	
+	PUBKEY=$KEYDIR/$SENDER-pubkey.curve25519	
 	if [ ! -e $PUBKEY ]; then
 		zenity --error --text="Could not find sender's public key"
 		return 1
@@ -100,7 +102,7 @@ sign() {
 		return 1
 	fi
 
-	SECKEY=~/.keys/$SIGN_ID-signing-secretkey.ed25519
+	SECKEY=$KEYDIR/$SIGN_ID-signing-secretkey.ed25519
 	if [ ! -e $SECKEY ]; then
 		zenity --error --text="Could not find signerr's secret key"
 		return 1
@@ -129,7 +131,7 @@ verify() {
 		return 1
 	fi
 
-	PUBKEY=~/.keys/$SIGN_ID-signing-pubkey.ed25519
+	PUBKEY=$KEYDIR/$SIGN_ID-signing-pubkey.ed25519
 	if [ ! -e $PUBKEY ]; then
 		zenity --error --text="Could not find signer's public key"
 		return 1
@@ -152,9 +154,9 @@ new_keypair() {
 		return 1
 	fi
 	
-	cd ~/.keys
+	cd $KEYDIR
 	if jfpg -n $ID; then
-		zenity --info --text="Created keys for $ID in ~/.keys"
+		zenity --info --text="Created keys for $ID in $KEYDIR"
 		return 1
 	else
 		zenity --info --text="Key generation failed"
@@ -164,13 +166,13 @@ new_keypair() {
 }
 
 list_keys() {
-	ls -1 ~/.keys | zenity --list --width=800 --height=600 \
-			--title="~/.keys" --column="Keys"
+	ls -1 $KEYDIR | zenity --list --width=800 --height=600 \
+			--title="$KEYDIR" --column="Keys"
 	return 1
 }	
 
 delete_keys() {
-	KEYLIST=`ls -1 ~/.keys | zenity --list --width=800 --height=600 \
+	KEYLIST=`ls -1 $KEYDIR | zenity --list --width=800 --height=600 \
 		 --column="Keys" --separator=' ' --multiple`
 	if [ -z $KEYLIST ]; then
 		zenity --info --text="No keys specified for deletion"
@@ -178,7 +180,7 @@ delete_keys() {
 	fi
 
 	for i in $KEYLIST; do
-		rm ~/.keys/$i
+		rm $KEYDIR/$i
 	done | zenity --progress --pulsate --auto-close
 	zenity --info --text="Done deleting keys"
 	return 1

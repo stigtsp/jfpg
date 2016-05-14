@@ -26,6 +26,9 @@
 int
 jf_verify(FILE *infile, FILE *fd_sign_pk, char *filename)
 {
+	if (fd_sign_pk == NULL)
+		errx(1, "need signer's public key");
+
 	unsigned long long mlen, smlen = 0;
 	unsigned char *m, *sm = NULL;
 	int b64len = 0;
