@@ -127,8 +127,8 @@ void
 usage(void)
 {
 	errx(1, "\nusage:\n\tjfpg -n new-key-id \
-	    \n\tjfpg -s -f file -x signing-secretkey \
-	    \n\tjfpg -v -f file -x signing-publickey \
+	    \n\tjfpg -s -f file -k signing-secretkey \
+	    \n\tjfpg -v -f file -p signing-publickey \
 	    \n\tjfpg [-e | -d] -f file -p publickey -s secretkey \
 	    \n\tjfpg -c -f file -r rounds");
 }
