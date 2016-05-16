@@ -99,7 +99,7 @@ void
 symdecrypt(unsigned char *ptext_buf, unsigned char *ctext_buf, struct hdr *hdr)
 {
 	char *pass = NULL;
-	unsigned char symkey[crypto_secretbox_KEYBYTES];
+	unsigned char symkey[SYMKEYBYTES];
 
 	if ((pass = (getpass("enter passphrase: ")))  == NULL)
                 err(1, "error getting passphrase");

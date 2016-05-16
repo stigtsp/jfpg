@@ -29,6 +29,7 @@
 #define	B64NAMESIZE	192
 #define	PUBKEYBYTES	crypto_box_PUBLICKEYBYTES
 #define	SECKEYBYTES	crypto_box_SECRETKEYBYTES
+#define	SYMKEYBYTES	crypto_secretbox_KEYBYTES
 #define	NONCEBYTES	crypto_box_NONCEBYTES
 #define	ZEROBYTES	crypto_box_ZEROBYTES
 #define	SIGNSKEYBYTES	crypto_sign_SECRETKEYBYTES
