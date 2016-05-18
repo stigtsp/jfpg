@@ -77,7 +77,7 @@ main(int argc, char **argv)
 			errx(1, "Filename too long");
 		    break;
 		case 'r':
-		    rounds = strtonum(optarg, 16, 25, &errstr);
+		    rounds = strtonum(optarg, MIN_ROUNDS, MAX_ROUNDS, &errstr);
 		    if (errstr != NULL)
 			errx(1, "error getting rounds: %s", errstr);
 		    rounds = exp2(rounds);
