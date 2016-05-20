@@ -37,7 +37,7 @@ jf_sign(FILE *infile, FILE *fd_sign_sk, char *filename)
 	b64signseclen = Base64encode_len(SIGNSKEYBYTES);
 
 	char b64_sign_sk[b64signseclen];
-	unsigned char sign_sk[SIGNSKEYBYTES + 1];
+	unsigned char sign_sk[SIGNSKEYBYTES + 2];
 	FILE *outfile = NULL;	
 
 	/* Read in secret signing key */
@@ -47,8 +47,7 @@ jf_sign(FILE *infile, FILE *fd_sign_sk, char *filename)
 	fclose(fd_sign_sk);
 
 	/* Base64 decode secret signing key */
-	if (Base64decode((char *)sign_sk, b64_sign_sk) != sizeof(sign_sk))
-		errx(1, "error decoding signing secret key");
+	Base64decode((char *)sign_sk, b64_sign_sk);
 
 	/* Get sizes of message and signed message */
 	mlen = get_size(infile);

@@ -37,7 +37,7 @@ jf_verify(FILE *infile, FILE *fd_sign_pk, char *filename)
 	b64len = Base64encode_len(SIGNPKEYBYTES);
 
 	char b64_sign_pk[b64len];
-	unsigned char sign_pk[SIGNPKEYBYTES + 1];
+	unsigned char sign_pk[SIGNPKEYBYTES + 2];
 	FILE *outfile = NULL;	
 
 	/* Read in pub key */
@@ -47,8 +47,7 @@ jf_verify(FILE *infile, FILE *fd_sign_pk, char *filename)
 	fclose(fd_sign_pk);
 
 	/* Base64 decode pub key */
-	if (Base64decode((char *)sign_pk, b64_sign_pk) != sizeof(sign_pk))
-		errx(1, "error decoding signing pub key");
+	Base64decode((char *)sign_pk, b64_sign_pk);
 
 	/* Get sizes for signed message and message */
 	smlen = get_size(infile);

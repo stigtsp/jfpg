@@ -104,8 +104,8 @@ asymcrypt(unsigned char *ctext_buf, unsigned char *pad_ptext_buf,
     unsigned long long ptext_size, unsigned char *nonce, FILE *key, FILE *skey)
 {
 
-	unsigned char pk[PUBKEYBYTES + 1];
-	unsigned char sk[SECKEYBYTES + 1];
+	unsigned char pk[PUBKEYBYTES + 2];
+	unsigned char sk[SECKEYBYTES + 2];
 
 	get_keys(pk, sk, key, skey); 
 

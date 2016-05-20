@@ -84,8 +84,8 @@ void
 asymdecrypt(unsigned char *ptext_buf, unsigned char *ctext_buf,
     unsigned long long ctext_size, unsigned char *nonce, FILE *key, FILE *skey)
 {
-	unsigned char pk[PUBKEYBYTES + 1];
-	unsigned char sk[SECKEYBYTES + 1];
+	unsigned char pk[PUBKEYBYTES + 2];
+	unsigned char sk[SECKEYBYTES + 2];
 
 	get_keys(pk, sk, key, skey); 
  
