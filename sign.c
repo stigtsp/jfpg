@@ -74,7 +74,7 @@ jf_sign(FILE *infile, FILE *fd_sign_sk, char *filename)
 	free(m);
 
 	/* Append extension to filename */
-	if (strlcat(filename, SIGNEXT, FILENAME_SIZE) >= FILENAME_SIZE)
+	if (jf_strlcat(filename, SIGNEXT, FILENAME_SIZE) >= FILENAME_SIZE)
 		errx(1, "filename too long");
 
 	/* Write file */

@@ -111,13 +111,13 @@ name_keys(char *id, char *pk_name, char *sk_name, char *sign_pk_name,
         memcpy(sign_pk_name, id, strlen(id));
 
         /* Append rest of key name to the ID */
-        if (strlcat(pk_name, PUB, B64NAMESIZE) >= B64NAMESIZE)
+        if (jf_strlcat(pk_name, PUB, B64NAMESIZE) >= B64NAMESIZE)
                 errx(1, "name too long");
-        if (strlcat(sk_name, SEC, B64NAMESIZE) >= B64NAMESIZE)
+        if (jf_strlcat(sk_name, SEC, B64NAMESIZE) >= B64NAMESIZE)
                 errx(1, "name too long");
-        if (strlcat(sign_pk_name, PUBSIGN, B64NAMESIZE) >=  B64NAMESIZE)
+        if (jf_strlcat(sign_pk_name, PUBSIGN, B64NAMESIZE) >=  B64NAMESIZE)
                 errx(1, "id too long");
-        if (strlcat(sign_sk_name, SECSIGN, B64NAMESIZE) >=  B64NAMESIZE)
+        if (jf_strlcat(sign_sk_name, SECSIGN, B64NAMESIZE) >=  B64NAMESIZE)
                 errx(1, "id too long");
 	return (0);
 }

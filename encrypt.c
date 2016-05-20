@@ -90,7 +90,7 @@ jf_encrypt(FILE *infile, FILE *key, FILE *skey, char *filename, int alg, long lo
 	}
 	safer_free(pad_ptext_buf, hdr->padded_len);
 
-	if (strlcat(filename, EXT, FILENAME_SIZE) >= FILENAME_SIZE)
+	if (jf_strlcat(filename, EXT, FILENAME_SIZE) >= FILENAME_SIZE)
 		errx(1, "filename too long");
 
 	write_enc(outfile, hdr, ctext_buf, filename);

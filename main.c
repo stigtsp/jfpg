@@ -43,7 +43,7 @@ main(int argc, char **argv)
 	while ((ch = getopt(argc, argv, "vscedn:k:s:p:f:r:")) != -1) {
 		switch (ch) {
 		case 'n':
-		    if (strlcpy(id, optarg, sizeof(id)) >= sizeof(id))
+		    if (jf_strlcpy(id, optarg, sizeof(id)) >= sizeof(id))
 			errx(1, "name too long");
 		    flag = 1;
 		    break;
@@ -73,7 +73,7 @@ main(int argc, char **argv)
 		case 'f':
 		    if ((infile = fopen(optarg, "r")) == NULL)
 			err(1, "Couldn't find file");
-		    if (strlcpy(filename, optarg, FILENAME_SIZE) >= FILENAME_SIZE)
+		    if (jf_strlcpy(filename, optarg, FILENAME_SIZE) >= FILENAME_SIZE)
 			errx(1, "Filename too long");
 		    break;
 		case 'r':
