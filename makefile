@@ -4,7 +4,7 @@ WARNFLAGS = -Wall -Wformat-security
 
 SECFLAGS = -fstack-protector-all -fPIC -fPIE -D_FORTIFY_SOURCE=2 
 
-CFLAGS = $(WARNFLAGS) $(SECFLAGS) -O2
+CFLAGS = $(WARNFLAGS) $(SECFLAGS) -O3
  
 jfpg: bsdcompat/explicit_bzero.c bsdcompat/strlcat.c bsdcompat/strlcpy.c \
 	bsdcompat/strtonum.c \
