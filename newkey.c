@@ -23,7 +23,7 @@
 #include "crypto/tweetnacl.h"
 #include "bsdcompat/compat.h"
 
-static int name_keys(char *, char *, char *,
+static void name_keys(char *, char *, char *,
     char *, char *);
 
 int
@@ -64,8 +64,7 @@ jf_newkey(char *id)
 	if (crypto_sign_keypair(sign_pk, sign_sk) != 0)
 		err(1, "error generating signing keys");
 
-	if (name_keys(id, pk_name, sk_name, sign_pk_name, sign_sk_name) !=0 )
-		errx(1, "error naming keys");
+	name_keys(id, pk_name, sk_name, sign_pk_name, sign_sk_name);
 
 	/* Write secret key to disk, then zero it */	
 	if (Base64encode(b64_sk, (char *)sk, sizeof(sk)) != sizeof(b64_sk))
@@ -94,7 +93,7 @@ jf_newkey(char *id)
 	return (0);
 }
 
-int
+void
 name_keys(char *id, char *pk_name, char *sk_name, char *sign_pk_name, 
     char *sign_sk_name)
 {
@@ -119,5 +118,4 @@ name_keys(char *id, char *pk_name, char *sk_name, char *sign_pk_name,
                 errx(1, "id too long");
         if (jf_strlcat(sign_sk_name, SECSIGN, B64NAMESIZE) >=  B64NAMESIZE)
                 errx(1, "id too long");
-	return (0);
 }
