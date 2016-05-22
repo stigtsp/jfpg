@@ -7,14 +7,14 @@ only uses  modern, high speed crypto primitives
 and all encryption is authenticated by default. 
 However, this means it is not backwards-compatible
 with GPG/PGP (probably a feature, not a bug). 
-There are no interactive commands, which makes
-JFPG easy to include in shell scripts. 2 demo
-scripts are included in the scripts directory. They
+2 demo scripts are included in the scripts directory. They
 require zenity, and, in the case of the drivecrypt script,
 the gdrive command line tool. 
 
 JFPG should compile on any Unix-like system without any
-dependencies, but I have only tested it on OpenBSD so far.
+dependencies. It has been tested and confirmed to work on 
+OpenBSD, DragonFly BSD, Ubuntu 14.04 and 16.04, and OS X Yosemite. 
+It may work on other systems as well. 
 To compile, simply run "make".
 
 Command syntax
@@ -23,7 +23,7 @@ Command syntax
 	sign:                 jfpg -s -f file -k signing-secret-key
 	verify sig:   	       jfpg -v -f file -p signing-public-key
 	encrypt/decrypt:      jfpg [-e | -d] -f file -p encryption-pubkey -k encryption-secretkey 
-	symmetrically encrypt:	jfpg -c -f file -r rounds
+	symmetrically encrypt:	jfpg -c -f file [-r rounds]
 
 You will need to create a new set of keys when you first use JFPG 
 for signing/verifying or asymmetric encryption/decryption. 
@@ -31,24 +31,35 @@ This will 2 keypairs, a pair of Curve25519 keys for encryption/decryption
 and a pair of Ed25519 keys for signing. It takes your desired key ID
 (name, email, etc) as its only option.
 
+Threat Model
+
+JFPG is designed to secure data that is (or will be) in transit or sitting on a remote server.
+The asymmetric operations are not really intended to secure local data; since secret
+keys are not encrypted, an attacker with filesystem access will be  able to use them. 
+Full disk encryption can mitigate this and provide some protection against an attaker
+with physical access when the machine is powered off. However, an attacker who is able to steal 
+your secret keys can also just steal your plaintext, and possibly sniff your password anyway,
+so encrypted secret keys are not a cure-all. Symmetric encryption with the -c option can provide 
+some protection of locally stored files as it uses a password to generate an encryption key.
+Still, this method is vulnerable to weak passwords or an attacker with the ability to capture your 
+password. Securing your machine against such an attacker is beyond the scope of JFPG. 
+ 
 Primitives used
 
 	Signing: Ed25519
 	Asymmetric encryption/decryption: Curve25519
 	Symmetric cipher: Xsalsa20-Poly1305
 	Password based key derivation: Scrypt
+
 Limitations
 
-	Secret keys are not encrypted. This allows them to be used without
-	passwords, but is somewhat less secure. However, JFPG cannot secure
-	your computer for you. Even encrypted secret keys are not safe if you
-	are running JFPG on a compromised machine.
+	Secret keys are not encrypted, as mentioned above. This may be added
+	in the future. 
 
-	There is no forward secrecy (yet). A given sender/receiver pair will
-	calculate the same shared symmeric key for all their messages. 
+	There is no forward secrecy. A given sender/receiver pair will
+	calculate the same shared key for all of their messages. This may be 
+	fixed in the future. 
 
-TODO
-
-	Add forward secrecy
-	Allow encrypted secret keys
+	JFPG does not manage keys for you. This is a problem that is likely
+	beyond the ability of a command line utility to handle properly. 
 
