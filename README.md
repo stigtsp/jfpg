@@ -19,10 +19,11 @@ To compile, simply run "make".
 
 Command syntax
 
-	new keypairs:         jfpg -n new-key-id
-	sign:                 jfpg -s -f file -k signing-secret-key
-	verify sig:   	       jfpg -v -f file -p signing-public-key
-	encrypt/decrypt:      jfpg [-e | -d] -f file -p encryption-pubkey -k encryption-secretkey 
+	new keypairs:           jfpg -n new-key-id
+	sign:                   jfpg -s -f file -k signer-secretkey
+	verify sig:   	        jfpg -v -f file -p signer-pubkey
+	encrypt with keypair:   jfpg -e -f file -p recipient-pubkey -k sender-secretkey
+	decrypt: 		jfpg -d -f file [-p sender-pubkey -s recipient-secretkey] 
 	symmetrically encrypt:	jfpg -c -f file [-r rounds]
 
 You will need to create a new set of keys when you first use JFPG 
