@@ -44,7 +44,7 @@ Threat Model
 JFPG is designed to secure data that is (or will be) in transit or sitting on a remote server.
 The asymmetric operations are not really intended to secure local data; since secret
 keys are not encrypted, an attacker with filesystem access will be  able to use them. 
-Full disk encryption can mitigate this and provide some protection against an attaker
+Full disk encryption can mitigate this and provide some protection against an attacker
 with physical access when the machine is powered off. However, an attacker who is able to steal 
 your secret keys can also just steal your plaintext, and possibly sniff your password anyway,
 so encrypted secret keys are not a cure-all. Symmetric encryption with the -c option can provide 
