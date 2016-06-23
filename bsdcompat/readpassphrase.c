@@ -29,7 +29,8 @@
 #include <string.h>
 #include <termios.h>
 #include <unistd.h>
-#include <readpassphrase.h>
+
+#include "readpassphrase.h"
 
 #ifndef TCSASOFT
 #define TCSASOFT 0
