@@ -1,6 +1,6 @@
 #!/bin/sh
 
-KEYDIR=~/.keys
+KEYDIR=~/.jfpg
 
 if [ ! -d $KEYDIR ]; then
 	mkdir $KEYDIR
