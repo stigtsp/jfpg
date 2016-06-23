@@ -39,7 +39,7 @@ static void asymdecrypt(unsigned char *, unsigned char *, unsigned long long,
 static void symdecrypt(unsigned char *, unsigned char *, struct hdr *);
 
 int
-jf_decrypt(FILE *infile, FILE *key, FILE *skey, char *filename)
+jf_decrypt(FILE *infile, FILE *pkey, FILE *skey, char *filename)
 {
 	unsigned char *ctext_buf, *ptext_buf = NULL;
 	FILE *outfile = NULL;
@@ -57,12 +57,12 @@ jf_decrypt(FILE *infile, FILE *key, FILE *skey, char *filename)
 		err(1, "error creating ptext_buf");
 
 	if (hdr->alg == 1) {
-		if (key == NULL)
-		    errx(1, "must provide a public key");
+		if (pkey == NULL)
+		    errx(1, "must provide sender's public key");
 		if (skey == NULL) 
-		    errx(1, "must provide a secret key");
+		    errx(1, "must provide sender's secret key");
 		asymdecrypt(ptext_buf, ctext_buf, hdr->padded_len, hdr->nonce,
-	    	key, skey);
+	    	pkey, skey);
 	} else if (hdr->alg == 2) {
 		symdecrypt(ptext_buf, ctext_buf, hdr);
 	} else {
@@ -82,12 +82,12 @@ jf_decrypt(FILE *infile, FILE *key, FILE *skey, char *filename)
 
 void
 asymdecrypt(unsigned char *ptext_buf, unsigned char *ctext_buf,
-    unsigned long long ctext_size, unsigned char *nonce, FILE *key, FILE *skey)
+    unsigned long long ctext_size, unsigned char *nonce, FILE *pkey, FILE *skey)
 {
 	unsigned char pk[PUBKEYBYTES + 2];
 	unsigned char sk[SECKEYBYTES + 2];
 
-	get_keys(pk, sk, key, skey); 
+	get_keys(pk, sk, pkey, skey); 
  
 	if (crypto_box_open(ptext_buf, ctext_buf,
             ctext_size, nonce, pk, sk) != 0)

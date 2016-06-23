@@ -26,9 +26,6 @@
 int
 jf_sign(FILE *infile, FILE *fd_sign_sk, char *filename)
 {
-	if (fd_sign_sk == NULL)
-		errx(1, "need a signing secret key");
-
 	unsigned long long mlen, smlen = 0;
 	unsigned char *m, *sm = NULL;
 	int b64signseclen = 0;

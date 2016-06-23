@@ -26,11 +26,6 @@
 void
 get_keys(unsigned char *pk, unsigned char *sk, FILE *fd_pk, FILE *fd_sk)
 {
-	if (fd_pk == NULL)
-		errx(1, "error reading in public key");
-	if (fd_sk == NULL)
-		errx(1, "error reading in secret key");
-
 	int b64len = Base64encode_len(PUBKEYBYTES);
 	char b64_pk[b64len];
 	char b64_sk[b64len];
