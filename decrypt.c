@@ -108,7 +108,7 @@ symdecrypt(unsigned char *ptext_buf, unsigned char *ctext_buf, struct hdr *hdr)
         if (crypto_scrypt((unsigned char *)pass, strlen(pass), hdr->nonce, sizeof(hdr->nonce),
             hdr->rounds, hdr->r, hdr->p, symkey, sizeof(symkey)) != 0)
                 err(1, "error hashing key");
-        explicit_bzero(pass, strlen(pass));
+        explicit_bzero(pass, sizeof(pass));
 
         if (crypto_secretbox_open(ptext_buf, ctext_buf, hdr->padded_len,
             hdr->nonce, symkey) != 0)
