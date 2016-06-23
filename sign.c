@@ -59,7 +59,7 @@ jf_sign(FILE *infile, FILE *fd_sign_sk, char *filename)
 	if ((sm = malloc(smlen)) == NULL)
 		err(1, "error creating signed message buffer");
 
-	/* Read in file to m*/
+	/* Read in file to m */
 	if (fread(m, 1, mlen, infile) != mlen)
 		errx(1, "error reading in infile");
 	fclose(infile);
