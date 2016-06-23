@@ -24,6 +24,7 @@
 #include "crypto/randombytes.h"
 #include "crypto/scrypt/crypto_scrypt.h"
 #include "bsdcompat/compat.h"
+#include "bsdcompat/readpassphrase.h"
 
 struct hdr {
 	unsigned char nonce[NONCEBYTES];
@@ -118,16 +119,22 @@ asymcrypt(unsigned char *ctext_buf, unsigned char *pad_ptext_buf,
 void
 symcrypt(unsigned char *ctext_buf, unsigned char *pad_ptext_buf, struct hdr *hdr)
 {
-	char *pass = NULL;
+	char pass[512];
+	char pass2[512];
 	unsigned char symkey[SYMKEYBYTES];
 	
-	if ((pass = (getpass("enter passphrase: "))) == NULL)
+	if (!readpassphrase("enter passphrase: ", pass, sizeof(pass), RPP_FLAGS))
 		err(1, "error getting passphrase");
+	if (!readpassphrase("confirm passphrase: ", pass2, sizeof(pass2), RPP_FLAGS))
+		err(1, "error confirming passphrase");
+	if (strcmp(pass, pass2) != 0)
+		errx(1, "passphrases do not match");
+	explicit_bzero(pass2, sizeof(pass2));
 
 	if (crypto_scrypt((unsigned char *)pass, strlen(pass), hdr->nonce, sizeof(hdr->nonce),
 	    hdr->rounds, hdr->r, hdr->p, symkey, sizeof(symkey)) != 0)
 		err(1, "error hashing key");
-	explicit_bzero(pass, strlen(pass));
+	explicit_bzero(pass, sizeof(pass));
 
 	if (crypto_secretbox(ctext_buf, pad_ptext_buf, hdr->padded_len,
             hdr->nonce, symkey) != 0)

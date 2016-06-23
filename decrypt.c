@@ -23,6 +23,7 @@
 #include "crypto/tweetnacl.h"
 #include "crypto/scrypt/crypto_scrypt.h"
 #include "bsdcompat/compat.h"
+#include "bsdcompat/readpassphrase.h"
 
 struct hdr {
         unsigned char nonce[NONCEBYTES];
@@ -98,10 +99,10 @@ asymdecrypt(unsigned char *ptext_buf, unsigned char *ctext_buf,
 void
 symdecrypt(unsigned char *ptext_buf, unsigned char *ctext_buf, struct hdr *hdr)
 {
-	char *pass = NULL;
+	char pass[512];
 	unsigned char symkey[SYMKEYBYTES];
 
-	if ((pass = (getpass("enter passphrase: ")))  == NULL)
+	if (!readpassphrase("enter passphrase: ", pass, sizeof(pass), RPP_FLAGS))
                 err(1, "error getting passphrase");
 
         if (crypto_scrypt((unsigned char *)pass, strlen(pass), hdr->nonce, sizeof(hdr->nonce),

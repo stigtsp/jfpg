@@ -36,6 +36,7 @@
 #define	ZEROBYTES	crypto_box_ZEROBYTES
 #define	SIGNSKEYBYTES	crypto_sign_SECRETKEYBYTES
 #define	SIGNPKEYBYTES	crypto_sign_PUBLICKEYBYTES
+#define	RPP_FLAGS	RPP_REQUIRE_TTY
 
 void usage(void);
 void safer_free(void *, size_t);

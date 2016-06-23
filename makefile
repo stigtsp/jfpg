@@ -7,7 +7,7 @@ SECFLAGS = -fstack-protector-all -fPIC -fPIE -D_FORTIFY_SOURCE=2
 CFLAGS = $(WARNFLAGS) $(SECFLAGS) -O3
  
 jfpg: bsdcompat/explicit_bzero.c bsdcompat/strlcat.c bsdcompat/strlcpy.c \
-	bsdcompat/strtonum.c \
+	bsdcompat/strtonum.c bsdcompat/readpassphrase.c \
 	crypto/tweetnacl.c crypto/randombytes.c \
 	crypto/scrypt/crypto_scrypt-ref.c crypto/scrypt/sha256.c \
 	crypto/scrypt/insecure_memzero.c \
@@ -15,7 +15,7 @@ jfpg: bsdcompat/explicit_bzero.c bsdcompat/strlcat.c bsdcompat/strlcpy.c \
 	util/get_keys.c encrypt.c decrypt.c newkey.c sign.c verify.c main.c \
 
 		$(CC) $(CFLAGS) bsdcompat/explicit_bzero.c bsdcompat/strlcat.c bsdcompat/strlcpy.c \
-        	    bsdcompat/strtonum.c \
+        	    bsdcompat/strtonum.c bsdcompat/readpassphrase.c \
 		    crypto/tweetnacl.c crypto/randombytes.c \
         	    crypto/scrypt/crypto_scrypt-ref.c crypto/scrypt/sha256.c \
 		    crypto/scrypt/insecure_memzero.c \
