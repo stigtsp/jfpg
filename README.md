@@ -57,7 +57,7 @@ Primitives used
 
 	Signing: Ed25519
 	Asymmetric key exchange and cipher: X25519 key exchange with Curve25519 keys and XSalsa20-Poly1305 
-	Symmetric cipher: Xsalsa20-Poly1305
+	Symmetric cipher: XSalsa20-Poly1305
 	Password-based key derivation: Scrypt
 
 Limitations
