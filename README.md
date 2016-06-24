@@ -23,7 +23,7 @@ Command syntax
 	sign:                   jfpg -s -f file -k signer-secretkey
 	verify sig:   	        jfpg -v -f file -p signer-pubkey
 	encrypt with keypair:   jfpg -e -f file -p recipient-pubkey -k sender-secretkey
-	decrypt: 		jfpg -d -f file [-p sender-pubkey -s recipient-secretkey] 
+	decrypt:                jfpg -d -f file [-p sender-pubkey -s recipient-secretkey] 
 	symmetrically encrypt:	jfpg -c -f file [-r rounds]
 
 You will need to create a new set of keys when you first use JFPG 
@@ -37,7 +37,8 @@ The optional "rounds" parameter determines both the amount of time and memory co
 It is used to derive the scrypt N parameter, where N = 2^rounds. The default is 18, thus N = 2^18
 if the user doesn't specify the number of rounds. This results in 256 MB of RAM and
 about 1 second for each password entry on an i5-540M. The minimum number for the rounds option 
-is 16 and the maximum is 25.  
+is 16 and the maximum is 25. Increasing this parameter by one doubles the RAM usage, thus 
+a value of 16 will use 64 MB, 17 will use 128 MB, etc.  
 
 Threat Model
 
