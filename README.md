@@ -56,9 +56,9 @@ password. Securing your machine against such an attacker is beyond the scope of 
 Primitives used
 
 	Signing: Ed25519
-	Asymmetric encryption/decryption: Curve25519
+	Asymmetric key exchange and cipher: X25519 key exchange with Curve25519 keys and XSalsa20-Poly1305 
 	Symmetric cipher: Xsalsa20-Poly1305
-	Password based key derivation: Scrypt
+	Password-based key derivation: Scrypt
 
 Limitations
 
@@ -67,7 +67,7 @@ Limitations
 
 	There is no forward secrecy. A given sender/receiver pair will
 	calculate the same shared key for all of their messages. This may be 
-	fixed in the future. 
+	added in the future. 
 
 	JFPG does not manage keys for you. This is a problem that is likely
 	beyond the ability of a command line utility to handle properly. 
