@@ -7,9 +7,6 @@ only uses  modern, high speed crypto primitives
 and all encryption is authenticated by default. 
 However, this means it is not backwards-compatible
 with GPG/PGP (probably a feature, not a bug). 
-2 demo scripts are included in the scripts directory. They
-require zenity, and, in the case of the drivecrypt script,
-the gdrive command line tool. 
 
 JFPG should compile on any Unix-like system without any
 dependencies. It has been tested and confirmed to work on 
