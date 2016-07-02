@@ -8,7 +8,7 @@ and all encryption is authenticated by default.
 However, this means it is not backwards-compatible
 with GPG/PGP (probably a feature, not a bug). 
 
-JFPG should compile on any Unix-like system without any
+JFPG should compile on most Unix-like systems without any
 dependencies. It has been tested and confirmed to work on 
 OpenBSD, DragonFly BSD, Ubuntu 14.04 and 16.04, and OS X Yosemite. 
 It may work on other systems as well. 
