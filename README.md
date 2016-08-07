@@ -23,6 +23,37 @@ Command syntax
 	decrypt:                jfpg -d -f file [-p sender-pubkey -s recipient-secretkey] 
 	symmetrically encrypt:	jfpg -c -f file [-r rounds]
 
+Examples
+
+Create signing and encryption keypairs for "joe"
+
+	jfpg -n joe
+
+Sign "file.pdf" with the secret key "joe-signing-secretkey.ed25519"
+
+	jfpg -s -f file.pdf -k joe-signing-secretkey.ed25519
+
+Verify signed "file.pdf.signed" with the public key "joe-signing-pubkey.ed25519"
+
+	jfpg -v -f file.pdf.signed -p joe-signing-pubkey.ed25519
+
+Encrypt "file.pdf" for recipient "bob". Note that the sender's secret key is required.
+
+	jfpg -e -f file.pdf -p bob-pubkey.curve25519 -k joe-secretkey.curve25519	
+
+Decrypt "file.pdf.xsalsa20", assuming you are bob and the sender was joe. Sender's
+public key is required.
+
+	jfpg -d -f file.pdf.xsalsa20 -p joe-pubkey.curve25519 -k bob-secretkey.curve25519
+
+Encrypt "file.pdf" with a password-derived key
+
+	jfpg -c -f file.pdf
+
+Decrypt "file.pdf.xsalsa20" with password
+
+	jfpg -d -f file.pdf.xsalsa20 
+
 You will need to create a new set of keys when you first use JFPG 
 for signing/verifying or asymmetric encryption/decryption. 
 This will 2 keypairs, a pair of Curve25519 keys for encryption/decryption

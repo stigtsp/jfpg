@@ -21,7 +21,6 @@
 
 #include "jfpg.h"
 #include "crypto/tweetnacl.h"
-#include "crypto/randombytes.h"
 #include "crypto/scrypt/crypto_scrypt.h"
 #include "bsdcompat/compat.h"
 #include "bsdcompat/readpassphrase.h"

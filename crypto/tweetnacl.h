@@ -269,4 +269,5 @@ extern int crypto_verify_32_tweet(const unsigned char *,const unsigned char *);
 #define crypto_verify_32_BYTES crypto_verify_32_tweet_BYTES
 #define crypto_verify_32_VERSION crypto_verify_32_tweet_VERSION
 #define crypto_verify_32_IMPLEMENTATION "crypto_verify/32/tweet"
+extern void randombytes(unsigned char *,unsigned long long);
 #endif
