@@ -39,7 +39,7 @@ static void asymdecrypt(unsigned char *, unsigned char *, unsigned long long,
 
 static void symdecrypt(unsigned char *, unsigned char *, struct hdr *);
 
-int
+void
 jf_decrypt(FILE *infile, FILE *pkey, FILE *skey, char *filename)
 {
 	unsigned char *ctext_buf, *ptext_buf = NULL;
@@ -78,7 +78,7 @@ jf_decrypt(FILE *infile, FILE *pkey, FILE *skey, char *filename)
 
 	safer_free(ptext_buf, hdr->padded_len);
 	fclose(outfile);
-	return (0);
+	printf("decryption successful\n");
 }
 
 void

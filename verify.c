@@ -23,7 +23,7 @@
 #include "util/base64.h"
 #include "crypto/tweetnacl.h"
 
-int
+void
 jf_verify(FILE *infile, FILE *fd_sign_pk, char *filename)
 {
 	unsigned long long mlen, smlen = 0;
@@ -71,5 +71,5 @@ jf_verify(FILE *infile, FILE *fd_sign_pk, char *filename)
 
 	/* Write m to file */
 	write_file(outfile, m, mlen, filename); 
-	return (0);
+	printf("good signature\n");
 } 

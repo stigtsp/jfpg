@@ -41,7 +41,7 @@ static void symcrypt(unsigned char *, unsigned char *, struct hdr *);
 
 static void write_enc(FILE *, struct hdr *, unsigned char *, char *);
 
-int
+void
 jf_encrypt(FILE *infile, FILE *key, FILE *skey, char *filename, int alg, long long rounds)
 {
 	unsigned long long ptext_size, ctext_size = 0;
@@ -96,7 +96,7 @@ jf_encrypt(FILE *infile, FILE *key, FILE *skey, char *filename, int alg, long lo
 	write_enc(outfile, hdr, ctext_buf, filename);
 	free(ctext_buf);
 	free(hdr);
-	return (0);
+	printf("encryption successful\n");
 }
 
 void

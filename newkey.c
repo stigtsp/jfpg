@@ -26,7 +26,7 @@
 static void name_keys(char *, char *, char *,
     char *, char *);
 
-int
+void
 jf_newkey(char *id)
 {
 	
@@ -89,8 +89,6 @@ jf_newkey(char *id)
 	if (Base64encode(b64_sign_pk, (char *)sign_pk, sizeof(sign_pk)) != sizeof(b64_sign_pk))	
 		errx(1, "error encoding signing pub key");
 	write_file(sign_pubkey, b64_sign_pk, sizeof(b64_sign_pk), sign_pk_name);
-
-	return (0);
 }
 
 void

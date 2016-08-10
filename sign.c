@@ -23,7 +23,7 @@
 #include "crypto/tweetnacl.h"
 #include "bsdcompat/compat.h"
 
-int
+void
 jf_sign(FILE *infile, FILE *fd_sign_sk, char *filename)
 {
 	unsigned long long mlen, smlen = 0;
@@ -75,5 +75,5 @@ jf_sign(FILE *infile, FILE *fd_sign_sk, char *filename)
 
 	/* Write file */
 	write_file(outfile, sm, smlen, filename); 
-	return (0);
+	printf("signing successful\n");
 } 

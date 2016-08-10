@@ -98,8 +98,7 @@ main(int argc, char **argv)
 		usage();
 
 	if (flag == 1) {
-		if (jf_newkey(id) != 0)
-		    errx(1, "error creating keypair");
+		jf_newkey(id);
 	} else if (flag == 2) {
 		if (infile == NULL)
 		    errx(1, "must provide a file for encryption");
@@ -107,39 +106,29 @@ main(int argc, char **argv)
 		    errx(1, "must provide recipient's public key");
 		if (skey == NULL)
 		    errx(1, "must provide sender's secret key");
-		if (jf_encrypt(infile, pkey, skey, filename, 1, 1) != 0)
-		    errx(1, "error encrypting");
-		printf("encryption successful\n");
+		jf_encrypt(infile, pkey, skey, filename, 1, 1);
 	} else if (flag == 3) {
 		if (infile == NULL)
 		    errx(1, "must provide a file for encryption");
 		if (rounds == 0)
 		    rounds = exp2(DEFAULT_ROUNDS);
-		if (jf_encrypt(infile, NULL, NULL, filename, 2, rounds) != 0)
-		    errx(1, "error encrypting");
-		printf("encryption successful\n");
+		jf_encrypt(infile, NULL, NULL, filename, 2, rounds);
 	} else if (flag == 4) {
 		if (infile == NULL)
 		    errx(1, "must provide a file for decryption");
-		if (jf_decrypt(infile, pkey, skey, filename) != 0)
-	  	    errx(1, "error decrypting");
-		printf("decryption successful\n");
+		jf_decrypt(infile, pkey, skey, filename);
 	} else if (flag == 5) {
 		if (infile == NULL)
 		    errx(1, "must provide a file for signing");	
 		if (skey == NULL)
 		    errx(1, "must provide signer's secret key");
-		if (jf_sign(infile, skey, filename) != 0)
-		    errx(1, "error signing");
-		printf("signed %s\n", filename);
+		jf_sign(infile, skey, filename);
 	} else if (flag == 6) {
 		if (infile == NULL)
 		    errx(1, "must provide a file for sig verification");
 		if (pkey == NULL)
 		    errx(1, "must provide signer's public key");
-		if (jf_verify(infile, pkey, filename) != 0)
-		    errx(1, "error verifying signature");
-		printf("good signature\n");
+		jf_verify(infile, pkey, filename);
 	}
 	return (0);
 }
