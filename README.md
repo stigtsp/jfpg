@@ -93,6 +93,9 @@ Limitations
 	Secret keys are not encrypted, as mentioned above. This may be added
 	in the future. 
 
+	Decrypting messages on a big-endian machine that were encrypted on a little
+	endian machine or vice-versa does not work at the moment. 
+
 	There is no forward secrecy. A given sender/receiver pair will
 	calculate the same shared key for all of their messages. This may be 
 	added in the future. 

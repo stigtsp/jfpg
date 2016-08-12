@@ -1,3 +1,22 @@
+/* Use arc4random on systems that have a modern implementation.
+   Currently, I'm limiting this to OpenBSD. 
+ */
+#ifdef __OpenBSD__
+
+#include <err.h>
+#include <stdlib.h>
+#include <inttypes.h>
+
+void randombytes(unsigned char *x,unsigned long long xlen)
+{
+  /* We should never ask for more than SIZE_MAX bytes */
+  if (xlen > SIZE_MAX)
+    errx(1, "can't provide more than SIZE_MAX random bytes");
+  arc4random_buf(x, (size_t)xlen);
+}
+ 
+#else /* no arc4random(), so carefully try /dev/urandom */
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -32,3 +51,5 @@ void randombytes(unsigned char *x,unsigned long long xlen)
     xlen -= i;
   }
 }
+
+#endif
