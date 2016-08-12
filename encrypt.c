@@ -24,6 +24,7 @@
 #include "crypto/scrypt/crypto_scrypt.h"
 #include "bsdcompat/compat.h"
 #include "bsdcompat/readpassphrase.h"
+#include "util/base64.h"
 
 struct hdr {
 	unsigned char nonce[NONCEBYTES];
@@ -144,8 +145,19 @@ symcrypt(unsigned char *ctext_buf, unsigned char *pad_ptext_buf, struct hdr *hdr
 void
 write_enc(FILE *outfile, struct hdr *hdr, unsigned char *ctext_buf, char *filename)
 {
+	unsigned int b64_ctext_len = Base64encode_len(hdr->padded_len);
+	unsigned int b64_hdr_len = Base64encode_len(sizeof(struct hdr));
+	unsigned char b64_hdr[b64_hdr_len];
+	unsigned char *b64_ctext_buf = NULL;
+	Base64encode(b64_hdr, hdr, sizeof(struct hdr));
+
+	if ((b64_ctext_buf = malloc(b64_ctext_len)) == NULL)
+		errx(1, "couldn't allocate base64 ciphertext buf");
+	Base64encode(b64_ctext_buf, ctext_buf, hdr->padded_len);
+
 	outfile = fopen(filename, "wb");
-        fwrite(hdr, sizeof(struct hdr), 1, outfile);
-        fwrite(ctext_buf, hdr->padded_len, 1, outfile);
-        fclose(outfile);
+        fwrite(b64_hdr, sizeof(b64_hdr), 1, outfile);
+        fwrite(b64_ctext_buf, b64_ctext_len, 1, outfile);
+	fclose(outfile);
+	free(b64_ctext_buf);
 }

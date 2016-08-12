@@ -24,6 +24,7 @@
 #include "crypto/scrypt/crypto_scrypt.h"
 #include "bsdcompat/compat.h"
 #include "bsdcompat/readpassphrase.h"
+#include "util/base64.h"
 
 struct hdr {
         unsigned char nonce[NONCEBYTES];
@@ -42,17 +43,29 @@ static void symdecrypt(unsigned char *, unsigned char *, struct hdr *);
 int
 jf_decrypt(FILE *infile, FILE *pkey, FILE *skey, char *filename)
 {
-	unsigned char *ctext_buf, *ptext_buf = NULL;
+	unsigned char *b64_ctext_buf, *ctext_buf, *ptext_buf = NULL;
 	FILE *outfile = NULL;
 	struct hdr *hdr;
-	
+	unsigned int b64_hdr_len = Base64encode_len(sizeof(struct hdr));
+	unsigned long long b64_ctext_len;
+	unsigned char b64_hdr[b64_hdr_len];
 	hdr = malloc(sizeof(struct hdr));
-	if (fread(hdr, 1, sizeof(struct hdr), infile) != sizeof(struct hdr))
+	
+	if (fread(b64_hdr, 1, b64_hdr_len, infile) != b64_hdr_len)
 		err(1, "error reading in header");;
+	Base64decode(hdr, b64_hdr);
+
+	b64_ctext_len = Base64encode_len(hdr->padded_len);
+
+	if ((b64_ctext_buf = malloc(b64_ctext_len)) == NULL)
+		err(1, "error allocating ctext_buf");
+	read_infile(infile, b64_ctext_buf, b64_ctext_len);
 	
 	if ((ctext_buf = malloc(hdr->padded_len)) == NULL)
-		err(1, "error allocating ctext_buf");
-	read_infile(infile, ctext_buf, hdr->padded_len);
+		errx(1, "couldn't allocate ciphertext buf");
+
+	Base64decode(ctext_buf, b64_ctext_buf);
+	free(b64_ctext_buf);
 
 	if ((ptext_buf = malloc(hdr->padded_len)) == NULL)
 		err(1, "error creating ptext_buf");
