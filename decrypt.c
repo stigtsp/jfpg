@@ -53,7 +53,7 @@ jf_decrypt(FILE *infile, FILE *pkey, FILE *skey, char *filename)
 	
 	if (fread(b64_hdr, 1, b64_hdr_len, infile) != b64_hdr_len)
 		err(1, "error reading in header");;
-	Base64decode(hdr, b64_hdr);
+	Base64decode((char *)hdr, b64_hdr);
 
 	b64_ctext_len = Base64encode_len(hdr->padded_len);
 

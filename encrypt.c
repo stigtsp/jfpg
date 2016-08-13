@@ -149,7 +149,7 @@ write_enc(FILE *outfile, struct hdr *hdr, unsigned char *ctext_buf, char *filena
 	unsigned int b64_hdr_len = Base64encode_len(sizeof(struct hdr));
 	unsigned char b64_hdr[b64_hdr_len];
 	unsigned char *b64_ctext_buf = NULL;
-	Base64encode(b64_hdr, hdr, sizeof(struct hdr));
+	Base64encode(b64_hdr, (char *)hdr, sizeof(struct hdr));
 
 	if ((b64_ctext_buf = malloc(b64_ctext_len)) == NULL)
 		errx(1, "couldn't allocate base64 ciphertext buf");
