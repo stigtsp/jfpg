@@ -86,7 +86,7 @@ jf_decrypt(FILE *infile, FILE *pkey, FILE *skey, char *filename)
 
 	filename[strlen(filename) - strlen(EXT)] = 0;
 
-	outfile = fopen(filename, "wb");
+	outfile = fopen(filename, "w");
 	fwrite(ptext_buf + ZEROBYTES, hdr->padded_len - ZEROBYTES, 1, outfile); 
 
 	safer_free(ptext_buf, hdr->padded_len);

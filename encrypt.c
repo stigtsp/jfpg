@@ -155,7 +155,7 @@ write_enc(FILE *outfile, struct hdr *hdr, unsigned char *ctext_buf, char *filena
 		errx(1, "couldn't allocate base64 ciphertext buf");
 	Base64encode(b64_ctext_buf, ctext_buf, hdr->padded_len);
 
-	outfile = fopen(filename, "wb");
+	outfile = fopen(filename, "w");
         fwrite(b64_hdr, sizeof(b64_hdr), 1, outfile);
         fwrite(b64_ctext_buf, b64_ctext_len, 1, outfile);
 	fclose(outfile);
