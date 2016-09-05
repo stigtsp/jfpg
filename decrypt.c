@@ -53,7 +53,7 @@ jf_decrypt(FILE *infile, FILE *pkey, FILE *skey, char *filename)
 	
 	if (fread(b64_hdr, 1, b64_hdr_len, infile) != b64_hdr_len)
 		err(1, "error reading in header");;
-	Base64decode((char *)hdr, b64_hdr);
+	Base64decode((char *)hdr, (char *)b64_hdr);
 
 	b64_ctext_len = Base64encode_len(hdr->padded_len);
 
@@ -64,7 +64,7 @@ jf_decrypt(FILE *infile, FILE *pkey, FILE *skey, char *filename)
 	if ((ctext_buf = malloc(hdr->padded_len)) == NULL)
 		errx(1, "couldn't allocate ciphertext buf");
 
-	Base64decode(ctext_buf, b64_ctext_buf);
+	Base64decode((char *)ctext_buf, (char *)b64_ctext_buf);
 	free(b64_ctext_buf);
 
 	if ((ptext_buf = malloc(hdr->padded_len)) == NULL)
