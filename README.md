@@ -1,3 +1,10 @@
+DISCLAIMER: I wrote this in order to learn. I made every effort
+to write it securely, but I can't make any guarantees. Use it at 
+your own risk. As always, if you do find a security problem or bug, 
+comments, advice, and/or patches are welcome and appreciated. Thanks!
+
+
+
 JFPG is a file encryption and signing utility 
 roughly inspired by the GPG/PGP encryption utility. It
 offers a more or less similar  syntax for encryption,
