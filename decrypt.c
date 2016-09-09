@@ -91,6 +91,7 @@ jf_decrypt(FILE *infile, FILE *pkey, FILE *skey, char *filename)
 
 	safer_free(ptext_buf, hdr->padded_len);
 	fclose(outfile);
+	free(hdr);
 	printf("decryption successful\n");
 }
 
