@@ -72,5 +72,6 @@ jf_verify(FILE *infile, FILE *fd_sign_pk, char *filename)
 
 	/* Write m to file */
 	write_file(outfile, m, mlen, filename);
+	free(m);
 	printf("good signature\n");
 } 

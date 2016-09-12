@@ -24,5 +24,4 @@ write_file(FILE *fd, void *buf, size_t bufsize, char *filename)
 	if ((fd = fopen(filename, "w")) == NULL)
 		err(1, "error creating file");
 	fwrite(buf, 1, bufsize, fd);
-	free(buf);
 }

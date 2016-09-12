@@ -76,5 +76,6 @@ jf_sign(FILE *infile, FILE *fd_sign_sk, char *filename)
 
 	/* Write file */
 	write_file(outfile, sm, smlen, filename);
+	free(sm);
 	printf("signing successful\n");
 } 
