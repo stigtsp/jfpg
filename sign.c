@@ -45,6 +45,7 @@ jf_sign(FILE *infile, FILE *fd_sign_sk, char *filename)
 
 	/* Base64 decode secret signing key */
 	Base64decode((char *)sign_sk, b64_sign_sk);
+	safer_free(b64_sign_sk, b64signseclen);
 
 	/* Get sizes of message and signed message */
 	mlen = get_size(infile);
@@ -74,6 +75,6 @@ jf_sign(FILE *infile, FILE *fd_sign_sk, char *filename)
 		errx(1, "filename too long");
 
 	/* Write file */
-	write_file(outfile, sm, smlen, filename); 
+	write_file(outfile, sm, smlen, filename);
 	printf("signing successful\n");
 } 
