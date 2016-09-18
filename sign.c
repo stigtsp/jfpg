@@ -45,7 +45,7 @@ jf_sign(FILE *infile, FILE *fd_sign_sk, char *filename)
 
 	/* Base64 decode secret signing key */
 	Base64decode((char *)sign_sk, b64_sign_sk);
-	safer_free(b64_sign_sk, b64signseclen);
+	explicit_bzero(b64_sign_sk, b64signseclen);
 
 	/* Get sizes of message and signed message */
 	mlen = get_size(infile);
@@ -65,7 +65,7 @@ jf_sign(FILE *infile, FILE *fd_sign_sk, char *filename)
 	/* Sign message m and place results in sm */
 	if ((crypto_sign(sm, &smlen, m, mlen, sign_sk)) != 0)
 		errx(1, "error signing");
-	
+
 	/* Zap secret key */
 	explicit_bzero(sign_sk, sizeof(sign_sk));
 	free(m);

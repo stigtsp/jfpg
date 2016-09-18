@@ -45,7 +45,6 @@ jf_verify(FILE *infile, FILE *fd_sign_pk, char *filename)
 
 	/* Base64 decode pub key */
 	Base64decode((char *)sign_pk, b64_sign_pk);
-	free(b64_sign_pk);
 
 	/* Get sizes for signed message and message */
 	smlen = get_size(infile);
