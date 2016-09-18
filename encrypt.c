@@ -95,7 +95,6 @@ jf_encrypt(FILE *infile, FILE *key, FILE *skey, char *filename, int alg, long lo
 		errx(1, "filename too long");
 
 	write_enc(outfile, hdr, ctext_buf, filename);
-	free(ctext_buf);
 	free(hdr);
 	printf("encryption successful\n");
 }
@@ -114,6 +113,7 @@ asymcrypt(unsigned char *ctext_buf, unsigned char *pad_ptext_buf,
             nonce, pk, sk) != 0)
 	 	err(1, "error encrypting data");
 	explicit_bzero(sk, sizeof(sk));
+	free(ctext_buf);
 }
 
 void
@@ -140,6 +140,7 @@ symcrypt(unsigned char *ctext_buf, unsigned char *pad_ptext_buf, struct hdr *hdr
             hdr->nonce, symkey) != 0)
                 err(1, "error encrypting message");
 	explicit_bzero(symkey, sizeof(symkey));
+	free(ctext_buf);
 }
 
 void
