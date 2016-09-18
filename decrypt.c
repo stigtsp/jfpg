@@ -24,7 +24,6 @@
 #include "crypto/scrypt/crypto_scrypt.h"
 #include "bsdcompat/compat.h"
 #include "bsdcompat/readpassphrase.h"
-#include "util/base64.h"
 
 struct hdr {
         unsigned char nonce[NONCEBYTES];
@@ -43,30 +42,17 @@ static void symdecrypt(unsigned char *, unsigned char *, struct hdr *);
 void
 jf_decrypt(FILE *infile, FILE *pkey, FILE *skey, char *filename)
 {
-	unsigned char *b64_ctext_buf, *ctext_buf, *ptext_buf = NULL;
+	unsigned char *ctext_buf, *ptext_buf = NULL;
 	FILE *outfile = NULL;
 	struct hdr *hdr;
-	unsigned int b64_hdr_len = Base64encode_len(sizeof(struct hdr));
-	unsigned long long b64_ctext_len;
-	unsigned char b64_hdr[b64_hdr_len];
 	hdr = malloc(sizeof(struct hdr));
-	
-	if (fread(b64_hdr, 1, b64_hdr_len, infile) != b64_hdr_len)
-		err(1, "error reading in header");;
-	Base64decode((char *)hdr, (char *)b64_hdr);
 
-	b64_ctext_len = Base64encode_len(hdr->padded_len);
-
-	if ((b64_ctext_buf = malloc(b64_ctext_len)) == NULL)
-		err(1, "error allocating ctext_buf");
-	read_infile(infile, b64_ctext_buf, b64_ctext_len);
-	
+	if (fread(hdr, 1, sizeof(struct hdr), infile) != sizeof(struct hdr))
+		err(1, "error reading in header");
 	if ((ctext_buf = malloc(hdr->padded_len)) == NULL)
-		errx(1, "couldn't allocate ciphertext buf");
-
-	Base64decode((char *)ctext_buf, (char *)b64_ctext_buf);
-	free(b64_ctext_buf);
-
+		err(1, "error allocating ctext_buf");
+	if (fread(ctext_buf, 1, hdr->padded_len, infile) != hdr->padded_len)
+		err(1, "error reading in ciphertet");
 	if ((ptext_buf = malloc(hdr->padded_len)) == NULL)
 		err(1, "error creating ptext_buf");
 
@@ -121,7 +107,7 @@ symdecrypt(unsigned char *ptext_buf, unsigned char *ctext_buf, struct hdr *hdr)
 
         if (crypto_scrypt((unsigned char *)pass, strlen(pass), hdr->nonce, sizeof(hdr->nonce),
             hdr->rounds, hdr->r, hdr->p, symkey, sizeof(symkey)) != 0)
-                err(1, "error hashing key");
+		err(1, "scrypt could not generate key");
         explicit_bzero(pass, sizeof(pass));
 
         if (crypto_secretbox_open(ptext_buf, ctext_buf, hdr->padded_len,
