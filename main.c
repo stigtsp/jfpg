@@ -21,7 +21,10 @@
 #include <string.h>
 
 #include "jfpg.h"
+#include "defines.h"
 #include "bsdcompat/compat.h"
+
+static void usage(void);
 
 int
 main(int argc, char **argv)

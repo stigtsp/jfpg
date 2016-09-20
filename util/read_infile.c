@@ -18,8 +18,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "../jfpg.h"
-
 void 
 read_infile(FILE *infile, unsigned char *buf, unsigned long long size)
 {

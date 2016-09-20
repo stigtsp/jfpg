@@ -1,0 +1,21 @@
+#define FILENAME_SIZE   255
+#define EXT     ".xsalsa20"
+#define SIGNEXT ".signed"
+#define PUB     "-pubkey.curve25519"
+#define SEC     "-secretkey.curve25519"
+#define PUBSIGN "-signing-pubkey.ed25519"
+#define SECSIGN "-signing-secretkey.ed25519"
+
+#define R       8
+#define P       1
+#define DEFAULT_ROUNDS  18
+#define MIN_ROUNDS      16
+#define MAX_ROUNDS      25
+#define IDSIZE  128
+#define B64NAMESIZE     192
+#define PUBKEYBYTES     crypto_box_PUBLICKEYBYTES
+#define SECKEYBYTES     crypto_box_SECRETKEYBYTES
+#define NONCEBYTES      crypto_box_NONCEBYTES
+#define ZEROBYTES       crypto_box_ZEROBYTES
+#define SIGNSKEYBYTES   crypto_sign_SECRETKEYBYTES
+#define SIGNPKEYBYTES   crypto_sign_PUBLICKEYBYTES

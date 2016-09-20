@@ -20,7 +20,7 @@
 
 #include "base64.h"
 #include "../bsdcompat/compat.h"
-#include "../jfpg.h"
+#include "../defines.h"
 #include "../crypto/tweetnacl.h"
 
 void

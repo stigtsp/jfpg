@@ -20,24 +20,16 @@
 #include <string.h>
 
 #include "jfpg.h"
+#include "defines.h"
+#include "symops.h"
 #include "crypto/tweetnacl.h"
 #include "crypto/scrypt/crypto_scrypt.h"
 #include "bsdcompat/compat.h"
 #include "bsdcompat/readpassphrase.h"
-
-struct hdr {
-	unsigned char nonce[NONCEBYTES];
-	unsigned long long padded_len;
-	long long rounds;
-	unsigned int r;
-	unsigned int p;
-	int alg;
-};
+#include "util/utils.h"
 
 static void asymcrypt(unsigned char *, unsigned char *,
     unsigned long long, unsigned char *, FILE *, FILE *);
-
-static void symcrypt(unsigned char *, unsigned char *, struct hdr *);
 
 static void write_enc(FILE *, struct hdr *, unsigned char *, char *);
 
@@ -111,32 +103,6 @@ asymcrypt(unsigned char *ctext_buf, unsigned char *pad_ptext_buf,
             nonce, pk, sk) != 0)
 	 	err(1, "error encrypting data");
 	explicit_bzero(sk, sizeof(sk));
-}
-
-void
-symcrypt(unsigned char *ctext_buf, unsigned char *pad_ptext_buf, struct hdr *hdr)
-{
-	char pass[512];
-	char pass2[512];
-	unsigned char symkey[SYMKEYBYTES];
-	
-	if (!readpassphrase("enter passphrase: ", pass, sizeof(pass), RPP_FLAGS))
-		err(1, "error getting passphrase");
-	if (!readpassphrase("confirm passphrase: ", pass2, sizeof(pass2), RPP_FLAGS))
-		err(1, "error confirming passphrase");
-	if (strcmp(pass, pass2) != 0)
-		errx(1, "passphrases do not match");
-	explicit_bzero(pass2, sizeof(pass2));
-
-	if (crypto_scrypt((unsigned char *)pass, strlen(pass), hdr->nonce, sizeof(hdr->nonce),
-	    hdr->rounds, hdr->r, hdr->p, symkey, sizeof(symkey)) != 0)
-		err(1, "scrypt could not generate key");
-	explicit_bzero(pass, sizeof(pass));
-
-	if (crypto_secretbox(ctext_buf, pad_ptext_buf, hdr->padded_len,
-            hdr->nonce, symkey) != 0)
-                err(1, "error encrypting message");
-	explicit_bzero(symkey, sizeof(symkey));
 }
 
 void

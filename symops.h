@@ -14,8 +14,16 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-void jf_encrypt(FILE *, FILE *, FILE *, char *, int, long long);
-void jf_decrypt(FILE *, FILE *, FILE *, char *);
-void jf_newkey(char *);
-void jf_sign(FILE *, FILE *, char *);
-void jf_verify(FILE *, FILE *, char *);
+#include "crypto/tweetnacl.h"
+
+struct hdr {
+        unsigned char nonce[crypto_secretbox_NONCEBYTES];
+        unsigned long long padded_len;
+        long long rounds;
+        unsigned int r;
+        unsigned int p;
+        int alg;
+};
+
+void symcrypt(unsigned char *, unsigned char *, struct hdr *);
+void symdecrypt(unsigned char *, unsigned char *, struct hdr *);

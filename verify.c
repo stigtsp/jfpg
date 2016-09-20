@@ -20,8 +20,10 @@
 #include <string.h>
 
 #include "jfpg.h"
-#include "util/base64.h"
+#include "defines.h"
 #include "crypto/tweetnacl.h"
+#include "util/base64.h"
+#include "util/utils.h"
 
 void
 jf_verify(FILE *infile, FILE *fd_sign_pk, char *filename)

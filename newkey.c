@@ -19,9 +19,11 @@
 #include <string.h>
 
 #include "jfpg.h"
+#include "defines.h"
 #include "util/base64.h"
 #include "crypto/tweetnacl.h"
 #include "bsdcompat/compat.h"
+#include "util/utils.h"
 
 static void name_keys(char *, char *, char *,
     char *, char *);
