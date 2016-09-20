@@ -52,7 +52,7 @@ jf_decrypt(FILE *infile, FILE *pkey, FILE *skey, char *filename)
 		if (pkey == NULL)
 		    errx(1, "must provide sender's public key");
 		if (skey == NULL) 
-		    errx(1, "must provide sender's secret key");
+		    errx(1, "must provide recipient's secret key");
 		asymdecrypt(ptext_buf, ctext_buf, hdr->padded_len, hdr->nonce,
 	    	pkey, skey);
 	} else if (hdr->alg == 2) {
