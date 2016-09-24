@@ -114,7 +114,7 @@ main(int argc, char **argv)
 		if (infile == NULL)
 		    errx(1, "must provide a file for encryption");
 		if (rounds == 0)
-		    rounds = exp2(DEFAULT_ROUNDS);
+		    rounds = exp2(SCRYPT_N);
 		jf_encrypt(infile, NULL, NULL, filename, 2, rounds);
 	} else if (flag == 4) {
 		if (infile == NULL)

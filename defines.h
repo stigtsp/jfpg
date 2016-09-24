@@ -6,9 +6,9 @@
 #define PUBSIGN "-signing-pubkey.ed25519"
 #define SECSIGN "-signing-secretkey.ed25519"
 
-#define R       8
-#define P       1
-#define DEFAULT_ROUNDS  18
+#define	SCRYPT_N	18
+#define SCRYPT_R	14
+#define SCRYPT_P	2
 #define MIN_ROUNDS      16
 #define MAX_ROUNDS      25
 #define IDSIZE  128

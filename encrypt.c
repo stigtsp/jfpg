@@ -73,8 +73,8 @@ jf_encrypt(FILE *infile, FILE *key, FILE *skey, char *filename, int alg, long lo
 	    	    hdr->nonce, key, skey);
 	} else if (alg == 2) {
 		hdr->rounds = rounds;
-		hdr->r = R;
-		hdr->p = P;
+		hdr->r = SCRYPT_R;
+		hdr->p = SCRYPT_P;
 		hdr->alg = 2;
 		symcrypt(ctext_buf, pad_ptext_buf, hdr);
 	} else { 

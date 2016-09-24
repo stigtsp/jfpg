@@ -70,10 +70,9 @@ and a pair of Ed25519 keys for signing. It takes your desired key ID
 Symmetric encryption invoked by the -c option uses scrypt as a key derivation function. 
 The optional "rounds" parameter determines both the amount of time and memory consumed by scrypt. 
 It is used to derive the scrypt N parameter, where N = 2^rounds. The default is 18, thus N = 2^18
-if the user doesn't specify the number of rounds. This results in 256 MB of RAM and
-about 1 second for each password entry on an i5-540M. The minimum number for the rounds option 
-is 16 and the maximum is 25. Increasing this parameter by one doubles the RAM usage, thus 
-a value of 16 will use 64 MB, 17 will use 128 MB, etc.  
+if the user doesn't specify the number of rounds. 
+The minimum number for the rounds option 
+is 16 and the maximum is 25. Increasing this by one doubles RAM usage.
 
 Threat Model
 
