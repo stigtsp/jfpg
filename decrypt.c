@@ -40,11 +40,11 @@ jf_decrypt(FILE *infile, FILE *pkey, FILE *skey, char *filename)
 	hdr = malloc(sizeof(struct hdr));
 
 	if (fread(hdr, 1, sizeof(struct hdr), infile) != sizeof(struct hdr))
-		err(1, "error reading in header");
+		errx(1, "error reading in header");
 	if ((ctext_buf = malloc(hdr->padded_len)) == NULL)
 		err(1, "error allocating ctext_buf");
 	if (fread(ctext_buf, 1, hdr->padded_len, infile) != hdr->padded_len)
-		err(1, "error reading in ciphertet");
+		errx(1, "error reading in ciphertet");
 	if ((ptext_buf = malloc(hdr->padded_len)) == NULL)
 		err(1, "error creating ptext_buf");
 
