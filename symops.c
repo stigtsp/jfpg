@@ -26,7 +26,7 @@
 #define SYMKEYBYTES     crypto_secretbox_KEYBYTES
 #define RPP_FLAGS       RPP_REQUIRE_TTY
 
-static void derive_key(struct hdr *, unsigned char *, unsigned char *);
+static void derive_key(struct hdr *, char *, unsigned char *);
 
 void
 symcrypt(unsigned char *ctext_buf, unsigned char *pad_ptext_buf, struct hdr *hdr)
@@ -71,7 +71,7 @@ symdecrypt(unsigned char *ptext_buf, unsigned char *ctext_buf, struct hdr *hdr)
 }
 
 void
-derive_key(struct hdr *hdr, unsigned char *pass, unsigned char *symkey)
+derive_key(struct hdr *hdr, char *pass, unsigned char *symkey)
 {
 	if (crypto_scrypt((unsigned char *)pass, strlen(pass), hdr->nonce, sizeof(hdr->nonce),
             hdr->rounds, hdr->r, hdr->p, symkey, SYMKEYBYTES) != 0)
