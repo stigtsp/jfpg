@@ -23,9 +23,7 @@
 #include "defines.h"
 #include "symops.h"
 #include "crypto/tweetnacl.h"
-#include "crypto/scrypt/crypto_scrypt.h"
 #include "bsdcompat/compat.h"
-#include "bsdcompat/readpassphrase.h"
 #include "util/utils.h"
 
 static void asymdecrypt(unsigned char *, unsigned char *, unsigned long long,
