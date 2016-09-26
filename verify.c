@@ -33,20 +33,20 @@ jf_verify(FILE *infile, FILE *fd_sign_pk, char *filename)
 	int b64len = 0;
 
 	/* Get size for base64-encoded pub key */
-	b64len = Base64encode_len(SIGNPKEYBYTES);
+	b64len = encode_len(SIGNPKEYBYTES);
 
 	char b64_sign_pk[b64len];
-	unsigned char sign_pk[SIGNPKEYBYTES + 2];
+	unsigned char sign_pk[SIGNPKEYBYTES];
 	FILE *outfile = NULL;	
 
 	/* Read in pub key */
-	if (fread(b64_sign_pk, 1, sizeof(b64_sign_pk), fd_sign_pk)
-	    != sizeof(b64_sign_pk))
+	if (fread(b64_sign_pk, 1, b64len, fd_sign_pk)
+	    != b64len - 1)
 		errx(1, "error reading in public key");
 	fclose(fd_sign_pk);
 
 	/* Base64 decode pub key */
-	Base64decode((char *)sign_pk, b64_sign_pk);
+	b64_pton(b64_sign_pk, sign_pk, SIGNPKEYBYTES);
 
 	/* Get sizes for signed message and message */
 	smlen = get_size(infile);
