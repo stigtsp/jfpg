@@ -110,7 +110,7 @@ write_enc(FILE *outfile, struct hdr *hdr, unsigned char *ctext_buf, char *filena
 {
 	outfile = fopen(filename, "w");
         fwrite(hdr, sizeof(struct hdr), 1, outfile);
-	fwrite(ctext_buf, hdr->padded_len, 1, outfile);
+	fwrite(ctext_buf, 1, hdr->padded_len, outfile);
 	fclose(outfile);
 	free(hdr);
 	free(ctext_buf);

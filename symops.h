@@ -16,6 +16,7 @@
 
 #include "crypto/tweetnacl.h"
 
+#pragma pack (1)
 struct hdr {
         unsigned char nonce[crypto_secretbox_NONCEBYTES];
         unsigned long long padded_len;
