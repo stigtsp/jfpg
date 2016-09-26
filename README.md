@@ -1,6 +1,10 @@
 DISCLAIMER: I wrote this in order to learn. I made every effort
 to write it securely, but I can't make any guarantees. Use it at 
-your own risk. As always, if you do find a security problem or bug, 
+your own risk. This is an alpha version. I will probably make changes
+that are not backwards compatible. Don't use it on anything you want to
+decrypt later just yet. 
+
+As always, if you do find a security problem or bug, 
 comments, advice, and/or patches are welcome and appreciated. Thanks!
 
 
