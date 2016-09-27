@@ -27,8 +27,8 @@ void
 get_keys(unsigned char *pk, unsigned char *sk, FILE *fd_pk, FILE *fd_sk)
 {
 	int b64len = encode_len(PUBKEYBYTES);
-	unsigned char b64_pk[b64len];
-	unsigned char b64_sk[b64len];
+	char b64_pk[b64len];
+	char b64_sk[b64len];
 
 	if (fread(b64_pk, 1, b64len, fd_pk) != b64len - 1)
 		errx(1, "could not read in base64 pubkey");
