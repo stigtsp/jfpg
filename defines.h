@@ -7,8 +7,8 @@
 #define SECSIGN "-signing-secretkey.ed25519"
 
 #define	SCRYPT_N	18
-#define SCRYPT_R	14
-#define SCRYPT_P	2
+#define SCRYPT_R	15
+#define SCRYPT_P	1
 #define MIN_ROUNDS      16
 #define MAX_ROUNDS      25
 #define IDSIZE  128
