@@ -52,18 +52,18 @@ Encrypt "file.pdf" for recipient "bob". Note that the sender's secret key is req
 
 	jfpg -e -f file.pdf -p bob-pubkey.curve25519 -k joe-secretkey.curve25519	
 
-Decrypt "file.pdf.xsalsa20", assuming you are bob and the sender was joe. Sender's
+Decrypt "file.pdf.jfpg", assuming you are bob and the sender was joe. Sender's
 public key is required.
 
-	jfpg -d -f file.pdf.xsalsa20 -p joe-pubkey.curve25519 -k bob-secretkey.curve25519
+	jfpg -d -f file.pdf.jfpg -p joe-pubkey.curve25519 -k bob-secretkey.curve25519
 
 Encrypt "file.pdf" with a password-derived key
 
 	jfpg -c -f file.pdf
 
-Decrypt "file.pdf.xsalsa20" with password
+Decrypt "file.pdf.jfpg" with password
 
-	jfpg -d -f file.pdf.xsalsa20 
+	jfpg -d -f file.pdf.jfpg 
 
 You will need to create a new set of keys when you first use JFPG 
 for signing/verifying or asymmetric encryption/decryption. 
