@@ -1,6 +1,10 @@
 DISCLAIMER: I wrote this in order to learn. I made every effort
 to write it securely, but I can't make any guarantees. Use it at 
-your own risk. As always, if you do find a security problem or bug, 
+your own risk. This is an alpha version. I will probably make changes
+that are not backwards compatible. Don't use it on anything you want to
+decrypt later just yet. 
+
+As always, if you do find a security problem or bug, 
 comments, advice, and/or patches are welcome and appreciated. Thanks!
 
 
@@ -48,18 +52,18 @@ Encrypt "file.pdf" for recipient "bob". Note that the sender's secret key is req
 
 	jfpg -e -f file.pdf -p bob-pubkey.curve25519 -k joe-secretkey.curve25519	
 
-Decrypt "file.pdf.xsalsa20", assuming you are bob and the sender was joe. Sender's
+Decrypt "file.pdf.jfpg", assuming you are bob and the sender was joe. Sender's
 public key is required.
 
-	jfpg -d -f file.pdf.xsalsa20 -p joe-pubkey.curve25519 -k bob-secretkey.curve25519
+	jfpg -d -f file.pdf.jfpg -p joe-pubkey.curve25519 -k bob-secretkey.curve25519
 
 Encrypt "file.pdf" with a password-derived key
 
 	jfpg -c -f file.pdf
 
-Decrypt "file.pdf.xsalsa20" with password
+Decrypt "file.pdf.jfpg" with password
 
-	jfpg -d -f file.pdf.xsalsa20 
+	jfpg -d -f file.pdf.jfpg 
 
 You will need to create a new set of keys when you first use JFPG 
 for signing/verifying or asymmetric encryption/decryption. 
@@ -69,8 +73,7 @@ and a pair of Ed25519 keys for signing. It takes your desired key ID
 
 Symmetric encryption invoked by the -c option uses scrypt as a key derivation function. 
 The optional "rounds" parameter determines both the amount of time and memory consumed by scrypt. 
-It is used to derive the scrypt N parameter, where N = 2^rounds. The default is 18, thus N = 2^18
-if the user doesn't specify the number of rounds. 
+It is used to derive the scrypt N parameter, where N = 2^rounds.
 The minimum number for the rounds option 
 is 16 and the maximum is 25. Increasing this by one doubles RAM usage.
 

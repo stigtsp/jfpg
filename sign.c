@@ -33,20 +33,20 @@ jf_sign(FILE *infile, FILE *fd_sign_sk, char *filename)
 	int b64signseclen = 0;
 	
 	/* Get size for base64-encoded secret key */
-	b64signseclen = Base64encode_len(SIGNSKEYBYTES);
+	b64signseclen = encode_len(SIGNSKEYBYTES);
 
 	char b64_sign_sk[b64signseclen];
-	unsigned char sign_sk[SIGNSKEYBYTES + 2];
+	unsigned char sign_sk[SIGNSKEYBYTES];
 	FILE *outfile = NULL;	
 
 	/* Read in secret signing key */
-	if (fread(b64_sign_sk, 1, sizeof(b64_sign_sk), fd_sign_sk) 
-	    != sizeof(b64_sign_sk))
+	if (fread(b64_sign_sk, 1, b64signseclen, fd_sign_sk) 
+	    != (b64signseclen - 1))
 		errx(1, "error reading in secret signing key");
 	fclose(fd_sign_sk);
 
 	/* Base64 decode secret signing key */
-	Base64decode((char *)sign_sk, b64_sign_sk);
+	b64_pton(b64_sign_sk, sign_sk, SIGNSKEYBYTES);
 	explicit_bzero(b64_sign_sk, b64signseclen);
 
 	/* Get sizes of message and signed message */

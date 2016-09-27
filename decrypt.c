@@ -24,7 +24,6 @@
 #include "symops.h"
 #include "crypto/tweetnacl.h"
 #include "bsdcompat/compat.h"
-#include "bsdcompat/readpassphrase.h"
 #include "util/utils.h"
 
 static void asymdecrypt(unsigned char *, unsigned char *, unsigned long long,
@@ -35,15 +34,17 @@ jf_decrypt(FILE *infile, FILE *pkey, FILE *skey, char *filename)
 {
 	unsigned char *ctext_buf, *ptext_buf = NULL;
 	FILE *outfile = NULL;
-	struct hdr *hdr;
-	hdr = malloc(sizeof(struct hdr));
+	struct hdr *hdr = NULL;
 
+	hdr = malloc(sizeof(struct hdr));
+	if (hdr == NULL)
+		err(1, "error allocating hdr");
 	if (fread(hdr, 1, sizeof(struct hdr), infile) != sizeof(struct hdr))
 		errx(1, "error reading in header");
 	if ((ctext_buf = malloc(hdr->padded_len)) == NULL)
 		err(1, "error allocating ctext_buf");
 	if (fread(ctext_buf, 1, hdr->padded_len, infile) != hdr->padded_len)
-		errx(1, "error reading in ciphertet");
+		errx(1, "error reading in ciphertext");
 	if ((ptext_buf = malloc(hdr->padded_len)) == NULL)
 		err(1, "error creating ptext_buf");
 
@@ -76,8 +77,8 @@ void
 asymdecrypt(unsigned char *ptext_buf, unsigned char *ctext_buf,
     unsigned long long ctext_size, unsigned char *nonce, FILE *pkey, FILE *skey)
 {
-	unsigned char pk[PUBKEYBYTES + 2];
-	unsigned char sk[SECKEYBYTES + 2];
+	unsigned char pk[PUBKEYBYTES];
+	unsigned char sk[SECKEYBYTES];
 
 	get_keys(pk, sk, pkey, skey); 
  

@@ -38,12 +38,9 @@ jf_newkey(char *id)
 	unsigned char sign_sk[SIGNSKEYBYTES];
 	unsigned char sign_pk[SIGNPKEYBYTES];
 	
-	/* Get sizes of base64-encoded keys. PUBKEYBYTES
-	 * and SECKEYBYTES are the same, so it's ok to use b64len
-	 * for both.
-	*/
-	b64len = Base64encode_len(PUBKEYBYTES);
-	b64signseclen = Base64encode_len(SIGNSKEYBYTES);
+	/* Get sizes of base64-encoded keys. */ 
+	b64len = encode_len(sizeof(pk));
+	b64signseclen = encode_len(sizeof(sign_sk));
 
 	char b64_pk[b64len];
 	char b64_sk[b64len];
@@ -69,28 +66,28 @@ jf_newkey(char *id)
 	name_keys(id, pk_name, sk_name, sign_pk_name, sign_sk_name);
 
 	/* Write secret key to disk, then zero it */	
-	if (Base64encode(b64_sk, (char *)sk, sizeof(sk)) != sizeof(b64_sk))
+	if (b64_ntop(sk, sizeof(sk), b64_sk, sizeof(b64_sk)) == -1)
 		errx(1, "error encoding secret key");
 	explicit_bzero(sk, sizeof(sk));
-	write_file(seckey, b64_sk, sizeof(b64_sk), sk_name);
+	write_file(seckey, b64_sk, strlen(b64_sk), sk_name);
 	explicit_bzero(b64_sk, sizeof(b64_sk));
 
 	/* Write signing secret key to disk, then zero it */
-	if (Base64encode(b64_sign_sk, (char *)sign_sk, sizeof(sign_sk)) != sizeof(b64_sign_sk))
+	if (b64_ntop(sign_sk, sizeof(sign_sk), b64_sign_sk, sizeof(b64_sign_sk)) == -1)
 		errx(1, "error encoding signing secret key");
 	explicit_bzero(sign_sk, sizeof(sign_sk));
-	write_file(sign_seckey, b64_sign_sk, sizeof(b64_sign_sk), sign_sk_name);
+	write_file(sign_seckey, b64_sign_sk, strlen(b64_sign_sk), sign_sk_name);
 	explicit_bzero(b64_sign_sk, sizeof(b64_sign_sk));
 
 	/* Write public key to disk */
-	if (Base64encode(b64_pk, (char *)pk, sizeof(pk)) != sizeof(b64_pk))
+	if (b64_ntop(pk, sizeof(pk), b64_pk, sizeof(b64_pk)) == -1)
 		errx(1, "error encoding pub key");
-	write_file(pubkey, b64_pk, sizeof(b64_pk), pk_name);
+	write_file(pubkey, b64_pk, strlen(b64_pk), pk_name);
 
 	/* Write publick signing key to disk */
-	if (Base64encode(b64_sign_pk, (char *)sign_pk, sizeof(sign_pk)) != sizeof(b64_sign_pk))	
+	if (b64_ntop(sign_pk, sizeof(sign_pk), b64_sign_pk, sizeof(b64_sign_pk)) == -1)	
 		errx(1, "error encoding signing pub key");
-	write_file(sign_pubkey, b64_sign_pk, sizeof(b64_sign_pk), sign_pk_name);
+	write_file(sign_pubkey, b64_sign_pk, strlen(b64_sign_pk), sign_pk_name);
 }
 
 void

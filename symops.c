@@ -44,11 +44,6 @@ symcrypt(unsigned char *ctext_buf, unsigned char *pad_ptext_buf, struct hdr *hdr
         explicit_bzero(pass2, sizeof(pass2));
 	derive_key(hdr, pass, symkey);
 	explicit_bzero(pass, sizeof(pass));
-
-        if (crypto_secretbox(ctext_buf, pad_ptext_buf, hdr->padded_len,
-            hdr->nonce, symkey) != 0)
-                err(1, "error encrypting message");
-        explicit_bzero(symkey, sizeof(symkey));
 }
 
 void

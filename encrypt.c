@@ -24,7 +24,6 @@
 #include "symops.h"
 #include "crypto/tweetnacl.h"
 #include "bsdcompat/compat.h"
-#include "bsdcompat/readpassphrase.h"
 #include "util/utils.h"
 
 static void asymcrypt(unsigned char *, unsigned char *,
@@ -39,9 +38,11 @@ jf_encrypt(FILE *infile, FILE *key, FILE *skey, char *filename,
 	unsigned long long ptext_size, ctext_size = 0;
 	unsigned char *pad_ptext_buf, *ptext_buf, *ctext_buf = NULL;
 	FILE *outfile = NULL;
-	struct hdr *hdr;
+	struct hdr *hdr = NULL;
 	
 	hdr = malloc(sizeof(struct hdr));
+	if (hdr == NULL)
+		err(1, "error allocating hdr");
 	randombytes(hdr->nonce, NONCEBYTES);
 
 	ptext_size = get_size(infile);
@@ -94,8 +95,8 @@ asymcrypt(unsigned char *ctext_buf, unsigned char *pad_ptext_buf,
     unsigned long long ptext_size, unsigned char *nonce, FILE *key, FILE *skey)
 {
 
-	unsigned char pk[PUBKEYBYTES + 2];
-	unsigned char sk[SECKEYBYTES + 2];
+	unsigned char pk[PUBKEYBYTES];
+	unsigned char sk[SECKEYBYTES];
 
 	get_keys(pk, sk, key, skey); 
 
@@ -110,7 +111,7 @@ write_enc(FILE *outfile, struct hdr *hdr, unsigned char *ctext_buf, char *filena
 {
 	outfile = fopen(filename, "w");
         fwrite(hdr, sizeof(struct hdr), 1, outfile);
-	fwrite(ctext_buf, hdr->padded_len, 1, outfile);
+	fwrite(ctext_buf, 1, hdr->padded_len, outfile);
 	fclose(outfile);
 	free(hdr);
 	free(ctext_buf);
