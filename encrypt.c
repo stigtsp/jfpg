@@ -23,7 +23,6 @@
 #include "defines.h"
 #include "symops.h"
 #include "crypto/tweetnacl.h"
-#include "crypto/scrypt/crypto_scrypt.h"
 #include "bsdcompat/compat.h"
 #include "bsdcompat/readpassphrase.h"
 #include "util/utils.h"
@@ -34,7 +33,8 @@ static void asymcrypt(unsigned char *, unsigned char *,
 static void write_enc(FILE *, struct hdr *, unsigned char *, char *);
 
 void
-jf_encrypt(FILE *infile, FILE *key, FILE *skey, char *filename, int alg, long long rounds)
+jf_encrypt(FILE *infile, FILE *key, FILE *skey, char *filename,
+	   int alg, long long rounds, long long mem)
 {
 	unsigned long long ptext_size, ctext_size = 0;
 	unsigned char *pad_ptext_buf, *ptext_buf, *ctext_buf = NULL;
@@ -66,15 +66,15 @@ jf_encrypt(FILE *infile, FILE *key, FILE *skey, char *filename, int alg, long lo
 
 	if (alg == 1) {
 		hdr->rounds = 0;
-		hdr->r = 0;
+		hdr->mem = 0;
 		hdr->p = 0;
 		hdr->alg = 1;
 		asymcrypt(ctext_buf, pad_ptext_buf, hdr->padded_len,
 	    	    hdr->nonce, key, skey);
 	} else if (alg == 2) {
 		hdr->rounds = rounds;
-		hdr->r = SCRYPT_R;
-		hdr->p = SCRYPT_P;
+		hdr->mem = mem;
+		hdr->p = KDF_P;
 		hdr->alg = 2;
 		symcrypt(ctext_buf, pad_ptext_buf, hdr);
 	} else { 

@@ -20,7 +20,7 @@ struct hdr {
         unsigned char nonce[crypto_secretbox_NONCEBYTES];
         unsigned long long padded_len;
         long long rounds;
-        unsigned int r;
+        unsigned int mem;
         unsigned int p;
         int alg;
 };

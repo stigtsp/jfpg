@@ -6,12 +6,14 @@
 #define PUBSIGN "-signing-pubkey.ed25519"
 #define SECSIGN "-signing-secretkey.ed25519"
 
-#define	SCRYPT_N	18
-#define SCRYPT_R	14
-#define SCRYPT_P	2
-#define MIN_ROUNDS      16
-#define MAX_ROUNDS      25
-#define IDSIZE  128
+#define	KDF_N		2
+#define KDF_MEM		192
+#define KDF_P		8
+#define MIN_ROUNDS      2
+#define MAX_ROUNDS      14
+#define	MIN_MEM		56
+#define	MAX_MEM		32000
+#define IDSIZE  	128
 #define B64NAMESIZE     192
 #define PUBKEYBYTES     crypto_box_PUBLICKEYBYTES
 #define SECKEYBYTES     crypto_box_SECRETKEYBYTES

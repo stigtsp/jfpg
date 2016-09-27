@@ -31,6 +31,7 @@ main(int argc, char **argv)
 {
 	int ch, flag = 0;
 	long long rounds = 0;
+	long long mem = 0;
 	FILE *infile = NULL;
 	FILE *pkey = NULL;
 	FILE *skey = NULL;
@@ -43,7 +44,7 @@ main(int argc, char **argv)
 	if (argc < 2)
 		usage();
 
-	while ((ch = getopt(argc, argv, "vscedn:k:s:p:f:r:")) != -1) {
+	while ((ch = getopt(argc, argv, "vscedn:k:s:p:f:r:m:")) != -1) {
 		switch (ch) {
 		case 'n':
 		    if (jf_strlcpy(id, optarg, sizeof(id)) >= sizeof(id))
@@ -85,6 +86,12 @@ main(int argc, char **argv)
 			errx(1, "error getting rounds: %s", errstr);
 		    rounds = exp2(rounds);
 		    break;
+		case 'm':
+		    mem = strtonum(optarg, MIN_MEM, MAX_MEM, &errstr);
+		    if (errstr != NULL)
+			errx(1, "error setting KDF memory: %s", errstr);
+		    mem = (mem * 1024);
+		    break;
 		default:
 		    usage();
 		    break;
@@ -109,13 +116,15 @@ main(int argc, char **argv)
 		    errx(1, "must provide recipient's public key");
 		if (skey == NULL)
 		    errx(1, "must provide sender's secret key");
-		jf_encrypt(infile, pkey, skey, filename, 1, 1);
+		jf_encrypt(infile, pkey, skey, filename, 1, 1, 1);
 	} else if (flag == 3) {
 		if (infile == NULL)
 		    errx(1, "must provide a file for encryption");
 		if (rounds == 0)
-		    rounds = exp2(SCRYPT_N);
-		jf_encrypt(infile, NULL, NULL, filename, 2, rounds);
+		    rounds = exp2(KDF_N);
+		if (mem == 0)
+		    mem = (KDF_MEM * 1024);
+		jf_encrypt(infile, NULL, NULL, filename, 2, rounds, mem);
 	} else if (flag == 4) {
 		if (infile == NULL)
 		    errx(1, "must provide a file for decryption");
