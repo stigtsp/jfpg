@@ -10,7 +10,7 @@ encode_len(size_t len)
 }
 
 size_t
-decode_len(unsigned char *buf)
+decode_len(char *buf)
 {
         size_t len = strlen(buf);
         int padlen = 0;
