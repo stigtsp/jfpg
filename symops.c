@@ -60,7 +60,7 @@ symdecrypt(unsigned char *ptext_buf, unsigned char *ctext_buf, struct hdr *hdr)
 
         if (!readpassphrase("enter passphrase: ", pass, sizeof(pass), RPP_FLAGS))
                 err(1, "error getting passphrase");
-	
+
 	derive_key(hdr, pass, symkey);
         explicit_bzero(pass, sizeof(pass));
 

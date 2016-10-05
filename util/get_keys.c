@@ -18,6 +18,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "utils.h"
 #include "base64.h"
 #include "../bsdcompat/compat.h"
 #include "../defines.h"
@@ -28,16 +29,12 @@ get_keys(unsigned char *pk, unsigned char *sk, FILE *fd_pk, FILE *fd_sk)
 {
 	int b64len = encode_len(PUBKEYBYTES);
 	char b64_pk[b64len];
-	char b64_sk[b64len];
 
 	if (fread(b64_pk, 1, b64len, fd_pk) != b64len - 1)
 		errx(1, "could not read in base64 pubkey");
-	if (fread(b64_sk, 1, b64len, fd_sk) != b64len - 1)
-		errx(1, "could not read in base64 secret key");
+	decrypt_key(sk, fd_sk);
 	fclose(fd_pk);
 	fclose(fd_sk);
 
 	b64_pton(b64_pk, pk, PUBKEYBYTES);
-	b64_pton(b64_sk, sk, SECKEYBYTES);
-	explicit_bzero(b64_sk, sizeof(b64_sk));
 }
