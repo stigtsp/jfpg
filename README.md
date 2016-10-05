@@ -27,7 +27,7 @@ To compile, simply run "make".
 
 Command syntax
 
-	new keypairs:           jfpg -n new-key-id
+	new keypairs:           jfpg -n new-key-id [-r rounds]
 	sign:                   jfpg -s -f file -k signer-secretkey
 	verify sig:   	        jfpg -v -f file -p signer-pubkey
 	encrypt with keypair:   jfpg -e -f file -p recipient-pubkey -k sender-secretkey
