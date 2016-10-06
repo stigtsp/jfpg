@@ -5,11 +5,11 @@
 #define SEC     "-secretkey.curve25519"
 #define PUBSIGN "-signing-pubkey.ed25519"
 #define SECSIGN "-signing-secretkey.ed25519"
-#define	KDF_N		2
-#define KDF_MEM		192
-#define KDF_P		8
-#define MIN_ROUNDS      2
-#define MAX_ROUNDS      14
+#define	ARGON2_T	4
+#define ARGON2_MEM	192
+#define ARGON2_P	2
+#define MIN_ROUNDS      4
+#define MAX_ROUNDS      256
 #define	MIN_MEM		56
 #define	MAX_MEM		32000
 #define IDSIZE  	128

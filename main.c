@@ -15,7 +15,6 @@
  */
 
 #include <err.h>
-#include <math.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
@@ -84,7 +83,6 @@ main(int argc, char **argv)
 		    rounds = strtonum(optarg, MIN_ROUNDS, MAX_ROUNDS, &errstr);
 		    if (errstr != NULL)
 			errx(1, "error getting rounds: %s", errstr);
-		    rounds = exp2(rounds);
 		    break;
 		case 'm':
 		    mem = strtonum(optarg, MIN_MEM, MAX_MEM, &errstr);
@@ -121,9 +119,9 @@ main(int argc, char **argv)
 		if (infile == NULL)
 		    errx(1, "must provide a file for encryption");
 		if (rounds == 0)
-		    rounds = exp2(KDF_N);
+		    rounds = ARGON2_T;
 		if (mem == 0)
-		    mem = (KDF_MEM * 1024);
+		    mem = (ARGON2_MEM * 1024);
 		jf_encrypt(infile, NULL, NULL, filename, 2, rounds, mem);
 	} else if (flag == 4) {
 		if (infile == NULL)
