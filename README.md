@@ -75,17 +75,17 @@ separately encrypted and you will be asked to provide a passphrase for each.
 Key generation and symmetric encryption (using the "-c" option) will
 derive an encryption key from a passphrase, using Argon2i. 
 The rounds parameter for Argon2 can be invoked with "-r" and the amount of 
-RAM used, in megabytes, can be specified with the "-m" option. The defaults
+RAM used, in mebibytes, can be specified with the "-m" option. The defaults
 below are used if you do not specify anything. 
 
-Default rounds: 6
-Default RAM: 384 MB
-Default parallelism: 2
+Default rounds: 6 
+Default RAM: 512 MiB 
+Default parallelism: 2 
 
-Min rounds: 4
-Max rounds: 256
-Min mem: 56 MB
-Max mem: 32 GB
+Min rounds: 4 
+Max rounds: 1024 
+Min mem: 56 MiB 
+Max mem: 32 GiB 
 
 The parallelism parameter is not user configurable.
 
