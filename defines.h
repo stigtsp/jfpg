@@ -5,13 +5,15 @@
 #define SEC     "-secretkey.curve25519"
 #define PUBSIGN "-signing-pubkey.ed25519"
 #define SECSIGN "-signing-secretkey.ed25519"
-#define	ARGON2_T	4
-#define ARGON2_MEM	192
+
+#define	ARGON2_T	6
+#define ARGON2_MEM	384
 #define ARGON2_P	2
 #define MIN_ROUNDS      4
 #define MAX_ROUNDS      256
 #define	MIN_MEM		56
 #define	MAX_MEM		32000
+
 #define IDSIZE  	128
 #define B64NAMESIZE     192
 #define PUBKEYBYTES     crypto_box_PUBLICKEYBYTES

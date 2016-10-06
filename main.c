@@ -29,8 +29,8 @@ int
 main(int argc, char **argv)
 {
 	int ch, flag = 0;
-	long long rounds = 0;
-	long long mem = 0;
+	long long rounds = ARGON2_T;
+	long long mem = ARGON2_MEM * 1024;
 	FILE *infile = NULL;
 	FILE *pkey = NULL;
 	FILE *skey = NULL;
@@ -106,9 +106,7 @@ main(int argc, char **argv)
 		usage();
 
 	if (flag == 1) {
-		if (rounds == 0)
-		    rounds = exp2(SCRYPT_N);
-		jf_newkey(id, rounds);
+		jf_newkey(id, rounds, mem);
 	} else if (flag == 2) {
 		if (infile == NULL)
 		    errx(1, "must provide a file for encryption");
@@ -120,10 +118,6 @@ main(int argc, char **argv)
 	} else if (flag == 3) {
 		if (infile == NULL)
 		    errx(1, "must provide a file for encryption");
-		if (rounds == 0)
-		    rounds = ARGON2_T;
-		if (mem == 0)
-		    mem = (ARGON2_MEM * 1024);
 		jf_encrypt(infile, NULL, NULL, filename, 2, rounds, mem);
 	} else if (flag == 4) {
 		if (infile == NULL)

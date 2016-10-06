@@ -31,9 +31,10 @@ static void name_keys(char *, char *, char *,
     char *, char *);
 static void encrypt_keys(unsigned char *, unsigned char *, 
 			 unsigned char *, unsigned char *,
-			 struct hdr *, struct hdr *, long long);
+			 struct hdr *, struct hdr *, long long,
+			 long long);
 void
-jf_newkey(char *id, long long rounds)
+jf_newkey(char *id, long long rounds, long long mem)
 {
 	
 	int b64len = 0;
@@ -83,7 +84,7 @@ jf_newkey(char *id, long long rounds)
 
 	/* Encrypt secret keys */ 
 	encrypt_keys(sk, sk_crypt, sign_sk, sign_sk_crypt, sk_hdr,
-		     sign_sk_hdr, rounds);
+		     sign_sk_hdr, rounds, mem);
 
 	/* Zap plaintext secret keys */
 	explicit_bzero(sk, sizeof(sk));
@@ -120,14 +121,14 @@ jf_newkey(char *id, long long rounds)
 void
 encrypt_keys(unsigned char *sk, unsigned char *sk_crypt, unsigned char *sign_sk,
 	     unsigned char *sign_sk_crypt, struct hdr *sk_hdr, struct hdr *sign_sk_hdr,
-	     long long rounds)
+	     long long rounds, long long mem)
 {
 	/* Get ready to encrypt curve25519 secret key */
 	randombytes(sk_hdr->nonce, sizeof(sk_hdr->nonce));
 	sk_hdr->padded_len = SECKEYBYTES + ZEROBYTES;
 	sk_hdr->rounds = rounds;
-	sk_hdr->r = SCRYPT_R;
-	sk_hdr->p = SCRYPT_P;
+	sk_hdr->mem = mem;
+	sk_hdr->p = ARGON2_P;
 	sk_hdr->alg = 2;
 
 	/* Encrypt secret key */
@@ -137,8 +138,8 @@ encrypt_keys(unsigned char *sk, unsigned char *sk_crypt, unsigned char *sign_sk,
 	randombytes(sign_sk_hdr->nonce, sizeof(sign_sk_hdr->nonce));
         sign_sk_hdr->padded_len = SIGNSKEYBYTES + ZEROBYTES;
         sign_sk_hdr->rounds = rounds;
-        sign_sk_hdr->r = SCRYPT_R;
-        sign_sk_hdr->p = SCRYPT_P;
+        sign_sk_hdr->mem = mem;
+        sign_sk_hdr->p = ARGON2_P;
         sign_sk_hdr->alg = 2;
 
 	/* Encrypt signing key */

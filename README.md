@@ -27,12 +27,12 @@ To compile, simply run "make".
 
 Command syntax
 
-	new keypairs:           jfpg -n new-key-id [-r rounds]
+	new keypairs:           jfpg -n new-key-id [-r rounds] [-m memory]
 	sign:                   jfpg -s -f file -k signer-secretkey
 	verify sig:   	        jfpg -v -f file -p signer-pubkey
 	encrypt with keypair:   jfpg -e -f file -p recipient-pubkey -k sender-secretkey
 	decrypt:                jfpg -d -f file [-p sender-pubkey -s recipient-secretkey] 
-	symmetrically encrypt:	jfpg -c -f file [-r rounds]
+	symmetrically encrypt:	jfpg -c -f file [-r rounds] [-m memory]
 
 Examples
 
@@ -69,14 +69,25 @@ You will need to create a new set of keys when you first use JFPG
 for signing/verifying or asymmetric encryption/decryption. 
 This will 2 keypairs, a pair of Curve25519 keys for encryption/decryption
 and a pair of Ed25519 keys for signing. It takes your desired key ID
-(name, email, etc) as its only required option. The rounds parameter
-for scrypt can be invoked with "-r" and is optional. 
+(name, email, etc) as its only required option. Secret keys will be 
+separately encrypted and you will be asked to provide a passphrase for each.  
 
-Symmetric encryption invoked by the -c option uses scrypt as a key derivation function. 
-The optional "rounds" parameter determines both the amount of time and memory consumed by scrypt. 
-It is used to derive the scrypt N parameter, where N = 2^rounds.
-The minimum number for the rounds option 
-is 16 and the maximum is 25. Increasing this by one doubles RAM usage.
+Key generation and symmetric encryption (using the "-c" option) will
+derive an encryption key from a passphrase, using Argon2i. 
+The rounds parameter for Argon2 can be invoked with "-r" and the amount of 
+RAM used, in megabytes, can be specified with the "-m" option. The defaults
+below are used if you do not specify anything. 
+
+Default rounds: 6
+Default RAM: 384 MB
+Default parallelism: 2
+
+Min rounds: 4
+Max rounds: 256
+Min mem: 56 MB
+Max mem: 32 GB
+
+The parallelism parameter is not user configurable.
 
 Threat Model
 
@@ -90,7 +101,7 @@ Primitives used
 	Signing: Ed25519
 	Asymmetric key exchange and cipher: X25519 key exchange with Curve25519 keys and XSalsa20-Poly1305 
 	Symmetric cipher: XSalsa20-Poly1305
-	Password-based key derivation: Scrypt
+	Password-based key derivation: Argon2i version 1.3
 
 Limitations
 

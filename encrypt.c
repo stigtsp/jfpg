@@ -75,7 +75,7 @@ jf_encrypt(FILE *infile, FILE *key, FILE *skey, char *filename,
 	} else if (alg == 2) {
 		hdr->rounds = rounds;
 		hdr->mem = mem;
-		hdr->p = KDF_P;
+		hdr->p = ARGON2_P;
 		hdr->alg = 2;
 		symcrypt(ctext_buf, pad_ptext_buf, hdr);
 	} else { 
