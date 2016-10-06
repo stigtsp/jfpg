@@ -1,32 +1,34 @@
-DISCLAIMER: I wrote this in order to learn. I made every effort
+*DISCLAIMER: I wrote this in order to learn. I made every effort
 to write it securely, but I can't make any guarantees. Use it at 
 your own risk. This is an alpha version. I will probably make changes
 that are not backwards compatible. Don't use it on anything you want to
-decrypt later just yet. 
+decrypt later just yet.* 
 
-As always, if you do find a security problem or bug, 
-comments, advice, and/or patches are welcome and appreciated. Thanks!
-
-
+Introduction
+------------
 
 JFPG is a file encryption and signing utility 
 roughly inspired by the GPG/PGP encryption utility. It
 offers a more or less similar  syntax for encryption,
 decryption, signing, and verification. It uses
-Dan Bernstein's Tweetnacl crypto library. JFPG
+Dan Bernstein's Tweetnacl crypto library, thus it
 only uses  modern, high speed crypto primitives 
 and all encryption is authenticated by default. 
 However, this means it is not backwards-compatible
 with GPG/PGP (probably a feature, not a bug). 
 
+Compiling
+---------
+
+Simply run "make".
+
 JFPG should compile on most Unix-like systems without any
 dependencies. It has been tested and confirmed to work on 
 OpenBSD, DragonFly BSD, Ubuntu 14.04 and 16.04, and OS X Yosemite. 
 It may work on other systems as well. 
-To compile, simply run "make".
 
 Command syntax
-
+--------------
 	new keypairs:           jfpg -n new-key-id [-r rounds] [-m memory]
 	sign:                   jfpg -s -f file -k signer-secretkey
 	verify sig:   	        jfpg -v -f file -p signer-pubkey
@@ -35,7 +37,7 @@ Command syntax
 	symmetrically encrypt:	jfpg -c -f file [-r rounds] [-m memory]
 
 Examples
-
+--------
 Create signing and encryption keypairs for "joe"
 
 	jfpg -n joe
@@ -78,40 +80,46 @@ The rounds parameter for Argon2 can be invoked with "-r" and the amount of
 RAM used, in mebibytes, can be specified with the "-m" option. The defaults
 below are used if you do not specify anything. 
 
-Default rounds: 6 
-Default RAM: 512 MiB 
-Default parallelism: 2 
+- Default rounds: 6 
+- Default RAM: 512 MiB 
+- Default parallelism: 2 
 
-Min rounds: 4 
-Max rounds: 1024 
-Min mem: 56 MiB 
-Max mem: 32 GiB 
+- Min rounds: 4 
+- Max rounds: 1024 
+- Min mem: 56 MiB 
+- Max mem: 32 GiB 
 
 The parallelism parameter is not user configurable.
 
 Threat Model
 
-JFPG is designed to secure data that is (or will be) in transit or sitting on a remote server.
-Secret keys are encrypted, however, they should ideally be kept offline. 
-They remain vulnerable to weak passwords or an attacker with the ability to capture your 
-password. Securing your machine against such an attacker is beyond the scope of JFPG. 
+JFPG is designed to secure data that is (or will be) in transit or sitting on 
+a remote server. Secret keys are encrypted, however, they should ideally be kept
+offline. They remain vulnerable to weak passwords or an attacker with the 
+ability to capture your password. Securing your machine against such an attacker
+is beyond the scope of JFPG.
+
  
 Primitives used
+---------------
 
-	Signing: Ed25519
-	Asymmetric key exchange and cipher: X25519 key exchange with Curve25519 keys and XSalsa20-Poly1305 
-	Symmetric cipher: XSalsa20-Poly1305
-	Password-based key derivation: Argon2i version 1.3
+- Signing: Ed25519
+- Asymmetric key exchange: X25519 key exchange with Curve25519 keys 
+- Symmetric cipher: XSalsa20-Poly1305
+- Password-based key derivation: Argon2i version 1.3
 
 Limitations
+-----------
 
-	Decrypting messages on a big-endian machine that were encrypted on a little
+- Decrypting messages on a big-endian machine that were encrypted on a little
 	endian machine or vice-versa does not work at the moment. 
 
-	There is no forward secrecy. A given sender/receiver pair will
+- There is no forward secrecy. A given sender/receiver pair will
 	calculate the same shared key for all of their messages. This may be 
 	added in the future. 
 
-	JFPG does not manage keys for you. This is a problem that is likely
+- JFPG does not manage keys for you. This is a problem that is likely
 	beyond the ability of a command line utility to handle properly. 
 
+As always, if you do find a security problem or bug, 
+comments, advice, and/or patches are welcome and appreciated. Thanks!
