@@ -92,6 +92,7 @@ below are used if you do not specify anything.
 The parallelism parameter is not user configurable.
 
 Threat Model
+------------
 
 JFPG is designed to secure data that is (or will be) in transit or sitting on 
 a remote server. Secret keys are encrypted, however, they should ideally be kept
