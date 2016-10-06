@@ -96,12 +96,12 @@ asymcrypt(unsigned char *ctext_buf, unsigned char *pad_ptext_buf,
 {
 
 	unsigned char pk[PUBKEYBYTES];
-	unsigned char sk[SECKEYBYTES];
+	unsigned char sk[SECKEYBYTES + ZEROBYTES];
 
 	get_keys(pk, sk, key, skey); 
 
 	if (crypto_box(ctext_buf, pad_ptext_buf, ptext_size,
-            nonce, pk, sk) != 0)
+            nonce, pk, sk + ZEROBYTES) != 0)
 	 	err(1, "error encrypting data");
 	explicit_bzero(sk, sizeof(sk));
 }

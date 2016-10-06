@@ -78,12 +78,12 @@ asymdecrypt(unsigned char *ptext_buf, unsigned char *ctext_buf,
     unsigned long long ctext_size, unsigned char *nonce, FILE *pkey, FILE *skey)
 {
 	unsigned char pk[PUBKEYBYTES];
-	unsigned char sk[SECKEYBYTES];
+	unsigned char sk[SECKEYBYTES + ZEROBYTES];
 
 	get_keys(pk, sk, pkey, skey); 
  
 	if (crypto_box_open(ptext_buf, ctext_buf,
-            ctext_size, nonce, pk, sk) != 0)
+            ctext_size, nonce, pk, sk + ZEROBYTES) != 0)
                 errx(1, "error decrypting data");
 	explicit_bzero(sk, sizeof(sk));
 }

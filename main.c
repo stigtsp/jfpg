@@ -106,7 +106,9 @@ main(int argc, char **argv)
 		usage();
 
 	if (flag == 1) {
-		jf_newkey(id);
+		if (rounds == 0)
+		    rounds = exp2(SCRYPT_N);
+		jf_newkey(id, rounds);
 	} else if (flag == 2) {
 		if (infile == NULL)
 		    errx(1, "must provide a file for encryption");
@@ -146,10 +148,10 @@ main(int argc, char **argv)
 void
 usage(void)
 {
-	errx(1, "\nusage:\n\tjfpg -n new-key-id \
+	errx(1, "\nusage:\n\tjfpg -n new-key-id [-r rounds]\
 	    \n\tjfpg -s -f file -k signing-secretkey \
 	    \n\tjfpg -v -f file -p signing-publickey \
 	    \n\tjfpg -e -f file -p publickey -s secretkey \
 	    \n\tjfpg -d -f file [-p publickey -s secretkey] \
-	    \n\tjfpg -c -f file -r rounds");
+	    \n\tjfpg -c -f file [-r rounds]");
 }
