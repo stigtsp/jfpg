@@ -108,6 +108,7 @@ Primitives used
 - Asymmetric key exchange: X25519 key exchange with Curve25519 keys 
 - Symmetric cipher: XSalsa20-Poly1305
 - Password-based key derivation: Argon2i version 1.3
+- Random number generation: arc4random on OpenBSD. /dev/urandom everywhere else
 
 Limitations
 -----------
