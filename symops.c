@@ -18,10 +18,10 @@
 #include <string.h>
 
 #include "symops.h"
-#include "bsdcompat/compat.h"
-#include "bsdcompat/readpassphrase.h"
-#include "crypto/argon2/argon2.h"
-#include "crypto/tweetnacl.h"
+#include "compat.h"
+#include "readpassphrase.h"
+#include "argon2.h"
+#include "tweetnacl.h"
 
 #define SYMKEYBYTES     crypto_secretbox_KEYBYTES
 #define RPP_FLAGS       RPP_REQUIRE_TTY

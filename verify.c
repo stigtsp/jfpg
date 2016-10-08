@@ -21,9 +21,9 @@
 
 #include "jfpg.h"
 #include "defines.h"
-#include "crypto/tweetnacl.h"
-#include "util/base64.h"
-#include "util/utils.h"
+#include "tweetnacl.h"
+#include "base64.h"
+#include "utils.h"
 
 void
 jf_verify(FILE *infile, FILE *fd_sign_pk, char *filename)

@@ -21,7 +21,7 @@
 
 #include "jfpg.h"
 #include "defines.h"
-#include "bsdcompat/compat.h"
+#include "compat.h"
 
 static void usage(void);
 

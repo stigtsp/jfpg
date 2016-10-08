@@ -20,10 +20,10 @@
 
 #include "jfpg.h"
 #include "defines.h"
-#include "util/base64.h"
-#include "crypto/tweetnacl.h"
-#include "bsdcompat/compat.h"
-#include "util/utils.h"
+#include "base64.h"
+#include "tweetnacl.h"
+#include "compat.h"
+#include "utils.h"
 
 void
 jf_sign(FILE *infile, FILE *fd_sign_sk, char *filename)

@@ -22,9 +22,9 @@
 #include "jfpg.h"
 #include "defines.h"
 #include "symops.h"
-#include "crypto/tweetnacl.h"
-#include "bsdcompat/compat.h"
-#include "util/utils.h"
+#include "tweetnacl.h"
+#include "compat.h"
+#include "utils.h"
 
 static void asymcrypt(unsigned char *, unsigned char *,
     unsigned long long, unsigned char *, FILE *, FILE *);

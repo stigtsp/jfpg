@@ -22,10 +22,10 @@
 #include "jfpg.h"
 #include "defines.h"
 #include "symops.h"
-#include "util/base64.h"
-#include "crypto/tweetnacl.h"
-#include "bsdcompat/compat.h"
-#include "util/utils.h"
+#include "base64.h"
+#include "tweetnacl.h"
+#include "compat.h"
+#include "utils.h"
 
 static void name_keys(char *, char *, char *,
     char *, char *);
@@ -132,6 +132,7 @@ encrypt_keys(unsigned char *sk, unsigned char *sk_crypt, unsigned char *sign_sk,
 	sk_hdr->alg = 2;
 
 	/* Encrypt secret key */
+	printf("encrypting secret encryption key...\n");
 	symcrypt(sk_crypt, sk, sk_hdr);
 
 	/* Get ready to encrypt ed25519 signing key */
@@ -143,6 +144,7 @@ encrypt_keys(unsigned char *sk, unsigned char *sk_crypt, unsigned char *sign_sk,
         sign_sk_hdr->alg = 2;
 
 	/* Encrypt signing key */
+	printf("\nencrypting secret signing key...\n");
 	symcrypt(sign_sk_crypt, sign_sk, sign_sk_hdr);
 }
 void
