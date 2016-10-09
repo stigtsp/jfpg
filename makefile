@@ -19,7 +19,7 @@ jfpg: bsdcompat/explicit_bzero.c bsdcompat/strlcat.c bsdcompat/strlcpy.c \
 	utils/base64.c utils/utils.c \
 	encrypt.c decrypt.c newkey.c symops.c sign.c verify.c main.c \
 
-		$(CC) $(CFLAGS) -lpthread bsdcompat/explicit_bzero.c bsdcompat/strlcat.c bsdcompat/strlcpy.c \
+		$(CC) $(CFLAGS) bsdcompat/explicit_bzero.c bsdcompat/strlcat.c bsdcompat/strlcpy.c \
         	    bsdcompat/strtonum.c bsdcompat/readpassphrase.c \
 		    crypto/tweetnacl.c crypto/randombytes.c \
         	    crypto/argon2/argon2.c crypto/argon2/ref.c \
