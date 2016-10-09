@@ -8,7 +8,7 @@ IFLAGS = -Iinclude
 
 LFLAGS = -pthread
 
-CFLAGS = $(WARNFLAGS) $(SECFLAGS) $(IFLAGS) $(LFLAGS) -O3
+CFLAGS = $(WARNFLAGS) $(SECFLAGS) $(IFLAGS) $(LFLAGS) -O1
  
 jfpg: bsdcompat/explicit_bzero.c bsdcompat/strlcat.c bsdcompat/strlcpy.c \
 	bsdcompat/strtonum.c bsdcompat/readpassphrase.c \
