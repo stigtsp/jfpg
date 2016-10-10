@@ -1,5 +1,7 @@
 CC = cc
 
+OFLAGS = -O1
+
 WARNFLAGS = -Wall -Wformat-security
 
 SECFLAGS = -fstack-protector-all -fPIC -fPIE -D_FORTIFY_SOURCE=2 
@@ -8,7 +10,7 @@ IFLAGS = -Iinclude
 
 LFLAGS = -pthread
 
-CFLAGS = $(WARNFLAGS) $(SECFLAGS) $(IFLAGS) $(LFLAGS) -O1
+CFLAGS = $(OFLAGS) $(WARNFLAGS) $(SECFLAGS) $(IFLAGS) $(LFLAGS)
 
 SRC = bsdcompat/explicit_bzero.c bsdcompat/strlcat.c bsdcompat/strlcpy.c
 SRC += bsdcompat/strtonum.c bsdcompat/readpassphrase.c
