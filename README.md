@@ -81,13 +81,14 @@ RAM used, in mebibytes, can be specified with the "-m" option. The defaults
 below are used if you do not specify anything. 
 
 - Default rounds: 11
-- Default mem: 512 MiB 
-- Default parallelism: 2 (not user configurable) 
+- Default mem: 512 MiB
+- Default parallelism: 2 (not user configurable)
 
-- Min rounds: 4 
-- Max rounds: 1024 
-- Min mem: 56 MiB 
-- Max mem: 32 GiB 
+
+- Min rounds: 4
+- Max rounds: 1024
+- Min mem: 56 MiB
+- Max mem: 32 GiB
 
 These defaults work well for fast machines with plenty of RAM, but are
 potentially very slow on older, single core devices. Pick the largest
