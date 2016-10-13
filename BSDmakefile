@@ -19,7 +19,7 @@ SRC += $(KDF_DIR)/core.c $(KDF_DIR)/encoding.c
 SRC += $(KDF_DIR)/thread.c $(KDF_DIR)/blake2/blake2b.c
 
 TARGET ?= native
-OPTTEST !=      $(CC) -Iinclude -I$(KDF_DIR) -march=$(TARGET) $(KDf_DIR)/opt.c -c \
+OPTTEST !=      $(CC) -Iinclude -I$(KDF_DIR) -march=$(TARGET) $(KDF_DIR)/opt.c -c \
                         -o /dev/null 2>/dev/null; echo $?
 .ifdef $(OPTTEST)
 CFLAGS += -march=$(TARGET)
