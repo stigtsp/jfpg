@@ -20,9 +20,7 @@ with GPG/PGP (probably a feature, not a bug).
 Compiling
 ---------
 
-Linux and OS X: Simply run "make".
-
-*BSD: Run "make -f BSDmakefile".
+Simply run "make".
 
 JFPG should compile on most Unix-like systems without any
 dependencies. It has been tested and confirmed to work on 
