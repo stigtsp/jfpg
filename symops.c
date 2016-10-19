@@ -35,9 +35,9 @@ symcrypt(unsigned char *ctext_buf, unsigned char *pad_ptext_buf, struct hdr *hdr
 	char pass2[512];
 	unsigned char symkey[SYMKEYBYTES];
 
-	if (!readpassphrase("enter passphrase: ", pass, sizeof(pass), RPP_FLAGS))
+	if (!readpassphrase("enter new passphrase: ", pass, sizeof(pass), RPP_FLAGS))
 		err(1, "error getting passphrase");
-        if (!readpassphrase("confirm passphrase: ", pass2, sizeof(pass2), RPP_FLAGS))
+        if (!readpassphrase("confirm new passphrase: ", pass2, sizeof(pass2), RPP_FLAGS))
                 err(1, "error confirming passphrase");
         if (strcmp(pass, pass2) != 0)
                 errx(1, "passphrases do not match");
