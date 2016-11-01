@@ -6,10 +6,10 @@
 #define PUBSIGN "-signing-pubkey.ed25519"
 #define SECSIGN "-signing-secretkey.ed25519"
 
-#define	ARGON2_T	11
+#define	ARGON2_T	1
 #define ARGON2_MEM	512
 #define ARGON2_P	2
-#define MIN_ROUNDS      4
+#define MIN_ROUNDS      1
 #define MAX_ROUNDS      1024
 #define	MIN_MEM		56
 #define	MAX_MEM		32000

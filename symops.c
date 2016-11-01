@@ -71,7 +71,7 @@ symdecrypt(unsigned char *ptext_buf, unsigned char *ctext_buf, struct hdr *hdr)
 void
 derive_key(struct hdr *hdr, char *pass, unsigned char *symkey)
 {
-	if (argon2i_hash_raw(hdr->rounds, hdr->mem, hdr->p, pass, strlen(pass), hdr->nonce,
+	if (argon2d_hash_raw(hdr->rounds, hdr->mem, hdr->p, pass, strlen(pass), hdr->nonce,
                 sizeof(hdr->nonce), symkey, SYMKEYBYTES) != 0)
 		errx(1, "argon2 could not derive key");
 }

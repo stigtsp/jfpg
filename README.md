@@ -75,23 +75,22 @@ and a pair of Ed25519 keys for signing. It takes your desired key ID
 separately encrypted and you will be asked to provide a passphrase for each.  
 
 Key generation and symmetric encryption (using the "-c" option) will
-derive an encryption key from a passphrase, using Argon2i. 
+derive an encryption key from a passphrase, using Argon2d. 
 The rounds parameter for Argon2 can be invoked with "-r" and the amount of 
 RAM used, in mebibytes, can be specified with the "-m" option. The defaults
 below are used if you do not specify anything. 
 
-- Default rounds: 11
+- Default rounds: 1
 - Default mem: 512 MiB
 - Default parallelism: 2 (not user configurable)
-
-
-- Min rounds: 4
+- Min rounds: 1
 - Max rounds: 1024
 - Min mem: 56 MiB
 - Max mem: 32 GiB
 
-These defaults work well for fast machines with plenty of RAM, but are
-potentially very slow on older, single core devices. Pick the largest
+The defaults work well for fast machines with plenty of RAM, but are
+potentially very slow on older, single core devices, and will not work
+at all on devices with less than 512 MiB of RAM free. Pick the largest
 values that are tolerable for your hardware.
 
 Threat Model
@@ -110,7 +109,7 @@ Primitives used
 - Signing: Ed25519
 - Asymmetric key exchange: X25519 key exchange with Curve25519 keys 
 - Symmetric cipher: XSalsa20-Poly1305
-- Password-based key derivation: Argon2i version 1.3
+- Password-based key derivation: Argon2d version 1.3
 - Random number generation: arc4random on OpenBSD. /dev/urandom everywhere else
 
 Limitations
