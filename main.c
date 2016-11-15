@@ -142,10 +142,10 @@ main(int argc, char **argv)
 void
 usage(void)
 {
-	errx(1, "\nusage:\n\tjfpg -n new-key-id [-r rounds]\
+	errx(1, "\nusage:\n\tjfpg -n new-key-id [-r rounds] [-m memory]\
 	    \n\tjfpg -s -f file -k signing-secretkey \
 	    \n\tjfpg -v -f file -p signing-publickey \
 	    \n\tjfpg -e -f file -p publickey -s secretkey \
 	    \n\tjfpg -d -f file [-p publickey -s secretkey] \
-	    \n\tjfpg -c -f file [-r rounds]");
+	    \n\tjfpg -c -f file [-r rounds] [-m memory]");
 }
