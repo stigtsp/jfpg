@@ -2,7 +2,7 @@ CC = cc
 
 KDF_DIR = crypto/argon2
 
-OFLAGS = -O1
+OFLAGS = -O3
 
 WARNFLAGS = -Wall -Wformat-security
 
