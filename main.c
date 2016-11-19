@@ -106,8 +106,13 @@ main(int argc, char **argv)
 		usage();
 
 	if (flag == 1) {
+	
+		/* Generating new key pairs */	
 		jf_newkey(id, rounds, mem);
+	
 	} else if (flag == 2) {
+
+		/* Asymmetric encryption */
 		if (infile == NULL)
 		    errx(1, "must provide a file for encryption");
 		if (pkey == NULL)
@@ -115,27 +120,41 @@ main(int argc, char **argv)
 		if (skey == NULL)
 		    errx(1, "must provide sender's secret key");
 		jf_encrypt(infile, pkey, skey, filename, 1, 1, 1);
+
 	} else if (flag == 3) {
+
+		/* Symmetric encryption */
 		if (infile == NULL)
 		    errx(1, "must provide a file for encryption");
 		jf_encrypt(infile, NULL, NULL, filename, 2, rounds, mem);
+
 	} else if (flag == 4) {
+	
+		/* Decryption */
 		if (infile == NULL)
 		    errx(1, "must provide a file for decryption");
 		jf_decrypt(infile, pkey, skey, filename);
+
 	} else if (flag == 5) {
+
+		/* Signing */
 		if (infile == NULL)
 		    errx(1, "must provide a file for signing");	
 		if (skey == NULL)
 		    errx(1, "must provide signer's secret key");
 		jf_sign(infile, skey, filename);
+
 	} else if (flag == 6) {
+
+		/* Verifying signed file */
 		if (infile == NULL)
 		    errx(1, "must provide a file for sig verification");
 		if (pkey == NULL)
 		    errx(1, "must provide signer's public key");
 		jf_verify(infile, pkey, filename);
+
 	}
+
 	return (0);
 }
 

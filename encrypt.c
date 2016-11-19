@@ -36,36 +36,36 @@ jf_encrypt(FILE *infile, FILE *key, FILE *skey, char *filename,
 	   int alg, long long rounds, long long mem)
 {
 	unsigned long long ptext_size, ctext_size = 0;
-	unsigned char *pad_ptext_buf, *ptext_buf, *ctext_buf = NULL;
+	unsigned char *pad_ptext_buf, *ctext_buf = NULL;
 	FILE *outfile = NULL;
 	struct hdr *hdr = NULL;
 	
+	/* Allocate the struct that will be the file header */
 	hdr = malloc(sizeof(struct hdr));
 	if (hdr == NULL)
 		err(1, "error allocating hdr");
+	
+	/* Generate random nonce. This is safe because TweetNaCL 
+	 * uses XSalsa20, which has a 192 bit nonce. 
+	 */
 	randombytes(hdr->nonce, NONCEBYTES);
 
+	/* Get plaintext size and create buffer for it */
 	ptext_size = get_size(infile);
-	if ((ptext_buf = malloc(ptext_size)) == NULL)
-		err(1, "error allocating ptext_buf");
-	read_infile(infile, ptext_buf, ptext_size);
-
 	hdr->padded_len = (ptext_size + ZEROBYTES);
 	if ((pad_ptext_buf = malloc(hdr->padded_len)) == NULL)
 		err(1, "couldn't allocate pad ptext buf");
 
-	/* 0-pad first ZEROBYTES of pad_ptext_buf & copy in message */
+	/* 0-pad first ZEROBYTES of pad_ptext_buf & read in message */
 	memset(pad_ptext_buf, 0, ZEROBYTES);
-	memcpy(pad_ptext_buf + ZEROBYTES, ptext_buf, ptext_size);
-
-	/* Zero and free original plaintext buf */
-	safer_free(ptext_buf, ptext_size);
+	read_infile(infile, pad_ptext_buf + ZEROBYTES, ptext_size);
 
 	ctext_size = (hdr->padded_len);
 	if ((ctext_buf = malloc(ctext_size)) == NULL)
 		err(1, "error creating ctext buffer");
 
 	if (alg == 1) {
+	/* Asymmetric encryption */
 		hdr->rounds = 0;
 		hdr->mem = 0;
 		hdr->p = 0;
@@ -73,6 +73,7 @@ jf_encrypt(FILE *infile, FILE *key, FILE *skey, char *filename,
 		asymcrypt(ctext_buf, pad_ptext_buf, hdr->padded_len,
 	    	    hdr->nonce, key, skey);
 	} else if (alg == 2) {
+	/* Symmetric encryption */
 		hdr->rounds = rounds;
 		hdr->mem = mem;
 		hdr->p = ARGON2_P;
@@ -81,11 +82,15 @@ jf_encrypt(FILE *infile, FILE *key, FILE *skey, char *filename,
 	} else { 
 		errx(1, "don't know what to do");
 	}
+
+	/* Zero and free the plaintext as soon as we're done with it */
 	safer_free(pad_ptext_buf, hdr->padded_len);
 
+	/* Append the extension to the filename */
 	if (jf_strlcat(filename, EXT, FILENAME_SIZE) >= FILENAME_SIZE)
 		errx(1, "filename too long");
 
+	/* Write the encrypted file */
 	write_enc(outfile, hdr, ctext_buf, filename);
 	printf("encryption successful\n");
 }
@@ -98,11 +103,14 @@ asymcrypt(unsigned char *ctext_buf, unsigned char *pad_ptext_buf,
 	unsigned char pk[PUBKEYBYTES];
 	unsigned char sk[SECKEYBYTES + ZEROBYTES];
 
+	/* Read in the public and secret keys */
 	get_keys(pk, sk, key, skey); 
 
 	if (crypto_box(ctext_buf, pad_ptext_buf, ptext_size,
             nonce, pk, sk + ZEROBYTES) != 0)
 	 	err(1, "error encrypting data");
+	
+	/* Zap secret key */
 	explicit_bzero(sk, sizeof(sk));
 }
 

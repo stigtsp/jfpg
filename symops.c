@@ -35,19 +35,27 @@ symcrypt(unsigned char *ctext_buf, unsigned char *pad_ptext_buf, struct hdr *hdr
 	char pass2[512];
 	unsigned char symkey[SYMKEYBYTES];
 
+	/* Read in and confirm passphrase from stdin. */
 	if (!readpassphrase("enter new passphrase: ", pass, sizeof(pass), RPP_FLAGS))
 		err(1, "error getting passphrase");
         if (!readpassphrase("confirm new passphrase: ", pass2, sizeof(pass2), RPP_FLAGS))
                 err(1, "error confirming passphrase");
         if (strcmp(pass, pass2) != 0)
                 errx(1, "passphrases do not match");
-        explicit_bzero(pass2, sizeof(pass2));
+       
+	/* Zero the extra passphrase buffer, derive the key, then zero the
+	 * other passphrase buffer too
+	 */ 
+	explicit_bzero(pass2, sizeof(pass2));
 	derive_key(hdr, pass, symkey);
 	explicit_bzero(pass, sizeof(pass));
 
+	/* Encrypt */
 	if (crypto_secretbox(ctext_buf, pad_ptext_buf, hdr->padded_len,
 	    hdr->nonce, symkey) != 0)
-	err(1, "error encrypting message");
+		errx(1, "error encrypting message");
+	
+	/* Zero the key */
 	explicit_bzero(symkey, sizeof(symkey));
 }
 
@@ -56,21 +64,31 @@ symdecrypt(unsigned char *ptext_buf, unsigned char *ctext_buf, struct hdr *hdr)
 {
         char pass[512];
         unsigned char symkey[SYMKEYBYTES];
-        if (!readpassphrase("enter passphrase: ", pass, sizeof(pass), RPP_FLAGS))
+        
+	/* Read in passphrase from stdin */
+	if (!readpassphrase("enter passphrase: ", pass, sizeof(pass), RPP_FLAGS))
                 err(1, "error getting passphrase");
 
+	/* Derive the key, then zero the passphrase */
 	derive_key(hdr, pass, symkey);
 	explicit_bzero(pass, sizeof(pass));
 
+	/* Decrypt */
         if (crypto_secretbox_open(ptext_buf, ctext_buf, hdr->padded_len,
             hdr->nonce, symkey) != 0)
                 errx(1, "error decrypting data");
-        explicit_bzero(symkey, sizeof(symkey));
+        
+	/* Zero the key */
+	explicit_bzero(symkey, sizeof(symkey));
 }
 
 void
 derive_key(struct hdr *hdr, char *pass, unsigned char *symkey)
 {
+	/* Derive symmetric key from passphrase. Note that the salt in 
+	 * this case is just the nonce we generated earlier. It is long,
+	 * random, and unique per message, so this is safe to use here
+	 */
 	if (argon2d_hash_raw(hdr->rounds, hdr->mem, hdr->p, pass, strlen(pass), hdr->nonce,
                 sizeof(hdr->nonce), symkey, SYMKEYBYTES) != 0)
 		errx(1, "argon2 could not derive key");
