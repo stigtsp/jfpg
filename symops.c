@@ -35,7 +35,7 @@ symcrypt(unsigned char *ctext_buf, unsigned char *pad_ptext_buf, struct hdr *hdr
 	char pass2[512];
 	unsigned char symkey[SYMKEYBYTES];
 
-	/* Read in and confirm passphrase from stdin. */
+	/* Read in and confirm passphrase */
 	if (!readpassphrase("enter new passphrase: ", pass, sizeof(pass), RPP_FLAGS))
 		err(1, "error getting passphrase");
         if (!readpassphrase("confirm new passphrase: ", pass2, sizeof(pass2), RPP_FLAGS))
@@ -65,7 +65,7 @@ symdecrypt(unsigned char *ptext_buf, unsigned char *ctext_buf, struct hdr *hdr)
         char pass[512];
         unsigned char symkey[SYMKEYBYTES];
         
-	/* Read in passphrase from stdin */
+	/* Read in passphrase */
 	if (!readpassphrase("enter passphrase: ", pass, sizeof(pass), RPP_FLAGS))
                 err(1, "error getting passphrase");
 
