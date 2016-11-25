@@ -43,7 +43,7 @@ decrypt_key(unsigned char *key_plain, FILE *key_fd)
                 errx(1, "error reading in ciphertext");
 
         symdecrypt(key_plain, key_crypt, hdr);
-        safer_free(key_crypt, sizeof(key_crypt));
+        safer_free(key_crypt, hdr->padded_len);
         free(hdr);
 }
 
