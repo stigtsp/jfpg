@@ -29,8 +29,6 @@
 static void asymcrypt(unsigned char *, unsigned char *,
     unsigned long long, unsigned char *, FILE *, FILE *);
 
-static void write_enc(FILE *, struct hdr *, unsigned char *, char *);
-
 void
 jf_encrypt(FILE *infile, FILE *key, FILE *skey, char *filename,
 	   int alg, long long rounds, long long mem)
@@ -92,6 +90,8 @@ jf_encrypt(FILE *infile, FILE *key, FILE *skey, char *filename,
 
 	/* Write the encrypted file */
 	write_enc(outfile, hdr, ctext_buf, filename);
+	free(ctext_buf);
+	free(hdr);
 	printf("encryption successful\n");
 }
 
@@ -112,15 +112,4 @@ asymcrypt(unsigned char *ctext_buf, unsigned char *pad_ptext_buf,
 	
 	/* Zap secret key */
 	explicit_bzero(sk, sizeof(sk));
-}
-
-void
-write_enc(FILE *outfile, struct hdr *hdr, unsigned char *ctext_buf, char *filename)
-{
-	outfile = fopen(filename, "w");
-        fwrite(hdr, sizeof(struct hdr), 1, outfile);
-	fwrite(ctext_buf, 1, hdr->padded_len, outfile);
-	fclose(outfile);
-	free(hdr);
-	free(ctext_buf);
 }

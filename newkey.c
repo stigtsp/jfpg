@@ -94,16 +94,12 @@ jf_newkey(char *id, long long rounds, long long mem)
 	name_keys(id, pk_name, sk_name, sign_pk_name, sign_sk_name);
 
 	/* Write encrypted secret key to disk, then zero it */	
-	seckey = fopen(sk_name, "w");
-	fwrite(sk_hdr, sizeof(struct hdr), 1, seckey);
-	fwrite(sk_crypt, 1, sizeof(sk_crypt), seckey);
+	write_enc(seckey, sk_hdr, sk_crypt, sk_name);
 	explicit_bzero(sk_crypt, sizeof(sk_crypt));
 	free(sk_hdr);
 
 	/* Write encrypted signing secret key to disk, then zero it */
-	sign_seckey = fopen(sign_sk_name, "w");
-	fwrite(sign_sk_hdr, sizeof(struct hdr), 1, sign_seckey);
-	fwrite(sign_sk_crypt, 1, sizeof(sign_sk_crypt), sign_seckey);
+	write_enc(sign_seckey, sign_sk_hdr, sign_sk_crypt, sign_sk_name);
 	explicit_bzero(sign_sk_crypt, sizeof(sign_sk_crypt));
 	free(sign_sk_hdr);
 

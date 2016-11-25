@@ -1,8 +1,8 @@
-*DISCLAIMER: I wrote this in order to learn. I made every effort
-to write it securely, but I can't make any guarantees. Use it at 
-your own risk. This is an alpha version. I will probably make changes
-that are not backwards compatible. Don't use it on anything you want to
-decrypt later just yet.* 
+*DISCLAIMER: I made every effort to write this securely
+but I can't make any guarantees. Use it at your own risk.
+This is an alpha version. I will probably make changes
+that are not backwards compatible. Don't use it on anything 
+you want to decrypt later just yet.*
 
 Introduction
 ------------
@@ -114,9 +114,6 @@ Primitives used
 
 Limitations
 -----------
-
-- Decrypting messages on a big-endian machine that were encrypted on a little
-	endian machine or vice-versa does not work at the moment. 
 
 - There is no forward secrecy. A given sender/receiver pair will
 	calculate the same shared key for all of their messages. This may be 

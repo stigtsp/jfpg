@@ -32,17 +32,19 @@ static void asymdecrypt(unsigned char *, unsigned char *, unsigned long long,
 void
 jf_decrypt(FILE *infile, FILE *pkey, FILE *skey, char *filename)
 {
-	unsigned char *ctext_buf, *ptext_buf = NULL;
+	unsigned char *ctext_buf = NULL;
+	unsigned char *ptext_buf = NULL;
 	FILE *outfile = NULL;
 	struct hdr *hdr = NULL;
 
 	hdr = malloc(sizeof(struct hdr));
 	if (hdr == NULL)
 		err(1, "error allocating hdr");
-	if (fread(hdr, 1, sizeof(struct hdr), infile) != sizeof(struct hdr))
-		errx(1, "error reading in header");
+	
+	read_hdr(hdr, infile);
+
 	if ((ctext_buf = malloc(hdr->padded_len)) == NULL)
-		err(1, "error allocating ctext_buf");
+		err(1, "error creating ctext_buf");
 	if (fread(ctext_buf, 1, hdr->padded_len, infile) != hdr->padded_len)
 		errx(1, "error reading in ciphertext");
 	if ((ptext_buf = malloc(hdr->padded_len)) == NULL)

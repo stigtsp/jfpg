@@ -35,15 +35,15 @@ decrypt_key(unsigned char *key_plain, FILE *key_fd)
         hdr = malloc(sizeof(struct hdr));
         if (hdr == NULL)
                 err(1, "error allocating hdr");
-        if (fread(hdr, 1, sizeof(struct hdr), key_fd) != sizeof(struct hdr))
-                errx(1, "error reading in header");
+
+        read_hdr(hdr, key_fd);
         if ((key_crypt = malloc(hdr->padded_len)) == NULL)
                 err(1, "error allocating buf for encrypted key");
         if (fread(key_crypt, 1, hdr->padded_len, key_fd) != hdr->padded_len)
                 errx(1, "error reading in ciphertext");
 
         symdecrypt(key_plain, key_crypt, hdr);
-        safer_free(key_crypt, sizeof(key_crypt));
+        safer_free(key_crypt, hdr->padded_len);
         free(hdr);
 }
 
@@ -116,4 +116,24 @@ decode_len(char *buf)
         else
                 padlen = 1;
         return ((len * 3) / 4) - padlen;
+}
+
+void
+read_hdr(struct hdr *hdr, FILE *infile)
+{
+	if (fread(hdr->nonce, 1, sizeof(hdr->nonce), infile) != sizeof(hdr->nonce))
+                err(1, "error reading in nonce");
+        fscanf(infile, "%llu %llu %llu %d %d", &hdr->padded_len, &hdr->rounds,
+                &hdr->mem, &hdr->p, &hdr->alg);
+}
+
+void
+write_enc(FILE *outfile, struct hdr *hdr, unsigned char *ctext_buf, char *filename)
+{
+        outfile = fopen(filename, "w");
+        fwrite(hdr->nonce, 1, sizeof(hdr->nonce), outfile);
+        fprintf(outfile, " %llu %llu %llu %d %d", hdr->padded_len,
+                hdr->rounds, hdr->mem, hdr->p, hdr->alg);
+        fwrite(ctext_buf, 1, hdr->padded_len, outfile);
+        fclose(outfile);
 }
