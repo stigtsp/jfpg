@@ -43,18 +43,18 @@ jf_sign(FILE *infile, FILE *fd_sign_sk, char *filename)
 
 	/* Create buffers for message and signed message */
 	if ((m = malloc(mlen)) == NULL)
-		err(1, "error creating message buffer");
+		err(1, "Error creating message buffer");
 	if ((sm = malloc(smlen)) == NULL)
-		err(1, "error creating signed message buffer");
+		err(1, "Error creating signed message buffer");
 
 	/* Read in file to m */
 	if (fread(m, 1, mlen, infile) != mlen)
-		errx(1, "error reading in infile");
+		errx(1, "Error reading in infile");
 	fclose(infile);
 
 	/* Sign message m and place results in sm */
 	if ((crypto_sign(sm, &smlen, m, mlen, sign_sk + ZEROBYTES)) != 0)
-		errx(1, "error signing");
+		errx(1, "Error signing");
 
 	/* Zap secret key */
 	explicit_bzero(sign_sk, sizeof(sign_sk));
@@ -62,10 +62,10 @@ jf_sign(FILE *infile, FILE *fd_sign_sk, char *filename)
 
 	/* Append extension to filename */
 	if (jf_strlcat(filename, SIGNEXT, FILENAME_SIZE) >= FILENAME_SIZE)
-		errx(1, "filename too long");
+		errx(1, "Filename too long");
 
 	/* Write file */
 	write_file(outfile, sm, smlen, filename);
 	free(sm);
-	printf("signing successful\n");
+	printf("Created signed file \"%s\"\n", filename);
 } 

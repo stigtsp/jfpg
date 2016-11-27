@@ -72,15 +72,15 @@ jf_newkey(char *id, long long rounds, long long mem)
 	if (crypto_box_keypair(pk, sk + ZEROBYTES) == -1)
 		err(1, "Error generating keys");
 	if (crypto_sign_keypair(sign_pk, sign_sk + ZEROBYTES) != 0)
-		err(1, "error generating signing keys");
+		err(1, "Error generating signing keys");
 
 	/* Set up headers for encrypted keys */
 	sk_hdr = malloc(sizeof(struct hdr));
 	sign_sk_hdr = malloc(sizeof(struct hdr));
 	if (sk_hdr == NULL)
-		err(1, "error allocating secret key header");
+		err(1, "Error allocating secret key header");
 	if (sign_sk_hdr == NULL)
-		err(1, "error allocating secret signing key header");
+		err(1, "Error allocating secret signing key header");
 
 	/* Encrypt secret keys */ 
 	encrypt_keys(sk, sk_crypt, sign_sk, sign_sk_crypt, sk_hdr,
@@ -105,13 +105,15 @@ jf_newkey(char *id, long long rounds, long long mem)
 
 	/* Write public key to disk */
 	if (b64_ntop(pk, sizeof(pk), b64_pk, sizeof(b64_pk)) == -1)
-		errx(1, "error encoding pub key");
+		errx(1, "Error encoding pub key");
 	write_file(pubkey, b64_pk, strlen(b64_pk), pk_name);
 
 	/* Write publick signing key to disk */
 	if (b64_ntop(sign_pk, sizeof(sign_pk), b64_sign_pk, sizeof(b64_sign_pk)) == -1)	
-		errx(1, "error encoding signing pub key");
+		errx(1, "Error encoding signing pub key");
 	write_file(sign_pubkey, b64_sign_pk, strlen(b64_sign_pk), sign_pk_name);
+	
+	printf("Created new keypairs for \"%s\"\n", id);
 }
 
 void
@@ -128,7 +130,7 @@ encrypt_keys(unsigned char *sk, unsigned char *sk_crypt, unsigned char *sign_sk,
 	sk_hdr->alg = 2;
 
 	/* Encrypt secret key */
-	printf("encrypting secret encryption key...\n");
+	printf("Encrypting secret encryption key...\n");
 	symcrypt(sk_crypt, sk, sk_hdr);
 
 	/* Get ready to encrypt ed25519 signing key */
@@ -140,7 +142,7 @@ encrypt_keys(unsigned char *sk, unsigned char *sk_crypt, unsigned char *sign_sk,
         sign_sk_hdr->alg = 2;
 
 	/* Encrypt signing key */
-	printf("\nencrypting secret signing key...\n");
+	printf("\nEncrypting secret signing key...\n");
 	symcrypt(sign_sk_crypt, sign_sk, sign_sk_hdr);
 }
 void
@@ -161,11 +163,11 @@ name_keys(char *id, char *pk_name, char *sk_name, char *sign_pk_name,
 
         /* Append rest of key name to the ID */
         if (jf_strlcat(pk_name, PUB, B64NAMESIZE) >= B64NAMESIZE)
-                errx(1, "name too long");
+                errx(1, "Name too long");
         if (jf_strlcat(sk_name, SEC, B64NAMESIZE) >= B64NAMESIZE)
-                errx(1, "name too long");
+                errx(1, "Name too long");
         if (jf_strlcat(sign_pk_name, PUBSIGN, B64NAMESIZE) >=  B64NAMESIZE)
-                errx(1, "id too long");
+                errx(1, "ID too long");
         if (jf_strlcat(sign_sk_name, SECSIGN, B64NAMESIZE) >=  B64NAMESIZE)
-                errx(1, "id too long");
+                errx(1, "ID too long");
 }

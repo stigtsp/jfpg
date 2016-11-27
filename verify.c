@@ -42,7 +42,7 @@ jf_verify(FILE *infile, FILE *fd_sign_pk, char *filename)
 	/* Read in pub key */
 	if (fread(b64_sign_pk, 1, b64len, fd_sign_pk)
 	    != b64len - 1)
-		errx(1, "error reading in public key");
+		errx(1, "Error reading in public key");
 	fclose(fd_sign_pk);
 
 	/* Base64 decode pub key */
@@ -54,18 +54,18 @@ jf_verify(FILE *infile, FILE *fd_sign_pk, char *filename)
 
 	/* Create message and signed message buffers */
 	if ((m = malloc(smlen)) == NULL)
-		err(1, "error creating message buffer");
+		err(1, "Error creating message buffer");
 	if ((sm = malloc(smlen)) == NULL)
-		err(1, "error creating signed message buffer");
+		err(1, "Error creating signed message buffer");
 
 	/* Read in file to sm */
 	if (fread(sm, 1, smlen, infile) != smlen)
-		errx(1, "error reading in infile");
+		errx(1, "Error reading in infile");
 	fclose(infile);
 	
 	/* Verify sig on sm and place results into m */
 	if ((crypto_sign_open(m, &mlen, sm, smlen, sign_pk)) != 0)
-		errx(1, "error verifying signature");
+		errx(1, "Error verifying signature");
 	free(sm);
 
 	/* Strip extension */
@@ -74,5 +74,5 @@ jf_verify(FILE *infile, FILE *fd_sign_pk, char *filename)
 	/* Write m to file */
 	write_file(outfile, m, mlen, filename);
 	free(m);
-	printf("good signature\n");
+	printf("Good signature\n");
 } 

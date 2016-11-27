@@ -37,12 +37,12 @@ symcrypt(unsigned char *ctext_buf, unsigned char *pad_ptext_buf, struct hdr *hdr
 	unsigned char symkey[SYMKEYBYTES];
 
 	/* Read in and confirm passphrase */
-	if (!readpassphrase("enter new passphrase: ", pass, sizeof(pass), global_rpp_flags))
-		err(1, "error getting passphrase");
-        if (!readpassphrase("confirm new passphrase: ", pass2, sizeof(pass2), global_rpp_flags))
-                err(1, "error confirming passphrase");
+	if (!readpassphrase("Enter new passphrase: ", pass, sizeof(pass), global_rpp_flags))
+		err(1, "Error getting passphrase");
+        if (!readpassphrase("Confirm new passphrase: ", pass2, sizeof(pass2), global_rpp_flags))
+                err(1, "Error confirming passphrase");
         if (strcmp(pass, pass2) != 0)
-                errx(1, "passphrases do not match");
+                errx(1, "Passphrases do not match");
        
 	/* Zero the extra passphrase buffer, derive the key, then zero the
 	 * other passphrase buffer too
@@ -54,7 +54,7 @@ symcrypt(unsigned char *ctext_buf, unsigned char *pad_ptext_buf, struct hdr *hdr
 	/* Encrypt */
 	if (crypto_secretbox(ctext_buf, pad_ptext_buf, hdr->padded_len,
 	    hdr->nonce, symkey) != 0)
-		errx(1, "error encrypting message");
+		errx(1, "Error encrypting message");
 	
 	/* Zero the key */
 	explicit_bzero(symkey, sizeof(symkey));
@@ -67,8 +67,8 @@ symdecrypt(unsigned char *ptext_buf, unsigned char *ctext_buf, struct hdr *hdr)
         unsigned char symkey[SYMKEYBYTES];
         
 	/* Read in passphrase */
-	if (!readpassphrase("enter passphrase: ", pass, sizeof(pass), global_rpp_flags))
-                err(1, "error getting passphrase");
+	if (!readpassphrase("Enter passphrase: ", pass, sizeof(pass), global_rpp_flags))
+                err(1, "Error getting passphrase");
 
 	/* Derive the key, then zero the passphrase */
 	derive_key(hdr, pass, symkey);
@@ -77,7 +77,7 @@ symdecrypt(unsigned char *ptext_buf, unsigned char *ctext_buf, struct hdr *hdr)
 	/* Decrypt */
         if (crypto_secretbox_open(ptext_buf, ctext_buf, hdr->padded_len,
             hdr->nonce, symkey) != 0)
-                errx(1, "error decrypting data");
+                errx(1, "Error decrypting data");
         
 	/* Zero the key */
 	explicit_bzero(symkey, sizeof(symkey));
@@ -92,5 +92,5 @@ derive_key(struct hdr *hdr, char *pass, unsigned char *symkey)
 	 */
 	if (argon2d_hash_raw(hdr->rounds, hdr->mem, hdr->p, pass, strlen(pass), hdr->nonce,
                 sizeof(hdr->nonce), symkey, SYMKEYBYTES) != 0)
-		errx(1, "argon2 could not derive key");
+		errx(1, "Argon2 could not derive key");
 }

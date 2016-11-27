@@ -41,7 +41,7 @@ jf_encrypt(FILE *infile, FILE *key, FILE *skey, char *filename,
 	/* Allocate the struct that will be the file header */
 	hdr = malloc(sizeof(struct hdr));
 	if (hdr == NULL)
-		err(1, "error allocating hdr");
+		err(1, "Error allocating hdr");
 	
 	/* Generate random nonce. This is safe because TweetNaCL 
 	 * uses XSalsa20, which has a 192 bit nonce. 
@@ -52,7 +52,7 @@ jf_encrypt(FILE *infile, FILE *key, FILE *skey, char *filename,
 	ptext_size = get_size(infile);
 	hdr->padded_len = (ptext_size + ZEROBYTES);
 	if ((pad_ptext_buf = malloc(hdr->padded_len)) == NULL)
-		err(1, "couldn't allocate pad ptext buf");
+		err(1, "Couldn't allocate pad ptext buf");
 
 	/* 0-pad first ZEROBYTES of pad_ptext_buf & read in message */
 	memset(pad_ptext_buf, 0, ZEROBYTES);
@@ -60,7 +60,7 @@ jf_encrypt(FILE *infile, FILE *key, FILE *skey, char *filename,
 
 	ctext_size = (hdr->padded_len);
 	if ((ctext_buf = malloc(ctext_size)) == NULL)
-		err(1, "error creating ctext buffer");
+		err(1, "Error creating ctext buffer");
 
 	if (alg == 1) {
 	/* Asymmetric encryption */
@@ -78,7 +78,7 @@ jf_encrypt(FILE *infile, FILE *key, FILE *skey, char *filename,
 		hdr->alg = 2;
 		symcrypt(ctext_buf, pad_ptext_buf, hdr);
 	} else { 
-		errx(1, "don't know what to do");
+		errx(1, "Don't know what to do");
 	}
 
 	/* Zero and free the plaintext as soon as we're done with it */
@@ -86,13 +86,13 @@ jf_encrypt(FILE *infile, FILE *key, FILE *skey, char *filename,
 
 	/* Append the extension to the filename */
 	if (jf_strlcat(filename, EXT, FILENAME_SIZE) >= FILENAME_SIZE)
-		errx(1, "filename too long");
+		errx(1, "Filename too long");
 
 	/* Write the encrypted file */
 	write_enc(outfile, hdr, ctext_buf, filename);
 	free(ctext_buf);
 	free(hdr);
-	printf("encryption successful\n");
+	printf("Encryption successful\n");
 }
 
 void
@@ -108,7 +108,7 @@ asymcrypt(unsigned char *ctext_buf, unsigned char *pad_ptext_buf,
 
 	if (crypto_box(ctext_buf, pad_ptext_buf, ptext_size,
             nonce, pk, sk + ZEROBYTES) != 0)
-	 	err(1, "error encrypting data");
+	 	err(1, "Error encrypting data");
 	
 	/* Zap secret key */
 	explicit_bzero(sk, sizeof(sk));

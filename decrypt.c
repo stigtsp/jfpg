@@ -39,28 +39,28 @@ jf_decrypt(FILE *infile, FILE *pkey, FILE *skey, char *filename)
 
 	hdr = malloc(sizeof(struct hdr));
 	if (hdr == NULL)
-		err(1, "error allocating hdr");
+		err(1, "Error allocating hdr");
 	
 	read_hdr(hdr, infile);
 
 	if ((ctext_buf = malloc(hdr->padded_len)) == NULL)
-		err(1, "error creating ctext_buf");
+		err(1, "Error creating ctext_buf");
 	if (fread(ctext_buf, 1, hdr->padded_len, infile) != hdr->padded_len)
-		errx(1, "error reading in ciphertext");
+		errx(1, "Error reading in ciphertext");
 	if ((ptext_buf = malloc(hdr->padded_len)) == NULL)
-		err(1, "error creating ptext_buf");
+		err(1, "Error creating ptext_buf");
 
 	if (hdr->alg == 1) {
 		if (pkey == NULL)
-		    errx(1, "must provide sender's public key");
+		    errx(1, "Must provide sender's public key");
 		if (skey == NULL) 
-		    errx(1, "must provide recipient's secret key");
+		    errx(1, "Must provide recipient's secret key");
 		asymdecrypt(ptext_buf, ctext_buf, hdr->padded_len, hdr->nonce,
 	    	pkey, skey);
 	} else if (hdr->alg == 2) {
 		symdecrypt(ptext_buf, ctext_buf, hdr);
 	} else {
-		errx(1, "don't know what to do");
+		errx(1, "Don't know what to do");
 	}
 	free(ctext_buf);
 
@@ -72,7 +72,7 @@ jf_decrypt(FILE *infile, FILE *pkey, FILE *skey, char *filename)
 	safer_free(ptext_buf, hdr->padded_len);
 	fclose(outfile);
 	free(hdr);
-	printf("decryption successful\n");
+	printf("Decryption successful\n");
 }
 
 void
@@ -86,6 +86,6 @@ asymdecrypt(unsigned char *ptext_buf, unsigned char *ctext_buf,
  
 	if (crypto_box_open(ptext_buf, ctext_buf,
             ctext_size, nonce, pk, sk + ZEROBYTES) != 0)
-                errx(1, "error decrypting data");
+                errx(1, "Error decrypting data");
 	explicit_bzero(sk, sizeof(sk));
 }

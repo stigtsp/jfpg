@@ -54,7 +54,7 @@ main(int argc, char **argv)
 		switch (ch) {
 		case 'n':
 		    if (jf_strlcpy(id, optarg, sizeof(id)) >= sizeof(id))
-			errx(1, "name too long");
+			errx(1, "Name too long");
 		    flag = 1;
 		    break;
 		case 'e':
@@ -77,27 +77,27 @@ main(int argc, char **argv)
 		    break;
 		case 'k':
 		    if ((skey = fopen(optarg, "r")) == NULL)
-			err(1, "couldn't find secret key");
+			err(1, "Couldn't find secret key");
 		    break;
 		case 'p':
 		    if ((pkey = fopen(optarg, "r")) == NULL)
-			err(1, "couldn't find public key");
+			err(1, "Couldn't find public key");
 		    break;
 		case 'f':
 		    if ((infile = fopen(optarg, "r")) == NULL)
-			err(1, "couldn't find file");
+			err(1, "Couldn't find file");
 		    if (jf_strlcpy(filename, optarg, FILENAME_SIZE) >= FILENAME_SIZE)
-			errx(1, "filename too long");
+			errx(1, "Filename too long");
 		    break;
 		case 'r':
 		    rounds = strtonum(optarg, MIN_ROUNDS, MAX_ROUNDS, &errstr);
 		    if (errstr != NULL)
-			errx(1, "error getting rounds: %s", errstr);
+			errx(1, "Error getting rounds: %s", errstr);
 		    break;
 		case 'm':
 		    mem = strtonum(optarg, MIN_MEM, MAX_MEM, &errstr);
 		    if (errstr != NULL)
-			errx(1, "error setting KDF memory: %s", errstr);
+			errx(1, "Error setting KDF memory: %s", errstr);
 		    mem = (mem * 1024);
 		    break;
 		default:
@@ -124,43 +124,43 @@ main(int argc, char **argv)
 
 		/* Asymmetric encryption */
 		if (infile == NULL)
-		    errx(1, "must provide a file for encryption");
+		    errx(1, "Must provide a file for encryption");
 		if (pkey == NULL)
-		    errx(1, "must provide recipient's public key");
+		    errx(1, "Must provide recipient's public key");
 		if (skey == NULL)
-		    errx(1, "must provide sender's secret key");
+		    errx(1, "Must provide sender's secret key");
 		jf_encrypt(infile, pkey, skey, filename, 1, 1, 1);
 
 	} else if (flag == 3) {
 
 		/* Symmetric encryption */
 		if (infile == NULL)
-		    errx(1, "must provide a file for encryption");
+		    errx(1, "Must provide a file for encryption");
 		jf_encrypt(infile, NULL, NULL, filename, 2, rounds, mem);
 
 	} else if (flag == 4) {
 	
 		/* Decryption */
 		if (infile == NULL)
-		    errx(1, "must provide a file for decryption");
+		    errx(1, "Must provide a file for decryption");
 		jf_decrypt(infile, pkey, skey, filename);
 
 	} else if (flag == 5) {
 
 		/* Signing */
 		if (infile == NULL)
-		    errx(1, "must provide a file for signing");	
+		    errx(1, "Must provide a file for signing");	
 		if (skey == NULL)
-		    errx(1, "must provide signer's secret key");
+		    errx(1, "Must provide signer's secret key");
 		jf_sign(infile, skey, filename);
 
 	} else if (flag == 6) {
 
 		/* Verifying signed file */
 		if (infile == NULL)
-		    errx(1, "must provide a file for sig verification");
+		    errx(1, "Must provide a file for sig verification");
 		if (pkey == NULL)
-		    errx(1, "must provide signer's public key");
+		    errx(1, "Must provide signer's public key");
 		jf_verify(infile, pkey, filename);
 
 	}
