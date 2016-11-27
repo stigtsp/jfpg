@@ -24,7 +24,8 @@
 #include "tweetnacl.h"
 
 #define SYMKEYBYTES     crypto_secretbox_KEYBYTES
-#define RPP_FLAGS       RPP_REQUIRE_TTY
+
+extern int global_rpp_flags;
 
 static void derive_key(struct hdr *, char *, unsigned char *);
 
@@ -36,9 +37,9 @@ symcrypt(unsigned char *ctext_buf, unsigned char *pad_ptext_buf, struct hdr *hdr
 	unsigned char symkey[SYMKEYBYTES];
 
 	/* Read in and confirm passphrase */
-	if (!readpassphrase("enter new passphrase: ", pass, sizeof(pass), RPP_FLAGS))
+	if (!readpassphrase("enter new passphrase: ", pass, sizeof(pass), global_rpp_flags))
 		err(1, "error getting passphrase");
-        if (!readpassphrase("confirm new passphrase: ", pass2, sizeof(pass2), RPP_FLAGS))
+        if (!readpassphrase("confirm new passphrase: ", pass2, sizeof(pass2), global_rpp_flags))
                 err(1, "error confirming passphrase");
         if (strcmp(pass, pass2) != 0)
                 errx(1, "passphrases do not match");
@@ -66,7 +67,7 @@ symdecrypt(unsigned char *ptext_buf, unsigned char *ctext_buf, struct hdr *hdr)
         unsigned char symkey[SYMKEYBYTES];
         
 	/* Read in passphrase */
-	if (!readpassphrase("enter passphrase: ", pass, sizeof(pass), RPP_FLAGS))
+	if (!readpassphrase("enter passphrase: ", pass, sizeof(pass), global_rpp_flags))
                 err(1, "error getting passphrase");
 
 	/* Derive the key, then zero the passphrase */

@@ -22,6 +22,13 @@
 #include "jfpg.h"
 #include "defines.h"
 #include "compat.h"
+#include "readpassphrase.h"
+
+/* Global variable to control readpassphrase flags.
+ * It is only possible to modify this once, through a 
+ * command line flag.
+ */
+int global_rpp_flags = RPP_REQUIRE_TTY;
 
 static void usage(void);
 
@@ -43,7 +50,7 @@ main(int argc, char **argv)
 	if (argc < 2)
 		usage();
 
-	while ((ch = getopt(argc, argv, "vscedn:k:s:p:f:r:m:")) != -1) {
+	while ((ch = getopt(argc, argv, "vscedSn:k:s:p:f:r:m:")) != -1) {
 		switch (ch) {
 		case 'n':
 		    if (jf_strlcpy(id, optarg, sizeof(id)) >= sizeof(id))
@@ -64,6 +71,9 @@ main(int argc, char **argv)
 		    break;
 		case 'v':
 		    flag = 6;
+		    break;
+		case 'S':
+		    global_rpp_flags = RPP_STDIN;
 		    break;
 		case 'k':
 		    if ((skey = fopen(optarg, "r")) == NULL)
@@ -162,9 +172,9 @@ void
 usage(void)
 {
 	errx(1, "\nusage:\n\tjfpg -n new-key-id [-r rounds] [-m memory]\
-	    \n\tjfpg -s -f file -k signing-secretkey \
+	    \n\tjfpg -s -f file -k signing-secretkey [-S] \
 	    \n\tjfpg -v -f file -p signing-publickey \
-	    \n\tjfpg -e -f file -p publickey -s secretkey \
-	    \n\tjfpg -d -f file [-p publickey -s secretkey] \
-	    \n\tjfpg -c -f file [-r rounds] [-m memory]");
+	    \n\tjfpg -e -f file -p publickey -s secretkey [-S]\
+	    \n\tjfpg -d -f file [-p publickey -s secretkey] [-S]\
+	    \n\tjfpg -c -f file [-r rounds] [-m memory] [-S]");
 }

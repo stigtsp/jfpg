@@ -7,11 +7,11 @@ you want to decrypt later just yet.*
 Introduction
 ------------
 
-JFPG is a file encryption and signing utility 
-roughly inspired by the GPG/PGP encryption utility. It
+jfpg is a small file encryption and signing utility 
+roughly inspired by GPG/PGP, but compiles with no dependencies. It
 offers a more or less similar  syntax for encryption,
 decryption, signing, and verification. It uses
-Dan Bernstein's Tweetnacl crypto library, thus it
+Dan Bernstein's TweetNaCL crypto library, thus it
 only uses  modern, high speed crypto primitives 
 and all encryption is authenticated by default. 
 However, this means it is not backwards-compatible
@@ -22,19 +22,19 @@ Compiling
 
 Simply run "make".
 
-JFPG should compile on most Unix-like systems without any
+jfpg should compile on most Unix-like systems without any
 dependencies. It has been tested and confirmed to work on 
 OpenBSD, DragonFly BSD, Ubuntu 14.04 and 16.04, and OS X Yosemite. 
 It may work on other systems as well. 
 
 Command syntax
 --------------
-	new keypairs:           jfpg -n new-key-id [-r rounds] [-m memory]
-	sign:                   jfpg -s -f file -k signer-secretkey
+	new keypairs:           jfpg -n new-key-id [-r rounds] [-m memory] [-S]
+	sign:                   jfpg -s -f file -k signer-secretkey [-S]
 	verify sig:   	        jfpg -v -f file -p signer-pubkey
-	encrypt with keypair:   jfpg -e -f file -p recipient-pubkey -k sender-secretkey
-	decrypt:                jfpg -d -f file [-p sender-pubkey -s recipient-secretkey] 
-	symmetrically encrypt:	jfpg -c -f file [-r rounds] [-m memory]
+	encrypt with keypair:   jfpg -e -f file -p recipient-pubkey -k sender-secretkey [-S]
+	decrypt:                jfpg -d -f file [-p sender-pubkey -s recipient-secretkey] [-S]
+	symmetrically encrypt:	jfpg -c -f file [-r rounds] [-m memory] [-S]
 
 Examples
 --------
@@ -67,15 +67,24 @@ Decrypt "file.pdf.jfpg" with password
 
 	jfpg -d -f file.pdf.jfpg 
 
-You will need to create a new set of keys when you first use JFPG 
+Decrypt "file.pdf.jfpg" with a password piped from stdin
+
+	echo "passw0rd" | jfpg -d -S -f test.jfpg
+
+You will need to create a new set of keys when you first use jfpg 
 for signing/verifying or asymmetric encryption/decryption. 
 This will 2 keypairs, a pair of Curve25519 keys for encryption/decryption
 and a pair of Ed25519 keys for signing. It takes your desired key ID
 (name, email, etc) as its only required option. Secret keys will be 
 separately encrypted and you will be asked to provide a passphrase for each.  
 
+Passphrases are read from the tty by default. The -S option will cause
+jfpg to read them from stdin, making it easier to use jfpg in a script.
+However, this exposes your passphrase to anyone who can run ps on your machine,
+so use it with care.
+
 Key generation and symmetric encryption (using the "-c" option) will
-derive an encryption key from a passphrase, using Argon2d. 
+derive the encryption key from a passphrase, using Argon2d. 
 The rounds parameter for Argon2 can be invoked with "-r" and the amount of 
 RAM used, in mebibytes, can be specified with the "-m" option. The defaults
 below are used if you do not specify anything. 
@@ -96,11 +105,11 @@ values that are tolerable for your hardware.
 Threat Model
 ------------
 
-JFPG is designed to secure data that is (or will be) in transit or sitting on 
+jfpg is designed to secure data that is (or will be) in transit or sitting on 
 a remote server. Secret keys are encrypted, however, they should ideally be kept
 offline. They remain vulnerable to weak passwords or an attacker with the 
 ability to capture your password. Securing your machine against such an attacker
-is beyond the scope of JFPG.
+is beyond the scope of jfpg.
 
  
 Primitives used
@@ -119,7 +128,7 @@ Limitations
 	calculate the same shared key for all of their messages. This may be 
 	added in the future. 
 
-- JFPG does not manage keys for you. This is a problem that is likely
+- jfpg does not manage keys for you. This is a problem that is likely
 	beyond the ability of a command line utility to handle properly. 
 
 As always, if you do find a security problem or bug, 
