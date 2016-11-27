@@ -11,7 +11,7 @@ void randombytes(unsigned char *x,unsigned long long xlen)
 {
   /* We should never ask for more than SIZE_MAX bytes */
   if (xlen > SIZE_MAX)
-    errx(1, "can't provide more than SIZE_MAX random bytes");
+    errx(1, "Can't provide more than SIZE_MAX random bytes");
   arc4random_buf(x, (size_t)xlen);
 }
  
