@@ -39,7 +39,11 @@ symcrypt(unsigned char *ctext_buf, unsigned char *pad_ptext_buf, struct hdr *hdr
 	/* Read in and confirm passphrase */
 	if (!readpassphrase("Enter new passphrase: ", pass, sizeof(pass), global_rpp_flags))
 		err(1, "Error getting passphrase");
-        if (!readpassphrase("Confirm new passphrase: ", pass2, sizeof(pass2), global_rpp_flags))
+	if (strlen(pass) == 0)
+		errx(1, "Please enter a passphrase");
+	if (strlen(pass) < 15)
+		warnx("Warning: passphrase is short, but continuing anyway");
+	if (!readpassphrase("Confirm new passphrase: ", pass2, sizeof(pass2), global_rpp_flags))
                 err(1, "Error confirming passphrase");
         if (strcmp(pass, pass2) != 0)
                 errx(1, "Passphrases do not match");
