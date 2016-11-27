@@ -37,7 +37,7 @@ void
 jf_newkey(char *id, long long rounds, long long mem)
 {
 	
-	int b64len = 0;
+	size_t b64len = 0;
 	unsigned char pk[PUBKEYBYTES];
 	unsigned char sk[SECKEYBYTES + ZEROBYTES];
 	unsigned char sign_sk[SIGNSKEYBYTES + ZEROBYTES];
