@@ -15,6 +15,7 @@
  */
 
 #include <err.h>
+#include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -123,7 +124,7 @@ read_hdr(struct hdr *hdr, FILE *infile)
 {
 	if (fread(hdr->nonce, 1, sizeof(hdr->nonce), infile) != sizeof(hdr->nonce))
                 err(1, "error reading in nonce");
-        fscanf(infile, "%llu %llu %llu %d %d", &hdr->padded_len, &hdr->rounds,
+        fscanf(infile, "%" PRIu64 "%" PRIu32 "%" PRIu32 "%" PRIu32 "%d", &hdr->padded_len, &hdr->rounds,
                 &hdr->mem, &hdr->p, &hdr->alg);
 }
 
@@ -132,7 +133,7 @@ write_enc(FILE *outfile, struct hdr *hdr, unsigned char *ctext_buf, char *filena
 {
         outfile = fopen(filename, "w");
         fwrite(hdr->nonce, 1, sizeof(hdr->nonce), outfile);
-        fprintf(outfile, " %llu %llu %llu %d %d", hdr->padded_len,
+        fprintf(outfile, " %" PRIu64 "%" PRIu32 "%" PRIu32 "%" PRIu32 "%d", hdr->padded_len,
                 hdr->rounds, hdr->mem, hdr->p, hdr->alg);
         fwrite(ctext_buf, 1, hdr->padded_len, outfile);
         fclose(outfile);

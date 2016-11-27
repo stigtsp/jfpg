@@ -1,15 +1,17 @@
 #ifndef _HDR_H
 #define _HDR_H
 
+#include <inttypes.h>
+
 #include "tweetnacl.h"
 
 #pragma pack (1)
 struct hdr {
         unsigned char nonce[crypto_secretbox_NONCEBYTES];
-        unsigned long long padded_len;
-        long long rounds;
-        long long mem;
-        unsigned int p;
+        uint64_t padded_len;
+        uint32_t rounds;
+        uint32_t mem;
+        uint32_t p;
         int alg;
 };
 #endif
