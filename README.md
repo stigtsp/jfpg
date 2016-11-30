@@ -24,8 +24,16 @@ Simply run "make".
 
 jfpg should compile on most Unix-like systems without any
 dependencies. It has been tested and confirmed to work on 
-OpenBSD, DragonFly BSD, Ubuntu 14.04 and 16.04, and OS X Yosemite. 
-It may work on other systems as well. 
+the following operating systems:
+
+-OpenBSD
+-FreeBSD
+-Dragonfly BSD
+-Ubuntu 14.04
+-Ubuntu 16.04
+-Fedora 25
+-Kali Linux 2016.2
+-OS X Yosemite (compiled with -O0)
 
 Command syntax
 --------------
