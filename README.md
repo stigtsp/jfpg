@@ -26,14 +26,14 @@ jfpg should compile on most Unix-like systems without any
 dependencies. It has been tested and confirmed to work on 
 the following operating systems:
 
--OpenBSD
--FreeBSD
--Dragonfly BSD
--Ubuntu 14.04
--Ubuntu 16.04
--Fedora 25
--Kali Linux 2016.2
--OS X Yosemite (compiled with -O0)
+	-OpenBSD
+	-FreeBSD
+	-Dragonfly BSD
+	-Ubuntu 14.04
+	-Ubuntu 16.04
+	-Fedora 25
+	-Kali Linux 2016.2
+	-OS X Yosemite (compiled with -O0)
 
 Command syntax
 --------------
