@@ -43,11 +43,18 @@ symcrypt(unsigned char *ctext_buf, unsigned char *pad_ptext_buf, struct hdr *hdr
 		errx(1, "Please enter a passphrase");
 	if (strlen(pass) < 15)
 		warnx("Warning: passphrase is short, but continuing anyway");
-	if (!readpassphrase("Confirm new passphrase: ", pass2, sizeof(pass2), global_rpp_flags))
-                err(1, "Error confirming passphrase");
-        if (strcmp(pass, pass2) != 0)
-                errx(1, "Passphrases do not match");
-       
+
+
+	/* Only confirm passphrase if we're requiring a tty. This way we 
+	 * skip this when using stdin to make it easier to pipe in a passphrase
+	 */
+	if (global_rpp_flags == RPP_REQUIRE_TTY) {
+		if (!readpassphrase("Confirm new passphrase: ", pass2, sizeof(pass2), global_rpp_flags))
+                    err(1, "Error confirming passphrase");
+        	if (strcmp(pass, pass2) != 0)
+                    errx(1, "Passphrases do not match");
+        }
+
 	/* Zero the extra passphrase buffer, derive the key, then zero the
 	 * other passphrase buffer too
 	 */ 
