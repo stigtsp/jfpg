@@ -82,7 +82,8 @@ jf_encrypt(FILE *infile, FILE *key, FILE *skey, char *filename,
 	}
 
 	/* Zero and free the plaintext as soon as we're done with it */
-	safer_free(pad_ptext_buf, hdr->padded_len);
+	explicit_bzero(pad_ptext_buf, hdr->padded_len);
+	free(pad_ptext_buf);
 
 	/* Append the extension to the filename */
 	if (jf_strlcat(filename, EXT, FILENAME_SIZE) >= FILENAME_SIZE)

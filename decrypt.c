@@ -69,7 +69,8 @@ jf_decrypt(FILE *infile, FILE *pkey, FILE *skey, char *filename)
 	outfile = fopen(filename, "w");
 	fwrite(ptext_buf + ZEROBYTES, hdr->padded_len - ZEROBYTES, 1, outfile); 
 
-	safer_free(ptext_buf, hdr->padded_len);
+	explicit_bzero(ptext_buf, hdr->padded_len);
+	free(ptext_buf);
 	fclose(outfile);
 	free(hdr);
 	printf("Decryption successful\n");

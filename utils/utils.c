@@ -44,7 +44,8 @@ decrypt_key(unsigned char *key_plain, FILE *key_fd)
                 errx(1, "error reading in ciphertext");
 
         symdecrypt(key_plain, key_crypt, hdr);
-        safer_free(key_crypt, hdr->padded_len);
+        explicit_bzero(key_crypt, hdr->padded_len);
+	free(key_crypt);
         free(hdr);
 }
 
@@ -83,13 +84,6 @@ read_infile(FILE *infile, unsigned char *buf, unsigned long long size)
         if (fread(buf, 1, size, infile) != size)
                 errx(1, "error reading from buf");
         fclose(infile);
-}
-
-void
-safer_free(void *pointer, size_t size)
-{
-        explicit_bzero(pointer, size);
-        free(pointer);
 }
 
 void
