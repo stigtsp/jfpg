@@ -1,0 +1,171 @@
+.\"
+.\"Copyright (c) 2016 Joe Fierro <jsf122@scarletmail.rutgers.edu>
+.\"
+.\"Permission to use, copy, modify, and distribute this software for any
+.\"purpose with or without fee is hereby granted, provided that the above
+.\"copyright notice and this permission notice appear in all copies.
+.\"
+.\"THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+.\"WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+.\"MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+.\"ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+.\"WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+.\"ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+.\"OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+.Dd $Mdocdate: December 22 2016 $
+.Dt JFPG 1
+.Os
+.Sh NAME
+.Nm jfpg
+.Nd small, fast file encryption and signing utility
+.Sh SYNOPSIS
+.Nm jfpg
+.Fl c
+.Op Fl S
+.Op Fl r rounds
+.Op Fl m memory
+.Fl f Ar file
+.Nm jfpg
+.Fl e
+.Op Fl S
+.Fl p Ar recip-pubkey
+.Fl k Ar sender-secretkey
+.Fl f Ar file
+.Nm jfpg
+.Fl d
+.Op Fl S
+.Op Fl k Ar recip-secretkey
+.Op Fl p Ar sender-pubkey
+.Fl f Ar file
+.Nm jfpg
+.Fl s 
+.Op Fl S
+.Fl k Ar signer-secret-signing-key
+.Fl f Ar file
+.Nm jfpg
+.Fl v
+.Fl p Ar signer-public-signing-key
+.Fl f Ar file
+.Nm jfpg
+.Fl n
+.Op Fl S
+.Op Fl r rounds
+.Op Fl m memory
+.Ar key-id
+.Sh DESCRIPTION
+The
+.Nm
+utility encrypts and decrypts files with either a passphrase-derived
+key or a Curve25519 public/secret key pair, and signs and verifies files
+with Ed25519 key pairs. It relies on TweetNaCL for its encryption and signing
+related functions, and Argon2d for passphrase-based key derivation.
+The following options select the operation:
+.Bl -tag -width Dsssigfile
+.It Fl c 
+Symmetric encryption with a passphrase-derived key.
+.It Fl e 
+Asymmetric encryption with key pair.
+Both the recipient's public key and the sender's secret key are required.
+.It Fl d 
+Decryption. If the file was encrypted with a passphrase-derived key, you will be 
+prompted to enter the passphrase. If a key pair was used, the sender's public key 
+and the recipient's secret key are both required to authenticate and decrypt the data.
+.It Fl s
+Signing. The file will be signed "in place" with the signature appended to it. This 
+requires the signer's secret signing key.
+.It Fl v
+Verify a signed file. The signer's public signing key is required.
+.It Fl n
+Create a new key pair. This requires the desired key ID that will become part of the file name.
+It will create 2 separate key pairs: a Curve25519 pair for encryption/decryption and an
+Ed25519 pair for signing/verification. 
+.El
+.Pp
+The other options consist of the following:
+.Bl -tag -width Dsssignature
+.It Fl S
+Accept passphrase from stdin rather than directly from a TTY. This
+makes it easier to embed
+.Nm
+in scripts as the passphrase can be piped in, but does potentially
+expose that passphrase to anyone on the machine. In a multi-user environment where
+you do not trust the other users, this option should be avoided.
+.It Fl r
+The number of passes Argon2d will make. The higher the value, the slower the function will be,
+thus increasing the difficulty of password guessing attacks.
+.Pp
+The default is 3, the minimum is 1, and the maximum is 1024.
+.It Fl m
+The Argon2d memory parameter. This option takes the desired amount of RAM in MiB for Argon2d to use.
+Higher values will slow down password guessing attacks as well as require attackers to use significant
+amounts of RAM. However, you must have the RAM available on your machine.
+.Pp
+The default is 512, the minimum is 56, and the maximum is 32000.
+.El
+.Pp
+The 
+.Fl n
+option will create key files with the desired key ID prepended to them. For
+example, giving an ID of "alice" will lead to the following files being created in
+the current directory:
+
+alice-pubkey.curve25519
+
+alice-secretkey.curve25519
+
+alice-signing-pubkey.ed25519
+
+alice-signing-secretkey.ed25519
+
+These can, of course, be renamed to whatever you want and 
+.Nm
+will use them as usual, but it is important to use only the Curve25519 keys for encryption
+and the only Ed25519 signing keys for signing. Both secret keys will be encrypted upon creation
+and you will be asked for the passphrase whenever they are used.
+Public keys are base64 encoded and can be freely distributed.
+.El
+.Pp
+.Sh EXIT STATUS
+.Ex -std jfpg
+It may fail because of one of the following reasons:
+.Pp
+.Bl -bullet -compact
+.It
+A key or file is required but was not given or was inaccessible. 
+.It
+Passphrase is incorrect.
+.It
+The wrong public and/or secret key was given for decryption or verification. 
+.It
+The file header was corrupt.
+.It
+More RAM was requested of Argon2d than the system can provide.
+.El
+.Sh EXAMPLES
+Create new key pairs for "alice":
+.Dl $ jfpg -n alice
+.Pp
+Encrypt a file for bob, assuming you are alice:
+.Dl $ jfpg -e -p bob-pubkey.curve25519 -k alice-secretkey.curve25519 -f file
+.Pp
+Encrypt a file with a passphrase-derived key:
+.Dl $ jfpg -c -f file.pdf
+.Pp
+Encrypt a file with passphrase-derived key, this time specifying 1 GiB of RAM and 4 rounds:
+.Dl $ jfpg -c -m 1024 -r 4 -f file.pdf
+.Pp
+Encrypt a file with a passphrase piped in from stdin:
+.Dl $ echo topsecretp@ssw0rd | jfpg -c -S -f file.pdf
+.Pp
+Decrypt a file with passphrase:
+.Dl $ jfpg -d -f file.pdf.jfpg
+.Pp
+Decrypt a file intended for bob that was sent by alice:
+.Dl $ jfpg -d -p alice-pubkey.curve25519 -k bob-secretkey.curve25519 -f file.pdf.jfpg
+.Pp 
+Sign a file as alice:
+.Dl $ jfpg -s -k alice-signing-secretkey.ed25519 -f file.pdf
+.Pp
+Verify a file signed by alice:
+.Dl $ jfpg -v -p alice-signing-pubkey.ed25519 -f file.pdf.signed
+.Pp

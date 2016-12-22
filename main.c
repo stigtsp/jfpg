@@ -171,10 +171,10 @@ main(int argc, char **argv)
 void
 usage(void)
 {
-	errx(1, "\nusage:\n\tjfpg -n new-key-id [-r rounds] [-m memory]\
-	    \n\tjfpg -s -f file -k signing-secretkey [-S] \
-	    \n\tjfpg -v -f file -p signing-publickey \
-	    \n\tjfpg -e -f file -p publickey -s secretkey [-S]\
-	    \n\tjfpg -d -f file [-p publickey -s secretkey] [-S]\
-	    \n\tjfpg -c -f file [-r rounds] [-m memory] [-S]");
+	errx(1, "\nusage:\n\tjfpg -c [-S] [-r rounds] [-m memory] -f file\
+	    \n\tjfpg -e [-S] -p recip-pubkey -k sender-seckey -f file \
+	    \n\tjfpg -d [-S] [-p sender-pubkey -k recip-seckey] -f file \
+	    \n\tjfpg -s [-S] -k signer-signing-seckey -f file\
+	    \n\tjfpg -v -p signer-signing-pubkey -f file\
+	    \n\tjfpg -n [-S] [-r rounds] [-m memory] key-id");
 }
