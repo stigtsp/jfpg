@@ -6,13 +6,13 @@
 #define PUBSIGN "-signing-pubkey.ed25519"
 #define SECSIGN "-signing-secretkey.ed25519"
 
-#define	ARGON2_T	3
-#define ARGON2_MEM	512
-#define ARGON2_P	2
-#define MIN_ROUNDS      1
-#define MAX_ROUNDS      1024
-#define	MIN_MEM		56
-#define	MAX_MEM		32000
+#define	ARGON2_T	3	/* Number of default iterations */
+#define ARGON2_MEM	512	/* Default RAM used in MiB */
+#define ARGON2_P	2	/* Default number of threads */
+#define MIN_ROUNDS      1	/* Minimum iterations */
+#define MAX_ROUNDS      1024	/* Maximum iterations */
+#define	MIN_MEM		56	/* Minimum RAM in MiB */
+#define	MAX_MEM		32000	/* Maximum RAM in MiB */
 
 #define IDSIZE  	128
 #define B64NAMESIZE     192
