@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Joe Fierro <jsf122 at scarletmail dot rutgers dot edu>
+ * Copyright (c) 2016 Joe Fierro <joseph.fierro@runbox.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
