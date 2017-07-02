@@ -6,7 +6,7 @@
 #define PUBSIGN "-signing-pubkey.ed25519"
 #define SECSIGN "-signing-secretkey.ed25519"
 
-#define	ARGON2_T	3	/* Number of default iterations */
+#define	ARGON2_T	1	/* Number of default iterations */
 #define ARGON2_MEM	512	/* Default RAM used in MiB */
 #define ARGON2_P	2	/* Default number of threads */
 #define MIN_ROUNDS      1	/* Minimum iterations */
