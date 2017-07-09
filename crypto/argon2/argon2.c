@@ -4,7 +4,7 @@
  * Copyright 2015
  * Daniel Dinu, Dmitry Khovratovich, Jean-Philippe Aumasson, and Samuel Neves
  *
- * You may use this work under the terms of a Creative Commons CC0 1.0 
+ * You may use this work under the terms of a Creative Commons CC0 1.0
  * License/Waiver or the Apache Public License 2.0, at your option. The terms of
  * these licenses can be found at:
  *
@@ -71,6 +71,10 @@ int argon2_ctx(argon2_context *context, argon2_type type) {
     instance.lanes = context->lanes;
     instance.threads = context->threads;
     instance.type = type;
+
+    if (instance.threads > instance.lanes) {
+        instance.threads = instance.lanes;
+    }
 
     /* 3. Initialization: Hashing inputs, allocating memory, filling first
      * blocks
