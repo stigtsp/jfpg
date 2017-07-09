@@ -20,6 +20,7 @@ with GPG/PGP (probably a feature, not a bug).
 Compiling
 ---------
 Simply run the following:
+
 	$ make
 	# make install
 
