@@ -19,8 +19,9 @@ with GPG/PGP (probably a feature, not a bug).
 
 Compiling
 ---------
-
-Simply run "make".
+Simply run the following:
+	$ make
+	# make install
 
 Beginning on 17-June-2017, all commits/tags will be 
 cryptographically signed with GPG. You can always
