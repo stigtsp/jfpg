@@ -1,6 +1,8 @@
 CC = cc
 
 KDF_DIR = crypto/argon2
+DESTDIR = /usr
+PREFIX= /local
 
 OFLAGS = -O3
 
@@ -34,3 +36,13 @@ SRC += encrypt.c decrypt.c newkey.c symops.c sign.c verify.c main.c
 
 jfpg: $(SRC)
 		$(CC) $(CFLAGS) $(SRC) -o jfpg
+clean:
+	rm jfpg
+.PHONY: clean
+
+install: jfpg jfpg.1
+	install -m 755 -d $(DESTDIR)$(PREFIX)/bin
+	install -m 755 jfpg $(DESTDIR)$(PREFIX)/bin
+	install -m 755 -d $(DESTDIR)$(PREFIX)/man/man1
+	install -m 644 jfpg.1 $(DESTDIR)$(PREFIX)/man/man1
+.PHONY: install
