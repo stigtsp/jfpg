@@ -21,8 +21,9 @@ Compiling
 ---------
 Simply run the following:
 
-	$ make
-	# make install
+		$ make
+		# make install
+
 
 Beginning on 17-June-2017, all commits/tags will be 
 cryptographically signed with GPG. You can always
