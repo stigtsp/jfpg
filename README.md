@@ -27,7 +27,7 @@ Simply run the following:
 
 Beginning on 17-June-2017, all commits/tags will be 
 cryptographically signed with GPG. You can always
-find my current GPG public key [here](https://www.deepstate.io/about.html).
+find my current GPG public key [here](https://nonstate.io/about.html).
 
 jfpg should compile on most Unix-like systems without any
 dependencies. It has been tested and confirmed to work on 
