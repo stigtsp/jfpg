@@ -23,7 +23,7 @@ LFLAGS = -pthread
 CFLAGS = $(OFLAGS) $(WARNFLAGS) $(SECFLAGS) $(IFLAGS) $(LFLAGS)
 
 SRC = $(KDF_DIR)/argon2.c
-SRC += $(KDF_DIR)/core.c $(KDF_DIR)/encoding.c
+SRC += $(KDF_DIR)/core.c 
 SRC += $(KDF_DIR)/thread.c $(KDF_DIR)/blake2/blake2b.c
 
 TARGET ?= native
