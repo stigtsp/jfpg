@@ -35,6 +35,12 @@ static void usage(void);
 int
 main(int argc, char **argv)
 {
+	#ifdef __OpenBSD__
+        if ((pledge("stdio rpath wpath cpath tty", NULL)) == -1)
+                err(1, "pledge");
+        #endif /* __OpenBSD__ */
+
+
 	int ch, flag = 0;
 	long long rounds = ARGON2_T;
 	long long mem = ARGON2_MEM * 1024;
