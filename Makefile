@@ -8,7 +8,7 @@ OFLAGS = -O3
 
 WARNFLAGS = -Wall -Wformat-security
 
-SECFLAGS = -fstack-protector-all -fPIC -fPIE -D_FORTIFY_SOURCE=2 
+SECFLAGS = -fstack-protector-strong -fPIC -fPIE -D_FORTIFY_SOURCE=2 
 
 IFLAGS = -Iinclude
 
