@@ -24,6 +24,7 @@
 .Op Fl S
 .Op Fl r rounds
 .Op Fl m memory
+.Op Fl t threads
 .Fl f Ar file
 .Nm jfpg
 .Fl e
@@ -48,10 +49,11 @@
 .Fl f Ar file
 .Nm jfpg
 .Fl n
+.Ar key-id
 .Op Fl S
 .Op Fl r rounds
 .Op Fl m memory
-.Ar key-id
+.Op Fl t threads
 .Sh DESCRIPTION
 The
 .Nm
@@ -101,6 +103,10 @@ Higher values will slow down password guessing attacks as well as require attack
 amounts of RAM. However, you must have the RAM available on your machine.
 .Pp
 The default is 512, the minimum is 56, and the maximum is 32000.
+.It Fl t
+The number of threads used by Argon2d. Generally this should be double the number of physical cores.
+.Pp
+The default is 4, the minimum is 2, and the maximum is 256.
 .El
 .Pp
 The 
@@ -151,8 +157,8 @@ Encrypt a file for bob, assuming you are alice:
 Encrypt a file with a passphrase-derived key:
 .Dl $ jfpg -c -f file.pdf
 .Pp
-Encrypt a file with passphrase-derived key, this time specifying 1 GiB of RAM and 4 rounds:
-.Dl $ jfpg -c -m 1024 -r 4 -f file.pdf
+Encrypt a file with passphrase-derived key, this time specifying 1 GiB of RAM, 4 rounds, and 8 threads:
+.Dl $ jfpg -c -m 1024 -r 4 -t 8 -f file.pdf
 .Pp
 Encrypt a file with a passphrase piped in from stdin:
 .Dl $ echo topsecretp@ssw0rd | jfpg -c -S -f file.pdf

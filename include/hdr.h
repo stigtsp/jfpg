@@ -11,7 +11,7 @@ struct hdr {
         uint64_t padded_len;
         uint32_t rounds;
         uint32_t mem;
-        uint32_t p;
+        uint32_t threads;
         int alg;
 };
 #endif

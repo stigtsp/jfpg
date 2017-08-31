@@ -40,16 +40,16 @@ the following operating systems:
 - Ubuntu 16.04
 - Fedora 25
 - Kali Linux 2016.2
-- OS X Yosemite (compiled with -O0)
+- OS X Yosemite
 
 Command syntax
 --------------
-	new keypairs:           jfpg -n new-key-id [-r rounds] [-m memory] [-S]
+	new keypairs:           jfpg -n new-key-id [-r rounds] [-m memory] [-t threads] [-S]
 	sign:                   jfpg -s -f file -k signer-secretkey [-S]
 	verify sig:   	        jfpg -v -f file -p signer-pubkey
 	encrypt with keypair:   jfpg -e -f file -p recipient-pubkey -k sender-secretkey [-S]
 	decrypt:                jfpg -d -f file [-p sender-pubkey -s recipient-secretkey] [-S]
-	symmetrically encrypt:	jfpg -c -f file [-r rounds] [-m memory] [-S]
+	symmetrically encrypt:	jfpg -c -f file [-r rounds] [-m memory] [-t threads] [-S]
 
 Examples
 --------
@@ -106,14 +106,14 @@ below are used if you do not specify anything.
 
 - Default rounds: 1
 - Default mem: 512 MiB
-- Default parallelism: 2 (not user configurable)
+- Default number of threads: 4
 - Min rounds: 1
 - Max rounds: 1024
 - Min mem: 56 MiB
 - Max mem: 32 GiB
 
 The defaults work well for fast machines with plenty of RAM, but are
-potentially very slow on older, single core devices, and will not work
+potentially very slow on older single core devices, and will not work
 at all on devices with less than 512 MiB of RAM free. Pick the largest
 values that are tolerable for your hardware.
 
@@ -140,8 +140,7 @@ Limitations
 -----------
 
 - There is no forward secrecy. A given sender/receiver pair will
-	calculate the same shared key for all of their messages. This may be 
-	added in the future. 
+	calculate the same shared secret for all of their messages.
 
 - jfpg does not manage keys for you. This is a problem that is likely
 	beyond the ability of a command line utility to handle properly. 

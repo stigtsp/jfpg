@@ -8,11 +8,13 @@
 
 #define	ARGON2_T	1	/* Number of default iterations */
 #define ARGON2_MEM	512	/* Default RAM used in MiB */
-#define ARGON2_P	2	/* Default number of threads */
+#define ARGON2_P	4	/* Default number of threads */
 #define MIN_ROUNDS      1	/* Minimum iterations */
 #define MAX_ROUNDS      1024	/* Maximum iterations */
 #define	MIN_MEM		56	/* Minimum RAM in MiB */
 #define	MAX_MEM		32000	/* Maximum RAM in MiB */
+#define MIN_THREADS	2	/* Minimum number of threads for Argon2 */
+#define	MAX_THREADS	256	/* Maxmimum number of threads for Argon2 */
 
 #define IDSIZE  	128
 #define B64NAMESIZE     192

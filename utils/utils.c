@@ -119,7 +119,7 @@ read_hdr(struct hdr *hdr, FILE *infile)
 	if (fread(hdr->nonce, 1, sizeof(hdr->nonce), infile) != sizeof(hdr->nonce))
                 err(1, "error reading in nonce");
         fscanf(infile, " %" PRIu64 " %" PRIu32 " %" PRIu32 " %" PRIu32 " %d ", &hdr->padded_len, &hdr->rounds,
-                &hdr->mem, &hdr->p, &hdr->alg);
+                &hdr->mem, &hdr->threads, &hdr->alg);
 }
 
 void
@@ -128,7 +128,7 @@ write_enc(FILE *outfile, struct hdr *hdr, unsigned char *ctext_buf, char *filena
         outfile = fopen(filename, "w");
         fwrite(hdr->nonce, 1, sizeof(hdr->nonce), outfile);
         fprintf(outfile, " %" PRIu64 " %" PRIu32 " %" PRIu32 " %" PRIu32 " %d ", hdr->padded_len,
-                hdr->rounds, hdr->mem, hdr->p, hdr->alg);
+                hdr->rounds, hdr->mem, hdr->threads, hdr->alg);
         fwrite(ctext_buf, 1, hdr->padded_len, outfile);
         fclose(outfile);
 }

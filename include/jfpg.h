@@ -14,8 +14,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-void jf_encrypt(FILE *, FILE *, FILE *, char *, int, long long, long long);
+void jf_encrypt(FILE *, FILE *, FILE *, char *, int, long long, long long, long long);
 void jf_decrypt(FILE *, FILE *, FILE *, char *);
-void jf_newkey(char *, long long, long long);
+void jf_newkey(char *, long long, long long, long long);
 void jf_sign(FILE *, FILE *, char *);
 void jf_verify(FILE *, FILE *, char *);

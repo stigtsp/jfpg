@@ -44,6 +44,7 @@ main(int argc, char **argv)
 	int ch, flag = 0;
 	long long rounds = ARGON2_T;
 	long long mem = ARGON2_MEM * 1024;
+	long long threads = ARGON2_P;
 	FILE *infile = NULL;
 	FILE *pkey = NULL;
 	FILE *skey = NULL;
@@ -56,7 +57,7 @@ main(int argc, char **argv)
 	if (argc < 2)
 		usage();
 
-	while ((ch = getopt(argc, argv, "vscedSn:k:s:p:f:r:m:")) != -1) {
+	while ((ch = getopt(argc, argv, "vscedSn:k:s:p:f:r:m:t:")) != -1) {
 		switch (ch) {
 		case 'n':
 		    if (jf_strlcpy(id, optarg, sizeof(id)) >= sizeof(id))
@@ -106,6 +107,11 @@ main(int argc, char **argv)
 			errx(1, "Error setting KDF memory: %s", errstr);
 		    mem = (mem * 1024);
 		    break;
+		case 't':
+		    threads = strtonum(optarg, MIN_THREADS, MAX_THREADS, &errstr);
+		    if (errstr != NULL)
+			errx(1, "Error setting KDF threads: %s", errstr);
+		    break;
 		default:
 		    usage();
 		    break;
@@ -124,7 +130,7 @@ main(int argc, char **argv)
 	if (flag == 1) {
 	
 		/* Generating new key pairs */	
-		jf_newkey(id, rounds, mem);
+		jf_newkey(id, rounds, mem, threads);
 	
 	} else if (flag == 2) {
 
@@ -135,14 +141,14 @@ main(int argc, char **argv)
 		    errx(1, "Must provide recipient's public key");
 		if (skey == NULL)
 		    errx(1, "Must provide sender's secret key");
-		jf_encrypt(infile, pkey, skey, filename, 1, 1, 1);
+		jf_encrypt(infile, pkey, skey, filename, 1, 1, 1, 1);
 
 	} else if (flag == 3) {
 
 		/* Symmetric encryption */
 		if (infile == NULL)
 		    errx(1, "Must provide a file for encryption");
-		jf_encrypt(infile, NULL, NULL, filename, 2, rounds, mem);
+		jf_encrypt(infile, NULL, NULL, filename, 2, rounds, mem, threads);
 
 	} else if (flag == 4) {
 	
@@ -177,10 +183,10 @@ main(int argc, char **argv)
 void
 usage(void)
 {
-	errx(1, "\nusage:\n\tjfpg -c [-S] [-r rounds] [-m memory] -f file\
+	errx(1, "\nusage:\n\tjfpg -c [-S] [-r rounds] [-m memory] [-t threads] -f file\
 	    \n\tjfpg -e [-S] -p recip-pubkey -k sender-seckey -f file \
 	    \n\tjfpg -d [-S] [-p sender-pubkey -k recip-seckey] -f file \
 	    \n\tjfpg -s [-S] -k signer-signing-seckey -f file\
 	    \n\tjfpg -v -p signer-signing-pubkey -f file\
-	    \n\tjfpg -n [-S] [-r rounds] [-m memory] key-id");
+	    \n\tjfpg -n key-id [-S] [-r rounds] [-m memory] [-t threads]");
 }

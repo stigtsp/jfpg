@@ -31,7 +31,7 @@ static void asymcrypt(unsigned char *, unsigned char *,
 
 void
 jf_encrypt(FILE *infile, FILE *key, FILE *skey, char *filename,
-	   int alg, long long rounds, long long mem)
+	   int alg, long long rounds, long long mem, long long threads)
 {
 	unsigned long long ptext_size, ctext_size = 0;
 	unsigned char *pad_ptext_buf, *ctext_buf = NULL;
@@ -66,7 +66,7 @@ jf_encrypt(FILE *infile, FILE *key, FILE *skey, char *filename,
 	/* Asymmetric encryption */
 		hdr->rounds = 0;
 		hdr->mem = 0;
-		hdr->p = 0;
+		hdr->threads = 0;
 		hdr->alg = 1;
 		asymcrypt(ctext_buf, pad_ptext_buf, hdr->padded_len,
 	    	    hdr->nonce, key, skey);
@@ -74,7 +74,7 @@ jf_encrypt(FILE *infile, FILE *key, FILE *skey, char *filename,
 	/* Symmetric encryption */
 		hdr->rounds = rounds;
 		hdr->mem = mem;
-		hdr->p = ARGON2_P;
+		hdr->threads = threads;
 		hdr->alg = 2;
 		symcrypt(ctext_buf, pad_ptext_buf, hdr);
 	} else { 
