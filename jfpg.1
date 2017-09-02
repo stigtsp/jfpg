@@ -67,11 +67,11 @@ The following options select the operation:
 Symmetric encryption with a passphrase-derived key.
 .It Fl e 
 Asymmetric encryption with key pair.
-Both the recipient's public key and the sender's secret key are required.
+Both the recipient's encryption public key and the sender's encryption secret key are required.
 .It Fl d 
 Decryption. If the file was encrypted with a passphrase-derived key, you will be 
-prompted to enter the passphrase. If a key pair was used, the sender's public key 
-and the recipient's secret key are both required to authenticate and decrypt the data.
+prompted to enter the passphrase. If a key pair was used, the sender's encryption public key 
+and the recipient's encryption secret key are both required to authenticate and decrypt the data.
 .It Fl s
 Signing. The file will be signed "in place" with the signature appended to it. This 
 requires the signer's secret signing key.
@@ -115,9 +115,9 @@ option will create key files with the desired key ID prepended to them. For
 example, giving an ID of "alice" will lead to the following files being created in
 the current directory:
 
-alice-pubkey.curve25519
+alice-encryption-pubkey.curve25519
 
-alice-secretkey.curve25519
+alice-encryption-secretkey.curve25519
 
 alice-signing-pubkey.ed25519
 
@@ -148,11 +148,14 @@ The file header was corrupt.
 More RAM was requested of Argon2d than the system can provide.
 .El
 .Sh EXAMPLES
-Create new key pairs for "alice":
+Alice creats new key pairs using "alice" as her ID:
 .Dl $ jfpg -n alice
 .Pp
-Encrypt a file for bob, assuming you are alice:
-.Dl $ jfpg -e -p bob-pubkey.curve25519 -k alice-secretkey.curve25519 -f file
+Alice encrypts a file intended for Bob:
+.Dl $ jfpg -e -p bob-encryption-pubkey.curve25519 -k alice-encryption-secretkey.curve25519 -f file.pdf
+.Pp
+Bob decrypts a file sent by Alice:
+.Dl $ jfpg -d -p alice-encryption-pubkey.curve25519 -k bob-encryption-secretkey.curve25519 -f file.pdf.jfpg
 .Pp
 Encrypt a file with a passphrase-derived key:
 .Dl $ jfpg -c -f file.pdf
@@ -166,12 +169,9 @@ Encrypt a file with a passphrase piped in from stdin:
 Decrypt a file with passphrase:
 .Dl $ jfpg -d -f file.pdf.jfpg
 .Pp
-Decrypt a file intended for bob that was sent by alice:
-.Dl $ jfpg -d -p alice-pubkey.curve25519 -k bob-secretkey.curve25519 -f file.pdf.jfpg
-.Pp 
-Sign a file as alice:
+Alice signs a file:
 .Dl $ jfpg -s -k alice-signing-secretkey.ed25519 -f file.pdf
 .Pp
-Verify a file signed by alice:
+Verify a file signed by Alice:
 .Dl $ jfpg -v -p alice-signing-pubkey.ed25519 -f file.pdf.signed
 .Pp
