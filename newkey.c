@@ -108,7 +108,7 @@ jf_newkey(char *id, long long rounds, long long mem, long long threads)
 		errx(1, "Error encoding pub key");
 	write_file(pubkey, b64_pk, strlen(b64_pk), pk_name);
 
-	/* Write publick signing key to disk */
+	/* Write public signing key to disk */
 	if (b64_ntop(sign_pk, sizeof(sign_pk), b64_sign_pk, sizeof(b64_sign_pk)) == -1)	
 		errx(1, "Error encoding signing pub key");
 	write_file(sign_pubkey, b64_sign_pk, strlen(b64_sign_pk), sign_pk_name);
