@@ -42,49 +42,9 @@ the following operating systems:
 - Kali Linux 2016.2
 - OS X Yosemite
 
-Command syntax
---------------
-	new keypairs:           jfpg -n new-key-id [-r rounds] [-m memory] [-t threads] [-S]
-	sign:                   jfpg -s -f file -k signer-secretkey [-S]
-	verify sig:   	        jfpg -v -f file -p signer-pubkey
-	encrypt with keypair:   jfpg -e -f file -p recipient-pubkey -k sender-secretkey [-S]
-	decrypt:                jfpg -d -f file [-p sender-pubkey -s recipient-secretkey] [-S]
-	symmetrically encrypt:	jfpg -c -f file [-r rounds] [-m memory] [-t threads] [-S]
-
-Examples
---------
-Create signing and encryption keypairs for "joe"
-
-	jfpg -n joe
-
-Sign "file.pdf" with the secret key "joe-signing-secretkey.ed25519"
-
-	jfpg -s -f file.pdf -k joe-signing-secretkey.ed25519
-
-Verify signed "file.pdf.signed" with the public key "joe-signing-pubkey.ed25519"
-
-	jfpg -v -f file.pdf.signed -p joe-signing-pubkey.ed25519
-
-Encrypt "file.pdf" for recipient "bob". Note that the sender's secret key is required.
-
-	jfpg -e -f file.pdf -p bob-pubkey.curve25519 -k joe-secretkey.curve25519	
-
-Decrypt "file.pdf.jfpg", assuming you are bob and the sender was joe. Sender's
-public key is required.
-
-	jfpg -d -f file.pdf.jfpg -p joe-pubkey.curve25519 -k bob-secretkey.curve25519
-
-Encrypt "file.pdf" with a password-derived key
-
-	jfpg -c -f file.pdf
-
-Decrypt "file.pdf.jfpg" with password
-
-	jfpg -d -f file.pdf.jfpg 
-
-Decrypt "file.pdf.jfpg" with a password piped from stdin
-
-	echo "passw0rd" | jfpg -d -S -f test.jfpg
+Usage
+-----
+See the man page (jfpg.1) for full usage examples.
 
 You will need to create a new set of keys when you first use jfpg 
 for signing/verifying or asymmetric encryption/decryption. 
