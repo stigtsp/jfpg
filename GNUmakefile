@@ -8,10 +8,6 @@ OFLAGS = -O3
 
 KERNEL := $(shell uname -s)
 
-ifeq ($(KERNEL), Darwin)
-	OFLAGS = -O0
-endif
-
 WARNFLAGS = -Wall -Wformat-security
 
 SECFLAGS = -fstack-protector-strong -fPIC -fPIE -D_FORTIFY_SOURCE=2 
