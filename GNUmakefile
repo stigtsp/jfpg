@@ -46,8 +46,16 @@ clean:
 .PHONY: clean
 
 install: jfpg jfpg.1
+
+ifeq ($(KERNEL), Darwin)
+	install -m 755 -d $(DESTDIR)$(PREFIX)/bin
+	install -m 755 jfpg $(DESTDIR)$(PREFIX)/bin
+	install -m 755 -d $(DESTDIR)$(PREFIX)/share/man/man1
+	install -m 644 jfpg.1 $(DESTDIR)$(PREFIX)/share/man/man1
+else
 	install -m 755 -d $(DESTDIR)$(PREFIX)/bin
 	install -m 755 -t $(DESTDIR)$(PREFIX)/bin jfpg
 	install -m 755 -d $(DESTDIR)$(PREFIX)/share/man/man1
 	install -m 644 -t $(DESTDIR)$(PREFIX)/share/man/man1 jfpg.1
+endif
 .PHONY: install
