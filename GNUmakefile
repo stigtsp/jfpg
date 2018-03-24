@@ -45,6 +45,10 @@ clean:
 		rm jfpg
 .PHONY: clean
 
+test:
+	cd tests && sh tests.sh
+.PHONY: test
+
 install: jfpg jfpg.1
 
 ifeq ($(KERNEL), Darwin)

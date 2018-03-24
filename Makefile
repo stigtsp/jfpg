@@ -40,6 +40,10 @@ clean:
 	rm jfpg
 .PHONY: clean
 
+test:
+	cd tests && sh tests.sh
+.PHONY: test
+
 install: jfpg jfpg.1
 	install -m 755 -d $(DESTDIR)$(PREFIX)/bin
 	install -m 755 jfpg $(DESTDIR)$(PREFIX)/bin
