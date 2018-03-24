@@ -93,7 +93,7 @@ in scripts as the passphrase can be piped in, but does potentially
 expose that passphrase to anyone on the machine. In a multi-user environment where
 you do not trust the other users, this option should be avoided.
 .It Fl r
-The number of passes Argon2d will make. The higher the value, the slower the function will be,
+The number of passes or "rounds" Argon2d will make. The higher the value, the slower the function will be,
 thus increasing the difficulty of password guessing attacks.
 .Pp
 The default and minimum is 1, and the maximum is 1024.
@@ -148,7 +148,7 @@ The file header was corrupt.
 More RAM was requested of Argon2d than the system can provide.
 .El
 .Sh EXAMPLES
-Alice creats new key pairs using "alice" as her ID:
+Alice creates new key pairs using "alice" as her ID:
 .Dl $ jfpg -n alice
 .Pp
 Alice encrypts a file intended for Bob:
