@@ -65,14 +65,19 @@ get_keys(unsigned char *pk, unsigned char *sk, FILE *fd_pk, FILE *fd_sk)
         b64_pton(b64_pk, pk, PUBKEYBYTES);
 }
 
-unsigned long long
+off_t
 get_size(FILE *infile)
 {
-        unsigned long long infile_size = 0;
+        off_t infile_size = 0;
 
-        fseek(infile, 0, SEEK_END);
-        infile_size = ftell(infile);
-        rewind(infile);
+        if (fseeko(infile, 0, SEEK_END) != 0)
+		errx(1, "Error getting file size");
+        infile_size = ftello(infile);
+        
+	if (infile_size == -1)
+		errx(1, "Error setting file size");
+
+	rewind(infile);
         return (infile_size);
 }
 
