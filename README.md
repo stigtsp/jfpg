@@ -53,7 +53,7 @@ See the man page (jfpg.1) for full usage examples.
 
 You will need to create a new set of keys when you first use jfpg 
 for signing/verifying or asymmetric encryption/decryption. 
-This will 2 keypairs, a pair of Curve25519 keys for encryption/decryption
+This will create 2 keypairs, a pair of Curve25519 keys for encryption/decryption
 and a pair of Ed25519 keys for signing. It takes your desired key ID
 (name, email, etc) as its only required option. Secret keys will be 
 separately encrypted and you will be asked to provide a passphrase for each.  
