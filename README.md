@@ -1,3 +1,8 @@
+<a href="https://scan.coverity.com/projects/jsfierro-jfpg">
+  <img alt="Coverity Scan Build Status"
+       src="https://scan.coverity.com/projects/15272/badge.svg"/>
+</a>
+
 *DISCLAIMER: I made every effort to write this securely
 but I can't make any guarantees. Use it at your own risk.
 This is an alpha version. I will probably make changes
