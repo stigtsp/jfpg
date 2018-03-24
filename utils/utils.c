@@ -119,8 +119,9 @@ read_hdr(struct hdr *hdr, FILE *infile)
 {
 	if (fread(hdr->nonce, 1, sizeof(hdr->nonce), infile) != sizeof(hdr->nonce))
                 err(1, "error reading in nonce");
-        fscanf(infile, " %" PRIu64 " %" PRIu32 " %" PRIu32 " %" PRIu32 " %d ", &hdr->padded_len, &hdr->rounds,
-                &hdr->mem, &hdr->threads, &hdr->alg);
+        if (fscanf(infile, " %" PRIu64 " %" PRIu32 " %" PRIu32 " %" PRIu32 " %d ", &hdr->padded_len, &hdr->rounds,
+                &hdr->mem, &hdr->threads, &hdr->alg) < 5)
+		errx(1, "Error reading file header");
 }
 
 void
