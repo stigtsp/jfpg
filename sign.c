@@ -14,6 +14,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <sys/mman.h>
+
 #include <err.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -33,6 +35,9 @@ jf_sign(FILE *infile, FILE *fd_sign_sk, char *filename)
 	
 	unsigned char sign_sk[SIGNSKEYBYTES + ZEROBYTES];
 	FILE *outfile = NULL;
+
+	if (mlock(sign_sk, sizeof(sign_sk)) != 0)
+		errx(1, "Error locking signing secret key buf");
 
 	decrypt_key(sign_sk, fd_sign_sk);
 	fclose(fd_sign_sk);
@@ -58,6 +63,8 @@ jf_sign(FILE *infile, FILE *fd_sign_sk, char *filename)
 
 	/* Zap secret key */
 	explicit_bzero(sign_sk, sizeof(sign_sk));
+	if (munlock(sign_sk, sizeof(sign_sk)) != 0)
+		errx(1, "Error unlocking signing secret key buf");
 	free(m);
 
 	/* Append extension to filename */
