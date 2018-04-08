@@ -53,6 +53,13 @@ symcrypt(unsigned char *ctext_buf, unsigned char *pad_ptext_buf, struct hdr *hdr
 	char pass2[512];
 	unsigned char symkey[SYMKEYBYTES];
 
+	if (mlock(pass, sizeof(pass)) !=0)
+		errx(1, "Error locking passphrase buf");
+	if (mlock(pass2, sizeof(pass2)) !=0)
+		errx(1, "Error locking passphrase 2 buf");
+	if (mlock(symkey, sizeof(symkey)) !=0)
+		errx(1, "Error locking symmetric key buf");
+
 	/* Read in and confirm passphrase */
 	if (!readpassphrase("Enter new passphrase: ", pass, sizeof(pass), global_rpp_flags))
 		err(1, "Error getting passphrase");
@@ -76,8 +83,14 @@ symcrypt(unsigned char *ctext_buf, unsigned char *pad_ptext_buf, struct hdr *hdr
 	 * other passphrase buffer too
 	 */
 	explicit_bzero(pass2, sizeof(pass2));
+	if (munlock(pass, sizeof(pass)) !=0)
+		errx(1, "Error unlocking passphrase 2 buf");
+	
 	derive_key(hdr, pass, symkey);
+	
 	explicit_bzero(pass, sizeof(pass));
+	if (munlock(pass, sizeof(pass)) !=0)
+		errx(1, "Error unlocking passphrase buf");
 
 	/* Encrypt */
 	if (crypto_secretbox(ctext_buf, pad_ptext_buf, hdr->padded_len,
@@ -86,6 +99,8 @@ symcrypt(unsigned char *ctext_buf, unsigned char *pad_ptext_buf, struct hdr *hdr
 
 	/* Zero the key */
 	explicit_bzero(symkey, sizeof(symkey));
+	if (munlock(symkey, sizeof(symkey)) !=0)
+		errx(1, "Error unlocking symmetric key");
 }
 
 void
