@@ -83,11 +83,11 @@ symcrypt(unsigned char *ctext_buf, unsigned char *pad_ptext_buf, struct hdr *hdr
 	 * other passphrase buffer too
 	 */
 	explicit_bzero(pass2, sizeof(pass2));
-	if (munlock(pass, sizeof(pass)) !=0)
+	if (munlock(pass2, sizeof(pass2)) !=0)
 		errx(1, "Error unlocking passphrase 2 buf");
-	
+
 	derive_key(hdr, pass, symkey);
-	
+
 	explicit_bzero(pass, sizeof(pass));
 	if (munlock(pass, sizeof(pass)) !=0)
 		errx(1, "Error unlocking passphrase buf");
