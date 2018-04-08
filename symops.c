@@ -66,7 +66,7 @@ symcrypt(unsigned char *ctext_buf, unsigned char *pad_ptext_buf, struct hdr *hdr
 	if (global_rpp_flags == RPP_REQUIRE_TTY) {
 		if (!readpassphrase("Confirm new passphrase: ", pass2, sizeof(pass2), global_rpp_flags))
                     err(1, "Error confirming passphrase");
-        	if (cmp_const(pass, pass2, sizeof(pass2)) != 0)
+        	if (cmp_const(pass, pass2, strlen(pass)) != 0)
                     errx(1, "Passphrases do not match");
         }
 
