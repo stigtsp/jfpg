@@ -29,6 +29,21 @@ extern int global_rpp_flags;
 
 static void derive_key(struct hdr *, char *, unsigned char *);
 
+/* https://cryptocoding.net/index.php/Coding_rules */
+int cmp_const(const void * a, const void *b, const size_t size)
+{
+  const unsigned char *_a = (const unsigned char *) a;
+  const unsigned char *_b = (const unsigned char *) b;
+  unsigned char result = 0;
+  size_t i;
+
+  for (i = 0; i < size; i++) {
+    result |= _a[i] ^ _b[i];
+  }
+
+  return result;
+}
+
 void
 symcrypt(unsigned char *ctext_buf, unsigned char *pad_ptext_buf, struct hdr *hdr)
 {
@@ -45,19 +60,19 @@ symcrypt(unsigned char *ctext_buf, unsigned char *pad_ptext_buf, struct hdr *hdr
 		warnx("Warning: passphrase is short, but continuing anyway");
 
 
-	/* Only confirm passphrase if we're requiring a tty. This way we 
+	/* Only confirm passphrase if we're requiring a tty. This way we
 	 * skip this when using stdin to make it easier to pipe in a passphrase
 	 */
 	if (global_rpp_flags == RPP_REQUIRE_TTY) {
 		if (!readpassphrase("Confirm new passphrase: ", pass2, sizeof(pass2), global_rpp_flags))
                     err(1, "Error confirming passphrase");
-        	if (strcmp(pass, pass2) != 0)
+        	if (cmp_const(pass, pass2, sizeof(pass2)) != 0)
                     errx(1, "Passphrases do not match");
         }
 
 	/* Zero the extra passphrase buffer, derive the key, then zero the
 	 * other passphrase buffer too
-	 */ 
+	 */
 	explicit_bzero(pass2, sizeof(pass2));
 	derive_key(hdr, pass, symkey);
 	explicit_bzero(pass, sizeof(pass));
@@ -66,7 +81,7 @@ symcrypt(unsigned char *ctext_buf, unsigned char *pad_ptext_buf, struct hdr *hdr
 	if (crypto_secretbox(ctext_buf, pad_ptext_buf, hdr->padded_len,
 	    hdr->nonce, symkey) != 0)
 		errx(1, "Error encrypting message");
-	
+
 	/* Zero the key */
 	explicit_bzero(symkey, sizeof(symkey));
 }
@@ -76,7 +91,7 @@ symdecrypt(unsigned char *ptext_buf, unsigned char *ctext_buf, struct hdr *hdr)
 {
         char pass[512];
         unsigned char symkey[SYMKEYBYTES];
-        
+
 	/* Read in passphrase */
 	if (!readpassphrase("Enter passphrase: ", pass, sizeof(pass), global_rpp_flags))
                 err(1, "Error getting passphrase");
@@ -89,7 +104,7 @@ symdecrypt(unsigned char *ptext_buf, unsigned char *ctext_buf, struct hdr *hdr)
         if (crypto_secretbox_open(ptext_buf, ctext_buf, hdr->padded_len,
             hdr->nonce, symkey) != 0)
                 errx(1, "Error decrypting data");
-        
+
 	/* Zero the key */
 	explicit_bzero(symkey, sizeof(symkey));
 }
@@ -97,7 +112,7 @@ symdecrypt(unsigned char *ptext_buf, unsigned char *ctext_buf, struct hdr *hdr)
 void
 derive_key(struct hdr *hdr, char *pass, unsigned char *symkey)
 {
-	/* Derive symmetric key from passphrase. Note that the salt in 
+	/* Derive symmetric key from passphrase. Note that the salt in
 	 * this case is just the nonce we generated earlier. It is long,
 	 * random, and unique per message, so this is safe to use here
 	 */
