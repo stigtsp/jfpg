@@ -51,7 +51,7 @@ Usage
 -----
 See the man page (jfpg.1) for full usage examples.
 
-You will need to create a new set of keys when you first use jfpg 
+You will need to create a new set of keys (invoked with the -n option) when you first use jfpg 
 for signing/verifying or asymmetric encryption/decryption. 
 This will create 2 keypairs, a pair of Curve25519 keys for encryption/decryption
 and a pair of Ed25519 keys for signing. It takes your desired key ID
