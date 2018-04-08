@@ -64,18 +64,18 @@ However, this exposes your passphrase to anyone who can run ps on your machine,
 so use it with care.
 
 Key generation and symmetric encryption (using the "-c" option) will
-derive the encryption key from a passphrase, using Argon2d. 
+derive the encryption key from a passphrase, using Argon2id. 
 The rounds parameter for Argon2 can be invoked with "-r" and the amount of 
 RAM used, in mebibytes, can be specified with the "-m" option. The defaults
 below are used if you do not specify anything. 
 
-- Default rounds: 1
-- Default mem: 512 MiB
-- Default number of threads: 4
+- Default rounds: 2
+- Default mem: 1024 MiB
+- Default number of threads: 8
 - Min rounds: 1
 - Max rounds: 1024
 - Min mem: 56 MiB
-- Max mem: 32 GiB
+- Max mem: 64 GiB
 
 The defaults work well for fast machines with plenty of RAM, but are
 potentially very slow on older single core devices, and will not work
@@ -98,7 +98,7 @@ Primitives used
 - Signing: Ed25519
 - Asymmetric key exchange: X25519 key exchange with Curve25519 keys 
 - Symmetric cipher: XSalsa20-Poly1305
-- Password-based key derivation: Argon2d version 1.3
+- Password-based key derivation: Argon2id version 1.3
 - Random number generation: arc4random on OpenBSD. /dev/urandom everywhere else
 
 Limitations

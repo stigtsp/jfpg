@@ -116,7 +116,7 @@ derive_key(struct hdr *hdr, char *pass, unsigned char *symkey)
 	 * this case is just the nonce we generated earlier. It is long,
 	 * random, and unique per message, so this is safe to use here
 	 */
-	if (argon2d_hash_raw(hdr->rounds, hdr->mem, hdr->threads, pass, strlen(pass), hdr->nonce,
+	if (argon2id_hash_raw(hdr->rounds, hdr->mem, hdr->threads, pass, strlen(pass), hdr->nonce,
                 sizeof(hdr->nonce), symkey, SYMKEYBYTES) != 0)
 		errx(1, "Argon2 could not derive key");
 }

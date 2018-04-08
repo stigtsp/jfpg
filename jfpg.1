@@ -60,7 +60,7 @@ The
 utility encrypts and decrypts files with either a passphrase-derived
 key or a Curve25519 public/secret key pair, and signs and verifies files
 with Ed25519 key pairs. It relies on TweetNaCL for its encryption and signing
-related functions, and Argon2d for passphrase-based key derivation.
+related functions, and Argon2id for passphrase-based key derivation.
 The following options select the operation:
 .Bl -tag -width Dsssigfile
 .It Fl c 
@@ -93,20 +93,20 @@ in scripts as the passphrase can be piped in, but does potentially
 expose that passphrase to anyone on the machine. In a multi-user environment where
 you do not trust the other users, this option should be avoided.
 .It Fl r
-The number of passes or "rounds" Argon2d will make. The higher the value, the slower the function will be,
+The number of passes or "rounds" Argon2id will make. The higher the value, the slower the function will be,
 thus increasing the difficulty of password guessing attacks.
 .Pp
-The default and minimum is 1, and the maximum is 1024.
+The default is 2, the minimum is 1, and the maximum is 1024.
 .It Fl m
-The Argon2d memory parameter. This option takes the desired amount of RAM in MiB for Argon2d to use.
+The Argon2id memory parameter. This option takes the desired amount of RAM in MiB for Argon2id to use.
 Higher values will slow down password guessing attacks as well as require attackers to use significant
 amounts of RAM. However, you must have the RAM available on your machine.
 .Pp
-The default is 512, the minimum is 56, and the maximum is 32000.
+The default is 1024, the minimum is 56, and the maximum is 64000.
 .It Fl t
-The number of threads used by Argon2d. Generally this should be double the number of physical cores.
+The number of threads used by Argon2id. Generally this should be double the number of physical cores.
 .Pp
-The default is 4, the minimum is 2, and the maximum is 256.
+The default is 8, the minimum is 2, and the maximum is 256.
 .El
 .Pp
 The 
@@ -145,7 +145,7 @@ The wrong public and/or secret key was given for decryption or verification.
 .It
 The file header was corrupt.
 .It
-More RAM was requested of Argon2d than the system can provide.
+More RAM was requested of Argon2 than the system can provide.
 .El
 .Sh EXAMPLES
 Alice creates new key pairs using "alice" as her ID:
