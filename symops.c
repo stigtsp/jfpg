@@ -14,6 +14,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <sys/mman.h>
+
 #include <err.h>
 #include <string.h>
 
@@ -92,6 +94,14 @@ symdecrypt(unsigned char *ptext_buf, unsigned char *ctext_buf, struct hdr *hdr)
         char pass[512];
         unsigned char symkey[SYMKEYBYTES];
 
+	/* Lock passphrase buf */
+	if (mlock(pass, sizeof(pass)) !=0 )
+		errx(1, "Error locking passphrase buf");
+
+	/* Lock symmetric key buf */
+	if (mlock(symkey, sizeof(symkey)) !=0 )
+		errx(1, "Error locking symmetric key buf");
+
 	/* Read in passphrase */
 	if (!readpassphrase("Enter passphrase: ", pass, sizeof(pass), global_rpp_flags))
                 err(1, "Error getting passphrase");
@@ -100,6 +110,10 @@ symdecrypt(unsigned char *ptext_buf, unsigned char *ctext_buf, struct hdr *hdr)
 	derive_key(hdr, pass, symkey);
 	explicit_bzero(pass, sizeof(pass));
 
+	/* Unlock passphrase buf */
+	if (munlock(pass, sizeof(pass)) != 0)
+		errx(1, "Error unlocking passphrase buf");
+
 	/* Decrypt */
         if (crypto_secretbox_open(ptext_buf, ctext_buf, hdr->padded_len,
             hdr->nonce, symkey) != 0)
@@ -107,6 +121,10 @@ symdecrypt(unsigned char *ptext_buf, unsigned char *ctext_buf, struct hdr *hdr)
 
 	/* Zero the key */
 	explicit_bzero(symkey, sizeof(symkey));
+
+	/* Unlock symmetric key buf */
+	if (munlock(symkey, sizeof(symkey)) !=0 )
+		errx(1, "Error unlocking symmetric key buf");
 }
 
 void

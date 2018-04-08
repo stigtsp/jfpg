@@ -14,6 +14,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <sys/mman.h>
+
 #include <err.h>
 #include <stdio.h>
 #include <string.h>
@@ -83,10 +85,16 @@ asymdecrypt(unsigned char *ptext_buf, unsigned char *ctext_buf,
 	unsigned char pk[PUBKEYBYTES];
 	unsigned char sk[SECKEYBYTES + ZEROBYTES];
 
+	if (mlock(sk, sizeof(sk)) != 0)
+		errx(1, "Error locking secret key buf");
+
 	get_keys(pk, sk, pkey, skey); 
  
 	if (crypto_box_open(ptext_buf, ctext_buf,
             ctext_size, nonce, pk, sk + ZEROBYTES) != 0)
                 errx(1, "Error decrypting data");
+	
 	explicit_bzero(sk, sizeof(sk));
+	if (munlock(sk, sizeof(sk)) != 0)
+		errx(1, "Error unlocking munlock");
 }

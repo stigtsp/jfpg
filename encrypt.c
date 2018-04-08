@@ -14,6 +14,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <sys/mman.h>
+
 #include <err.h>
 #include <stdio.h> 
 #include <stdlib.h>
@@ -58,6 +60,9 @@ jf_encrypt(FILE *infile, FILE *key, FILE *skey, char *filename,
 	memset(pad_ptext_buf, 0, ZEROBYTES);
 	read_infile(infile, pad_ptext_buf + ZEROBYTES, ptext_size);
 
+	if (mlock(pad_ptext_buf, hdr->padded_len) != 0)
+		errx(1, "Error locking plaintext buf");
+
 	ctext_size = (hdr->padded_len);
 	if ((ctext_buf = malloc(ctext_size)) == NULL)
 		err(1, "Error creating ctext buffer");
@@ -83,6 +88,8 @@ jf_encrypt(FILE *infile, FILE *key, FILE *skey, char *filename,
 
 	/* Zero and free the plaintext as soon as we're done with it */
 	explicit_bzero(pad_ptext_buf, hdr->padded_len);
+	if (munlock(pad_ptext_buf, hdr->padded_len) != 0)
+		errx(1, "Error unlocking plaintext buf");
 	free(pad_ptext_buf);
 
 	/* Append the extension to the filename */
@@ -104,6 +111,9 @@ asymcrypt(unsigned char *ctext_buf, unsigned char *pad_ptext_buf,
 	unsigned char pk[PUBKEYBYTES];
 	unsigned char sk[SECKEYBYTES + ZEROBYTES];
 
+	if (mlock(sk, sizeof(sk)) != 0)
+		errx(1, "Error locking secret key buf");
+
 	/* Read in the public and secret keys */
 	get_keys(pk, sk, key, skey); 
 
@@ -113,4 +123,6 @@ asymcrypt(unsigned char *ctext_buf, unsigned char *pad_ptext_buf,
 	
 	/* Zap secret key */
 	explicit_bzero(sk, sizeof(sk));
+	if (munlock(sk, sizeof(sk)) != 0)
+		errx(1, "Error unlocking secret key buf");
 }
