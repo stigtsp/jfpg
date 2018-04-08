@@ -79,7 +79,7 @@ below are used if you do not specify anything.
 
 The defaults work well for fast machines with plenty of RAM, but are
 potentially very slow on older single core devices, and will not work
-at all on devices with less than 512 MiB of RAM free. Pick the largest
+at all on devices with less than 1024 MiB of RAM free. Pick the largest
 values that are tolerable for your hardware.
 
 Threat Model
