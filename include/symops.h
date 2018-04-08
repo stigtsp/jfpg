@@ -17,3 +17,4 @@
 
 void symcrypt(unsigned char *, unsigned char *, struct hdr *);
 void symdecrypt(unsigned char *, unsigned char *, struct hdr *);
+int cmp_const(const void * a, const void *b, const size_t size);
