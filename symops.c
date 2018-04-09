@@ -18,6 +18,7 @@
 
 #include <err.h>
 #include <string.h>
+#include <stdbool.h>
 
 #include "symops.h"
 #include "compat.h"
@@ -30,22 +31,38 @@
 extern int global_rpp_flags;
 
 static void derive_key(struct hdr *, char *, unsigned char *);
+static bool str_iseq(const char *, const char *);
 
-/* https://cryptocoding.net/index.php/Coding_rules */
-int cmp_const(const void * a, const void *b, const size_t size)
+
+
+/* str_iseq function written by John Schember, used under MIT License */
+bool
+str_iseq(const char *s1, const char *s2)
 {
-  const unsigned char *_a = (const unsigned char *) a;
-  const unsigned char *_b = (const unsigned char *) b;
-  unsigned char result = 0;
-  size_t i;
-
-  for (i = 0; i < size; i++) {
-    result |= _a[i] ^ _b[i];
-  }
-
-  return result;
+	int    m = 0;
+	size_t i = 0;
+	size_t j = 0;
+	size_t k = 0;
+			 
+	if (s1 == NULL || s2 == NULL)
+		return false;
+			     
+	while (1) {
+		m |= s1[i]^s2[j];
+						 
+		if (s1[i] == '\0')
+		    break;
+		i++;
+								 
+		if (s2[j] != '\0')
+		    j++;
+		if (s2[j] == '\0')
+		    k++;
+	}
+			 
+	return m == 0;
 }
-
+	
 void
 symcrypt(unsigned char *ctext_buf, unsigned char *pad_ptext_buf, struct hdr *hdr)
 {
@@ -63,20 +80,21 @@ symcrypt(unsigned char *ctext_buf, unsigned char *pad_ptext_buf, struct hdr *hdr
 	/* Read in and confirm passphrase */
 	if (!readpassphrase("Enter new passphrase: ", pass, sizeof(pass), global_rpp_flags))
 		err(1, "Error getting passphrase");
-	if (strlen(pass) == 0)
-		errx(1, "Please enter a passphrase");
-	if (strlen(pass) < 15)
-		warnx("Warning: passphrase is short, but continuing anyway");
-
 
 	/* Only confirm passphrase if we're requiring a tty. This way we
 	 * skip this when using stdin to make it easier to pipe in a passphrase
 	 */
 	if (global_rpp_flags == RPP_REQUIRE_TTY) {
-		if (!readpassphrase("Confirm new passphrase: ", pass2, sizeof(pass2), global_rpp_flags))
-                    err(1, "Error confirming passphrase");
-        	if (cmp_const(pass, pass2, strlen(pass)) != 0)
+		if (!readpassphrase("Confirm new passphrase: ", pass2, sizeof(pass2), global_rpp_flags)) {
+                    explicit_bzero(pass, sizeof(pass));
+		    explicit_bzero(pass2, sizeof(pass2));
+		    err(1, "Error confirming passphrase");
+		}
+        	if (str_iseq(pass, pass2) == 0) {
+		    explicit_bzero(pass, sizeof(pass));
+	            explicit_bzero(pass2, sizeof(pass2));	
                     errx(1, "Passphrases do not match");
+		}
         }
 
 	/* Zero the extra passphrase buffer, derive the key, then zero the
