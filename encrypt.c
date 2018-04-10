@@ -108,8 +108,8 @@ asymcrypt(unsigned char *ctext_buf, unsigned char *pad_ptext_buf,
     unsigned long long ptext_size, unsigned char *nonce, FILE *key, FILE *skey)
 {
 
-	unsigned char pk[PUBKEYBYTES];
-	unsigned char sk[SECKEYBYTES + ZEROBYTES];
+	unsigned char pk[PUBKEYBYTES] = {0};
+	unsigned char sk[SECKEYBYTES + ZEROBYTES] = {0};
 
 	if (mlock(sk, sizeof(sk)) != 0)
 		errx(1, "Error locking secret key buf");

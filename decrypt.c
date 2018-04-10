@@ -82,8 +82,8 @@ void
 asymdecrypt(unsigned char *ptext_buf, unsigned char *ctext_buf,
     unsigned long long ctext_size, unsigned char *nonce, FILE *pkey, FILE *skey)
 {
-	unsigned char pk[PUBKEYBYTES];
-	unsigned char sk[SECKEYBYTES + ZEROBYTES];
+	unsigned char pk[PUBKEYBYTES] = {0};
+	unsigned char sk[SECKEYBYTES + ZEROBYTES] = {0};
 
 	if (mlock(sk, sizeof(sk)) != 0)
 		errx(1, "Error locking secret key buf");

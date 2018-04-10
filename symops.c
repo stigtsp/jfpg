@@ -66,9 +66,9 @@ str_iseq(const char *s1, const char *s2)
 void
 symcrypt(unsigned char *ctext_buf, unsigned char *pad_ptext_buf, struct hdr *hdr)
 {
-	char pass[512];
-	char pass2[512];
-	unsigned char symkey[SYMKEYBYTES];
+	char pass[512] = {0};
+	char pass2[512] = {0};
+	unsigned char symkey[SYMKEYBYTES] = {0};
 
 	if (mlock(pass, sizeof(pass)) !=0)
 		errx(1, "Error locking passphrase buf");

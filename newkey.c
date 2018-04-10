@@ -40,12 +40,12 @@ jf_newkey(char *id, long long rounds, long long mem, long long threads)
 {
 	
 	size_t b64len = 0;
-	unsigned char pk[PUBKEYBYTES];
-	unsigned char sk[SECKEYBYTES + ZEROBYTES];
-	unsigned char sign_sk[SIGNSKEYBYTES + ZEROBYTES];
-	unsigned char sign_pk[SIGNPKEYBYTES];
-	unsigned char sk_crypt[SECKEYBYTES + ZEROBYTES];
-	unsigned char sign_sk_crypt[SIGNSKEYBYTES + ZEROBYTES];
+	unsigned char pk[PUBKEYBYTES] = {0};
+	unsigned char sk[SECKEYBYTES + ZEROBYTES] = {0};
+	unsigned char sign_sk[SIGNSKEYBYTES + ZEROBYTES] = {0};
+	unsigned char sign_pk[SIGNPKEYBYTES] = {0};
+	unsigned char sk_crypt[SECKEYBYTES + ZEROBYTES] = {0};
+	unsigned char sign_sk_crypt[SIGNSKEYBYTES + ZEROBYTES] = {0};
 
 	struct hdr *sk_hdr = NULL;
 	struct hdr *sign_sk_hdr = NULL;
@@ -56,10 +56,10 @@ jf_newkey(char *id, long long rounds, long long mem, long long threads)
 	char b64_pk[b64len];
 	char b64_sign_pk[b64len];
 	
-	char pk_name[B64NAMESIZE];
-	char sk_name[B64NAMESIZE];
-	char sign_sk_name[B64NAMESIZE];
-	char sign_pk_name[B64NAMESIZE];
+	char pk_name[B64NAMESIZE]= {0};
+	char sk_name[B64NAMESIZE] = {0};
+	char sign_sk_name[B64NAMESIZE] = {0};
+	char sign_pk_name[B64NAMESIZE] = {0};
 	
 	FILE *seckey = NULL;
 	FILE *pubkey = NULL;
