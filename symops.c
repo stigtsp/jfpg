@@ -124,8 +124,8 @@ symcrypt(unsigned char *ctext_buf, unsigned char *pad_ptext_buf, struct hdr *hdr
 void
 symdecrypt(unsigned char *ptext_buf, unsigned char *ctext_buf, struct hdr *hdr)
 {
-        char pass[512];
-        unsigned char symkey[SYMKEYBYTES];
+        char pass[512] = {0};
+        unsigned char symkey[SYMKEYBYTES] = {0};
 
 	/* Lock passphrase buf */
 	if (mlock(pass, sizeof(pass)) !=0 )

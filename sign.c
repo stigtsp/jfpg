@@ -33,7 +33,7 @@ jf_sign(FILE *infile, FILE *fd_sign_sk, char *filename)
 	unsigned long long mlen, smlen = 0;
 	unsigned char *m, *sm = NULL;
 	
-	unsigned char sign_sk[SIGNSKEYBYTES + ZEROBYTES];
+	unsigned char sign_sk[SIGNSKEYBYTES + ZEROBYTES] = {0};
 	FILE *outfile = NULL;
 
 	if (mlock(sign_sk, sizeof(sign_sk)) != 0)
