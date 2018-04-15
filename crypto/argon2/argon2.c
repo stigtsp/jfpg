@@ -166,7 +166,6 @@ int argon2_hash(const uint32_t t_cost, const uint32_t m_cost,
     return ARGON2_OK;
 }
 
-
 int argon2i_hash_raw(const uint32_t t_cost, const uint32_t m_cost,
                      const uint32_t parallelism, const void *pwd,
                      const size_t pwdlen, const void *salt,
@@ -176,7 +175,6 @@ int argon2i_hash_raw(const uint32_t t_cost, const uint32_t m_cost,
                        hash, hashlen, NULL, 0, Argon2_i, ARGON2_VERSION_NUMBER);
 }
 
-
 int argon2d_hash_raw(const uint32_t t_cost, const uint32_t m_cost,
                      const uint32_t parallelism, const void *pwd,
                      const size_t pwdlen, const void *salt,
@@ -185,7 +183,6 @@ int argon2d_hash_raw(const uint32_t t_cost, const uint32_t m_cost,
     return argon2_hash(t_cost, m_cost, parallelism, pwd, pwdlen, salt, saltlen,
                        hash, hashlen, NULL, 0, Argon2_d, ARGON2_VERSION_NUMBER);
 }
-
 
 int argon2id_hash_raw(const uint32_t t_cost, const uint32_t m_cost,
                       const uint32_t parallelism, const void *pwd,
@@ -207,7 +204,6 @@ int argon2i_ctx(argon2_context *context) {
 int argon2id_ctx(argon2_context *context) {
     return argon2_ctx(context, Argon2_id);
 }
-
 
 const char *argon2_error_message(int error_code) {
     switch (error_code) {
