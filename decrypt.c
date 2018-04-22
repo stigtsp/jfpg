@@ -86,7 +86,7 @@ asymdecrypt(unsigned char *ptext_buf, unsigned char *ctext_buf,
 	unsigned char sk[SECKEYBYTES + ZEROBYTES] = {0};
 
 	if (mlock(sk, sizeof(sk)) != 0)
-		errx(1, "Error locking secret key buf");
+		warn("%s", "Error locking secret key buf");
 
 	get_keys(pk, sk, pkey, skey); 
  
@@ -96,5 +96,5 @@ asymdecrypt(unsigned char *ptext_buf, unsigned char *ctext_buf,
 	
 	explicit_bzero(sk, sizeof(sk));
 	if (munlock(sk, sizeof(sk)) != 0)
-		errx(1, "Error unlocking munlock");
+		warn("%s", "Error unlocking munlock");
 }

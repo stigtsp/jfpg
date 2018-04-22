@@ -68,9 +68,9 @@ jf_newkey(char *id, long long rounds, long long mem, long long threads)
 
 	/* Lock all secret key buffers */
 	if (mlock(sk, sizeof(sk)) !=0)
-		errx(1, "Error locking secret key buf");
+		warn("%s", "Error locking secret key buf");
 	if (mlock(sign_sk, sizeof(sign_sk)) !=0 )
-		errx(1, "Error locking signign secret key buf");
+		warn("%s", "Error locking signing secret key buf");
 
 	/* Ensure secret key buffers are zeroed before key generation */	
 	explicit_bzero(sk, sizeof(sk));
@@ -100,9 +100,9 @@ jf_newkey(char *id, long long rounds, long long mem, long long threads)
 
 	/* Unlock secret key buffers */
 	if (munlock(sk, sizeof(sk)) !=0)
-		errx(1, "Error unlocking secret key buf");
+		warn("%s", "Error unlocking secret key buf");
 	if (munlock(sign_sk, sizeof(sign_sk)) !=0)
-		errx(1, "Error unlocking signing secret key buf");
+		warn("%s", "Error unlocking signing secret key buf");
 
 	/* Fill in names for keys based on user-supplied ID */
 	name_keys(id, pk_name, sk_name, sign_pk_name, sign_sk_name);

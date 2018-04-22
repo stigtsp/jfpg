@@ -61,7 +61,7 @@ jf_encrypt(FILE *infile, FILE *key, FILE *skey, char *filename,
 	read_infile(infile, pad_ptext_buf + ZEROBYTES, ptext_size);
 
 	if (mlock(pad_ptext_buf, hdr->padded_len) != 0)
-		errx(1, "Error locking plaintext buf");
+		warn("%s", "Error locking plaintext buf");
 
 	ctext_size = (hdr->padded_len);
 	if ((ctext_buf = malloc(ctext_size)) == NULL)
@@ -89,7 +89,7 @@ jf_encrypt(FILE *infile, FILE *key, FILE *skey, char *filename,
 	/* Zero and free the plaintext as soon as we're done with it */
 	explicit_bzero(pad_ptext_buf, hdr->padded_len);
 	if (munlock(pad_ptext_buf, hdr->padded_len) != 0)
-		errx(1, "Error unlocking plaintext buf");
+		warn("%s", "Error unlocking plaintext buf");
 	free(pad_ptext_buf);
 
 	/* Append the extension to the filename */
@@ -112,7 +112,7 @@ asymcrypt(unsigned char *ctext_buf, unsigned char *pad_ptext_buf,
 	unsigned char sk[SECKEYBYTES + ZEROBYTES] = {0};
 
 	if (mlock(sk, sizeof(sk)) != 0)
-		errx(1, "Error locking secret key buf");
+		warn("%s", "Error locking secret key buf");
 
 	/* Read in the public and secret keys */
 	get_keys(pk, sk, key, skey); 
@@ -124,5 +124,5 @@ asymcrypt(unsigned char *ctext_buf, unsigned char *pad_ptext_buf,
 	/* Zap secret key */
 	explicit_bzero(sk, sizeof(sk));
 	if (munlock(sk, sizeof(sk)) != 0)
-		errx(1, "Error unlocking secret key buf");
+		warn("%s", "Error unlocking secret key buf");
 }

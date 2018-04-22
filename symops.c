@@ -71,11 +71,11 @@ symcrypt(unsigned char *ctext_buf, unsigned char *pad_ptext_buf, struct hdr *hdr
 	unsigned char symkey[SYMKEYBYTES] = {0};
 
 	if (mlock(pass, sizeof(pass)) !=0)
-		errx(1, "Error locking passphrase buf");
+		warn("%s", "Error locking passphrase buf");
 	if (mlock(pass2, sizeof(pass2)) !=0)
-		errx(1, "Error locking passphrase 2 buf");
+		warn("%s", "Error locking passphrase 2 buf");
 	if (mlock(symkey, sizeof(symkey)) !=0)
-		errx(1, "Error locking symmetric key buf");
+		warn("%s", "Error locking symmetric key buf");
 
 	/* Read in and confirm passphrase */
 	if (!readpassphrase("Enter new passphrase: ", pass, sizeof(pass), global_rpp_flags))
@@ -102,13 +102,13 @@ symcrypt(unsigned char *ctext_buf, unsigned char *pad_ptext_buf, struct hdr *hdr
 	 */
 	explicit_bzero(pass2, sizeof(pass2));
 	if (munlock(pass2, sizeof(pass2)) !=0)
-		errx(1, "Error unlocking passphrase 2 buf");
+		warn("%s", "Error unlocking passphrase 2 buf");
 
 	derive_key(hdr, pass, symkey);
 
 	explicit_bzero(pass, sizeof(pass));
 	if (munlock(pass, sizeof(pass)) !=0)
-		errx(1, "Error unlocking passphrase buf");
+		warn("%s", "Error unlocking passphrase buf");
 
 	/* Encrypt */
 	if (crypto_secretbox(ctext_buf, pad_ptext_buf, hdr->padded_len,
@@ -118,7 +118,7 @@ symcrypt(unsigned char *ctext_buf, unsigned char *pad_ptext_buf, struct hdr *hdr
 	/* Zero the key */
 	explicit_bzero(symkey, sizeof(symkey));
 	if (munlock(symkey, sizeof(symkey)) !=0)
-		errx(1, "Error unlocking symmetric key");
+		warn("%s", "Error unlocking symmetric key");
 }
 
 void
@@ -129,11 +129,11 @@ symdecrypt(unsigned char *ptext_buf, unsigned char *ctext_buf, struct hdr *hdr)
 
 	/* Lock passphrase buf */
 	if (mlock(pass, sizeof(pass)) !=0 )
-		errx(1, "Error locking passphrase buf");
+		warn("%s", "Error locking passphrase buf");
 
 	/* Lock symmetric key buf */
 	if (mlock(symkey, sizeof(symkey)) !=0 )
-		errx(1, "Error locking symmetric key buf");
+		warn("%s", "Error locking symmetric key buf");
 
 	/* Read in passphrase */
 	if (!readpassphrase("Enter passphrase: ", pass, sizeof(pass), global_rpp_flags))
@@ -145,7 +145,7 @@ symdecrypt(unsigned char *ptext_buf, unsigned char *ctext_buf, struct hdr *hdr)
 
 	/* Unlock passphrase buf */
 	if (munlock(pass, sizeof(pass)) != 0)
-		errx(1, "Error unlocking passphrase buf");
+		warn("%s", "Error unlocking passphrase buf");
 
 	/* Decrypt */
         if (crypto_secretbox_open(ptext_buf, ctext_buf, hdr->padded_len,
@@ -157,7 +157,7 @@ symdecrypt(unsigned char *ptext_buf, unsigned char *ctext_buf, struct hdr *hdr)
 
 	/* Unlock symmetric key buf */
 	if (munlock(symkey, sizeof(symkey)) !=0 )
-		errx(1, "Error unlocking symmetric key buf");
+		warn("%s", "Error unlocking symmetric key buf");
 }
 
 void
