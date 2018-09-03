@@ -51,7 +51,7 @@ main(int argc, char **argv)
 	if (argc < 2)
 		usage();
 
-	while ((ch = getopt(argc, argv, "vscedSn:k:s:p:f:r:m:t:")) != -1) {
+	while ((ch = getopt(argc, argv, "VvscedSn:k:s:p:f:r:m:t:")) != -1) {
 		switch (ch) {
 		case 'n':
 		    if (jf_strlcpy(id, optarg, sizeof(id)) >= sizeof(id))
@@ -72,6 +72,10 @@ main(int argc, char **argv)
 		    break;
 		case 'v':
 		    flag = 6;
+		    break;
+		case 'V':
+		    printf(VERSION);
+		    return (0);
 		    break;
 		case 'S':
 		    global_rpp_flags = RPP_STDIN;

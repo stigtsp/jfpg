@@ -1,3 +1,5 @@
+#define	VERSION	"0.1a\n"
+
 #define FILENAME_SIZE   255
 #define EXT     ".jfpg"
 #define SIGNEXT ".signed"

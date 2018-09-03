@@ -20,6 +20,8 @@
 .Nd small, fast file encryption and signing utility
 .Sh SYNOPSIS
 .Nm jfpg
+.Fl V
+.Nm jfpg
 .Fl c
 .Op Fl S
 .Op Fl r rounds
@@ -63,6 +65,8 @@ with Ed25519 key pairs. It relies on TweetNaCL for its encryption and signing
 related functions, and Argon2id for passphrase-based key derivation.
 The following options select the operation:
 .Bl -tag -width Dsssigfile
+.It Fl V
+Print out the version and exit
 .It Fl c 
 Symmetric encryption with a passphrase-derived key.
 .It Fl e 
