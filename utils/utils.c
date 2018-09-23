@@ -132,7 +132,8 @@ read_hdr(struct hdr *hdr, FILE *infile)
 void
 write_enc(FILE *outfile, struct hdr *hdr, unsigned char *ctext_buf, char *filename)
 {
-        outfile = fopen(filename, "w");
+        if ((outfile = fopen(filename, "w")) == NULL)
+		err(1, "error writing file");
         fwrite(hdr->nonce, 1, sizeof(hdr->nonce), outfile);
         fprintf(outfile, " %" PRIu64 " %" PRIu32 " %" PRIu32 " %" PRIu32 " %d ", hdr->padded_len,
                 hdr->rounds, hdr->mem, hdr->threads, hdr->alg);
